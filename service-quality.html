@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>品質保証 | 株式会社トライテック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<link rel="stylesheet" href="assets/css/pages/service-page.css">
+<style>
+:root{--page-accent:#1e8fa0;--page-accent-rgb:30,143,160}
+.sd-stat-num.alt{color:var(--orange)}
+.sd-stat-num.alt .u{color:var(--orange)}
+</style>
+<link rel="stylesheet" href="assets/css/game.css">
+</head>
+<body>
+<!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
+<div data-include="header"></div>
+
+<section class="sd-hero">
+  <div class="sd-hero-inner">
+    <p class="s-chip teal reveal"><span class="s-chip-dot"></span>Service / Quality</p>
+    <h1 class="reveal" style="transition-delay:.1s">品質は、<span class="hl-t">競争力</span>。<br>プロダクトの品質を、<br>最前線で守る。</h1>
+    <p class="sd-hero-lead reveal" style="transition-delay:.2s">ソフトウェアの品質保証は、ユーザー体験を左右する重要な要素です。私たちは、テスト計画から自動化、QA体制構築まで一貫して支援し、クライアントのプロダクト価値を最大化します。</p>
+  </div>
+</section>
+
+<section class="sd-overview">
+  <p class="s-chip teal reveal"><span class="s-chip-dot"></span>Overview</p>
+  <h2 class="s-title reveal">サービス概要</h2>
+  <div class="sd-overview-text reveal" style="transition-delay:.1s">
+    <p>トライテックの品質保証事業は、テスト設計・実行だけでなく、QAプロセスそのものの改善・構築まで踏み込んだサービスです。プロダクトの品質を最前線で守り、リリース後の不具合発生率を最小限に抑えます。</p>
+    <p>手動テストから自動化テストまで、規模や予算に応じた最適なテスト戦略をご提案。品質管理エンジニアが40%在籍する専門集団として、クライアントの品質向上を支援します。</p>
+  </div>
+</section>
+
+<section class="sd-strengths">
+  <p class="s-chip teal reveal"><span class="s-chip-dot"></span>Strengths</p>
+  <h2 class="s-title reveal">トライテックの強み</h2>
+  <p class="s-sub reveal">プロダクトの品質を支える、3つの専門領域。</p>
+  <div class="sd-cards">
+    <div class="sd-card reveal">
+      <span class="sd-card-num">01</span>
+      <h3>テスト設計から自動化まで一貫対応</h3>
+      <p>計画・設計・実行の全工程をカバー。要件定義段階から品質を組み込む設計を支援します。</p>
+    </div>
+    <div class="sd-card reveal" style="transition-delay:.1s">
+      <span class="sd-card-num">02</span>
+      <h3>QA体制構築の伴走支援</h3>
+      <p>単発テストではなく、仕組み作りから支援。クライアント自身が品質を担保できる体制を作ります。</p>
+    </div>
+    <div class="sd-card reveal" style="transition-delay:.2s">
+      <span class="sd-card-num">03</span>
+      <h3>品質管理エンジニア40%在籍</h3>
+      <p>専門人材による高品質なサービス提供。豊富な現場経験と知見でクライアントを支援します。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sd-coverage" data-coverage-tabs>
+  <p class="s-chip teal reveal"><span class="s-chip-dot"></span>Coverage</p>
+  <h2 class="s-title reveal">対応領域</h2>
+  <p class="s-sub reveal">幅広いQA領域でクライアントのプロダクトを支えます。</p>
+
+  <!-- ① タグはサブ説明の下に横並び (タブとして機能) -->
+  <div class="sd-tags reveal" style="transition-delay:.1s">
+    <span class="sd-tag is-active" data-tab="qa1">テスト計画・設計</span>
+    <span class="sd-tag" data-tab="qa2">手動テスト</span>
+    <span class="sd-tag" data-tab="qa3">自動化テスト</span>
+    <span class="sd-tag" data-tab="qa4">QAプロセス改善</span>
+  </div>
+
+  <!-- ② 2カラム: 画像 + 詳細説明 (タブで切替) -->
+  <div class="sd-coverage-panels reveal" style="transition-delay:.2s">
+    <div class="sd-coverage-imgwrap">
+      <img class="sd-cov-img is-active" data-tab="qa1" src="assets/images/photos/qa-1-plan.jpg" alt="テスト計画・設計">
+      <img class="sd-cov-img" data-tab="qa2" src="assets/images/photos/qa-2-manual.jpg" alt="手動テスト">
+      <img class="sd-cov-img" data-tab="qa3" src="assets/images/photos/qa-3-auto.jpg" alt="自動化テスト">
+      <img class="sd-cov-img" data-tab="qa4" src="assets/images/photos/qa-4-process.jpg" alt="QAプロセス改善">
+    </div>
+    <div class="sd-coverage-descwrap">
+      <div class="sd-coverage-desc is-active" data-tab="qa1">
+        <h3>テスト計画・設計</h3>
+        <p>プロジェクトの特性・リスクを把握し、最適なテスト戦略を策定。要件定義書や仕様書を読み込み、抜け漏れのないテスト観点・ケースを設計します。</p>
+        <ul>
+          <li>テスト計画書・テスト戦略の策定</li>
+          <li>テスト観点リスト・テストケースの作成</li>
+          <li>リスクベースでの優先度設計</li>
+          <li>受入基準・完了基準の定義</li>
+        </ul>
+      </div>
+      <div class="sd-coverage-desc" data-tab="qa2">
+        <h3>手動テスト</h3>
+        <p>機能テスト・探索的テスト・ユーザビリティテストなど、人の感性が必要なテストを丁寧に実施。バグの再現性確認まで一貫して対応します。</p>
+        <ul>
+          <li>機能テスト・回帰テスト</li>
+          <li>探索的テスト・モンキーテスト</li>
+          <li>ユーザビリティ・UX観点での検証</li>
+          <li>バグレポート・再現手順の作成</li>
+        </ul>
+      </div>
+      <div class="sd-coverage-desc" data-tab="qa3">
+        <h3>自動化テスト</h3>
+        <p>Selenium、Cypress、Playwright等の自動化ツールを用いて、回帰テストやE2Eテストの自動化を実現。CI/CDパイプラインとの統合まで対応します。</p>
+        <ul>
+          <li>E2E自動化フレームワーク構築</li>
+          <li>APIテスト自動化(REST/GraphQL)</li>
+          <li>CI/CDへのテスト組込み</li>
+          <li>レポート・ダッシュボード整備</li>
+        </ul>
+      </div>
+      <div class="sd-coverage-desc" data-tab="qa4">
+        <h3>QAプロセス改善</h3>
+        <p>現状のQA体制を分析し、品質メトリクスの導入・テスト工程の効率化・開発との連携強化など、組織全体の品質向上を支援します。</p>
+        <ul>
+          <li>QA体制・組織設計のコンサルティング</li>
+          <li>品質メトリクスの定義・運用</li>
+          <li>シフトレフト・シフトライト戦略</li>
+          <li>開発チームとの協働モデル構築</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CONTACT (index.html の #contact を動的注入) -->
+<div data-embed="contact"></div>
+
+<!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
+<div data-include="footer"></div>
+
+<script src="assets/js/include-partials.js"></script>
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/contact-embed.js" defer></script>
+<script src="assets/js/coverage-tabs.js" defer></script>
+<div id="game-overlay">
+  <canvas id="game-canvas"></canvas>
+  <div id="ghud">
+    <span>SCORE <span id="gs">000000</span></span>
+    <span class="gst" id="gstg">STAGE 1</span>
+    <span class="ghi">HI <span id="gh">999999</span></span>
+    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
+  </div>
+  <div id="gesc">[ ESC ] 終了</div>
+</div>
+<script src="assets/js/game.js" defer></script>
+</body>
+</html>

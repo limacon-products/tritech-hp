@@ -1,0 +1,173 @@
+/* ==========================================================
+   index-recruit.css
+     index.html 内に直接埋め込んだ recruit セクション用スタイル
+     旧 recruit-detail.html の CSS を .recruit-section にスコープ
+     CSS 変数は :root ではなく .recruit-section に再定義して
+     index.html の他セクションへの影響を防ぐ
+   ========================================================== */
+
+/* ── スコープ用 CSS 変数（recruit-detail と同値、暗テーマ） ── */
+.recruit-section{
+  --rc-bg:#0a0a0a;
+  --rc-card:#111111;
+  --rc-border:#1e1e1e;
+  --rc-a:#00ffcc;
+  --rc-orange:#d95f1a;
+  --rc-teal:#1e8fa0;
+  --rc-navy:#1d3557;
+  --rc-text:#cccccc;
+  --rc-muted:#666;
+  background:var(--rc-bg);
+  color:#fff;
+  font-family:'Noto Sans JP',sans-serif;
+  line-height:1.7;
+  position:relative;
+}
+
+/* ── 共通: section, sec-chip, sec-title, divider ── */
+.recruit-section section{padding:100px 5vw 80px;position:relative}
+.recruit-section .sec-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,204,.07);color:var(--rc-a);border:1px solid rgba(0,255,204,.18);border-radius:100px;padding:5px 16px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.4rem}
+.recruit-section .sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:1rem;letter-spacing:-.02em;line-height:1.2;color:#fff}
+.recruit-section .sec-title .ac{color:var(--rc-a)}
+.recruit-section .divider{width:100%;height:1px;background:var(--rc-border)}
+
+/* ── HERO (#sec-slogan) ── */
+.recruit-section #sec-slogan{min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:120px;padding-bottom:5vh;position:relative}
+.recruit-section #sec-slogan::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(0,255,204,.07) 0%,transparent 65%);pointer-events:none}
+/* .hero-inner は index.css のトップヒーローでも使用しているため、
+   recruit セクションでは .recruit-hero-inner に名前空間を分けて衝突を回避 */
+.recruit-section .recruit-hero-inner{position:relative;z-index:1;max-width:820px;padding:0 5vw;margin:0 auto;text-align:center}
+.recruit-section .hero-catch{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3.5vw,3.2rem);font-weight:800;line-height:1.35;letter-spacing:-.02em;margin-bottom:1.5rem;color:#fff}
+.recruit-section .hero-catch .ac{color:var(--rc-a)}
+.recruit-section .hero-body{font-size:.95rem;color:var(--rc-text);line-height:2;max-width:600px;margin:0 auto}
+
+/* ヒーローのフェードイン（旧 iframe 注入 CSS と同等） */
+.recruit-section #sec-slogan .hero-catch,
+.recruit-section #sec-slogan .hero-body{
+  opacity:0;transform:translateY(20px);
+  transition:opacity 1.4s cubic-bezier(.16,1,.3,1),transform 1.4s cubic-bezier(.16,1,.3,1);
+}
+body.rm-hero-show .recruit-section #sec-slogan .hero-catch{opacity:1;transform:translateY(0)}
+body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:translateY(0);transition-delay:.35s}
+
+/* ── REASON ── */
+.recruit-section .reason-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;margin-top:2.5rem}
+.recruit-section .reason-card{border:1px solid var(--rc-border);background:var(--rc-card);padding:36px 36px 36px 44px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.recruit-section .reason-card:hover{border-color:rgba(0,255,204,.3);box-shadow:0 0 24px rgba(0,255,204,.07)}
+.recruit-section .reason-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--rc-a)}
+.recruit-section .reason-card:nth-child(even)::before{background:var(--rc-orange)}
+.recruit-section .reason-point{font-size:.68rem;font-weight:700;letter-spacing:.2em;color:var(--rc-a);margin-bottom:.5rem}
+.recruit-section .reason-card:nth-child(even) .reason-point{color:var(--rc-orange)}
+.recruit-section .reason-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:.9rem;line-height:1.4}
+.recruit-section .reason-body{font-size:.87rem;color:var(--rc-text);line-height:1.95}
+
+/* ── REWARD FLOW ── */
+.recruit-section .reward-flow{display:flex;align-items:stretch;gap:14px;margin-top:2.5rem}
+.recruit-section .rf-step{flex:1;display:flex;min-width:0}
+.recruit-section .rf-box{flex:1;border:1px solid var(--rc-border);background:var(--rc-card);border-radius:8px;padding:30px 18px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.6rem;position:relative;transition:border-color .25s,box-shadow .25s}
+.recruit-section .rf-box:hover{border-color:rgba(0,255,204,.3);box-shadow:0 0 18px rgba(0,255,204,.06)}
+.recruit-section .rf-num{font-family:'Syne',sans-serif;font-size:.7rem;font-weight:800;color:var(--rc-muted);letter-spacing:.18em}
+.recruit-section .rf-label{font-family:'Noto Sans JP',sans-serif;font-size:.95rem;font-weight:700;color:#fff;line-height:1.5}
+.recruit-section .rf-final{border-color:rgba(0,255,204,.45);background:rgba(0,255,204,.04)}
+.recruit-section .rf-final .rf-num{color:var(--rc-a)}
+.recruit-section .rf-final .rf-label{color:var(--rc-a)}
+.recruit-section .rf-arrow{display:flex;align-items:center;justify-content:center;color:var(--rc-a);font-size:1.6rem;font-weight:700;flex-shrink:0;width:20px}
+.recruit-section .reward-note{margin-top:2rem;font-size:.88rem;color:var(--rc-text);line-height:2;background:var(--rc-card);border-left:3px solid var(--rc-a);padding:1.5rem 1.75rem;border-radius:0 8px 8px 0}
+
+/* ── STORY BLOCK (choice / team) ── */
+.recruit-section .sec-subtitle{font-size:.95rem;color:var(--rc-a);font-weight:700;letter-spacing:.06em;margin-top:.4rem;margin-bottom:1.5rem}
+.recruit-section #sec-choice .sec-subtitle{color:var(--rc-orange)}
+.recruit-section #sec-team .sec-subtitle{color:var(--rc-teal)}
+.recruit-section .story-block{margin-top:1rem;background:var(--rc-card);border:1px solid var(--rc-border);border-radius:8px;padding:42px 44px;position:relative;overflow:hidden}
+.recruit-section .story-block::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px}
+.recruit-section #sec-choice .story-block::before{background:var(--rc-orange)}
+.recruit-section #sec-team .story-block::before{background:var(--rc-teal)}
+.recruit-section .story-quote{margin-bottom:1.6rem;padding-left:1.5rem;border-left:2px solid rgba(255,255,255,.12)}
+.recruit-section .story-quote p{font-size:.93rem;color:var(--rc-muted);font-style:italic;line-height:1.85;margin-bottom:.55rem}
+.recruit-section .story-quote p:last-child{margin-bottom:0}
+.recruit-section .story-body p{font-size:.92rem;color:var(--rc-text);line-height:2;margin-bottom:.85rem}
+.recruit-section .story-body p:last-child{margin-bottom:0}
+.recruit-section .story-conclusion{font-family:'Syne','Noto Sans JP',sans-serif;font-size:1.05rem!important;font-weight:700;margin-top:1.4rem!important;padding-top:1.4rem;border-top:1px solid var(--rc-border)}
+.recruit-section #sec-choice .story-conclusion{color:var(--rc-orange)!important}
+.recruit-section #sec-team .story-conclusion{color:var(--rc-teal)!important}
+
+/* ── BENEFITS ── */
+.recruit-section .benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem}
+.recruit-section .benefit-col{background:var(--rc-card);border:1px solid var(--rc-border);border-radius:8px;padding:36px 32px;position:relative;overflow:hidden}
+.recruit-section .benefit-col::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--rc-a)}
+.recruit-section .benefit-col.b-r::before{background:var(--rc-orange)}
+.recruit-section .benefit-col-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:1.25rem;letter-spacing:-.01em;padding-bottom:.9rem;border-bottom:1px solid var(--rc-border)}
+.recruit-section .benefit-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:.6rem}
+.recruit-section .benefit-list li{font-size:.87rem;color:var(--rc-text);line-height:1.7;padding-left:1.4rem;position:relative}
+.recruit-section .benefit-list li::before{content:'▸';position:absolute;left:0;top:0;color:var(--rc-a);font-size:.78rem}
+.recruit-section .benefit-col.b-r .benefit-list li::before{color:var(--rc-orange)}
+
+/* ── VOICES CARDS（カルーセル） ── */
+.recruit-section #sec-voices{overflow:visible}
+.recruit-section .data-sub{font-size:.93rem;color:var(--rc-text);margin-top:.4rem;margin-bottom:0;line-height:1.85}
+.recruit-section .voice-carousel{margin:3rem -5vw 0;overflow:hidden}
+.recruit-section .voice-track{display:flex;width:max-content;animation:rcVoiceScroll 35s linear infinite}
+.recruit-section .voice-carousel:hover .voice-track{animation-play-state:paused}
+@keyframes rcVoiceScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.recruit-section .voice-card{background:#0a0a0a;border:1px solid #00ffcc;border-radius:8px;padding:2rem 1.5rem;cursor:pointer;transition:all .3s ease;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:'Courier New',monospace;flex:0 0 240px;width:240px;margin-right:1.5rem}
+.recruit-section .voice-card:hover{transform:translateY(-6px);box-shadow:0 0 20px rgba(0,255,204,.3);border-color:#00ffcc}
+.recruit-section .voice-svg{width:80px;height:80px;margin:0 auto 1rem;display:block;transition:filter .3s ease}
+.recruit-section .voice-svg svg{width:100%;height:100%;display:block}
+.recruit-section .voice-card:hover .voice-svg{filter:drop-shadow(0 0 6px #00ffcc)}
+.recruit-section .voice-avatar{display:block;width:100%;font-family:'Courier New',monospace;font-size:3.5rem;font-weight:700;color:#00ffcc;text-align:center;letter-spacing:.1em;border-top:1px solid #00ffcc;border-bottom:1px solid #00ffcc;padding:1rem 0;margin-bottom:1rem;line-height:1;background:transparent}
+.recruit-section .voice-role{font-family:'Courier New',monospace;font-size:.82rem;color:rgba(255,255,255,.7);text-align:center;line-height:1.5;margin-bottom:1rem;word-break:keep-all}
+.recruit-section .voice-catch{font-family:'Courier New',monospace;font-size:.85rem;color:#00ffcc;text-align:center;font-style:italic;line-height:1.6;word-break:auto-phrase;overflow-wrap:anywhere;line-break:strict}
+.recruit-section .voice-catch::before{content:'「'}
+.recruit-section .voice-catch::after{content:'」'}
+@supports not (word-break: auto-phrase){
+  .recruit-section .voice-catch{word-break:normal;overflow-wrap:break-word}
+}
+
+/* ── VOICE MODAL ── */
+.voice-modal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);display:none;align-items:flex-start;justify-content:center;padding:3rem 1rem;overflow-y:auto;opacity:0;transition:opacity .3s ease}
+.voice-modal.open{display:flex;opacity:1}
+.voice-modal-body{background:#0a0a0a;border:1px solid #00ffcc;border-radius:8px;box-shadow:0 0 40px rgba(0,255,204,.2);padding:3rem 2.5rem;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;position:relative;transform:scale(.95);transition:transform .3s ease;margin:auto;font-family:'Courier New',monospace}
+.voice-modal.open .voice-modal-body{transform:scale(1)}
+.voice-modal-close{position:absolute;top:1rem;right:1rem;width:40px;height:40px;border:none;background:transparent;font-size:1.8rem;cursor:pointer;color:#00ffcc;transition:color .2s,text-shadow .2s;line-height:1}
+.voice-modal-close:hover{color:#7affff;text-shadow:0 0 12px rgba(0,255,204,.6)}
+.voice-modal-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(0,255,204,.3)}
+.voice-modal-header .voice-svg{width:120px;height:120px;margin:0 auto 1.25rem;display:block}
+.voice-modal-header .voice-svg svg{width:100%;height:100%;display:block}
+.voice-modal-header .voice-avatar{display:inline-block;width:auto;min-width:220px;padding:1.2rem 3rem;font-size:4rem;letter-spacing:.1em;margin:0 0 1.25rem;background:transparent;color:#00ffcc;font-family:'Courier New',monospace;font-weight:700;border-top:1px solid #00ffcc;border-bottom:1px solid #00ffcc;line-height:1}
+.voice-modal-header h3{font-family:'Courier New',monospace;font-size:1.8rem;font-weight:700;color:#ffffff;margin-bottom:.4rem;letter-spacing:.02em}
+.voice-modal-header h3:empty{display:none;margin:0}
+.voice-modal-header p{font-family:'Courier New',monospace;font-size:1rem;color:rgba(255,255,255,.7)}
+.voice-chapter{margin-bottom:.75rem}
+.voice-chapter-title{background:#1a1a1a;border:none;border-left:4px solid #00ffcc;border-radius:4px;padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#ffffff;font-family:'Courier New',monospace;font-size:.95rem;font-weight:600;line-height:1.4;transition:background .2s}
+.voice-chapter-title:hover{background:#222222}
+.voice-chapter-icon{flex:0 0 auto;margin-left:1rem;transition:transform .3s;font-size:.75rem;color:#00ffcc}
+.voice-chapter.open .voice-chapter-icon{transform:rotate(180deg)}
+.voice-chapter-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.voice-chapter.open .voice-chapter-body{max-height:6000px}
+.voice-chapter-content{padding:1.5rem 1.2rem;color:rgba(255,255,255,.85);font-family:'Noto Sans JP',sans-serif;font-size:.92rem;line-height:1.9}
+.voice-chapter-content p{margin-bottom:1em}
+.voice-chapter-content p:last-child{margin-bottom:0}
+
+/* ── CTA ── */
+.recruit-section .pg-cta-wrap{text-align:center;padding:72px 5vw 90px}
+.recruit-section .cta-btns{display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap}
+.recruit-section .pg-btn{display:inline-block;border:2px solid var(--rc-a);color:var(--rc-a);background:transparent;padding:14px 44px;font-size:.9rem;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:.1em;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s,transform .15s}
+.recruit-section .pg-btn:hover{background:var(--rc-a);color:#000;box-shadow:0 0 28px rgba(0,255,204,.4);transform:translateY(-2px)}
+.recruit-section .pg-btn-ghost{display:inline-block;border:2px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);background:transparent;padding:14px 44px;font-size:.9rem;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:.1em;text-decoration:none;transition:border-color .2s,color .2s,transform .15s}
+.recruit-section .pg-btn-ghost:hover{border-color:#fff;color:#fff;transform:translateY(-2px)}
+.recruit-section .cta-note{margin-top:.9rem;font-size:.75rem;color:var(--rc-muted)}
+
+/* ── REVEAL ── */
+.recruit-section .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.recruit-section .reveal.in{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:760px){
+  .recruit-section .reason-card{padding:28px 24px 28px 30px}
+  .recruit-section .cta-btns{flex-direction:column;align-items:center}
+  .recruit-section .reward-flow{flex-direction:column}
+  .recruit-section .rf-arrow{transform:rotate(90deg);width:auto;height:20px;margin:0 auto}
+  .recruit-section .story-block{padding:28px 24px}
+  .recruit-section .benefits-grid{grid-template-columns:1fr}
+  .recruit-section .benefit-col{padding:28px 24px}
+}

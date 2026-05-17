@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>会社紹介 | 株式会社トライテック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<link rel="stylesheet" href="assets/css/pages/index.css">
+<link rel="stylesheet" href="assets/css/pages/index-recruit.css">
+<link rel="stylesheet" href="assets/css/game.css">
+</head>
+<body>
+
+<!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
+<div data-include="header"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Geometric Motion 背景アニメーション -->
+  <div class="hero-bg-anim" aria-hidden="true">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-bg-shape hbs-1"></div>
+    <div class="hero-bg-shape hbs-2"></div>
+    <div class="hero-bg-shape hbs-3"></div>
+    <div class="hero-bg-stream" id="hero-bg-stream"></div>
+  </div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker reveal">株式会社トライテック — Company Profile</div>
+      <h1 class="reveal" style="transition-delay:.1s">テクノロジーで、<br><span class="hl-o">未来をつなぐ</span>。</h1>
+      <p class="hero-lead reveal" style="transition-delay:.2s">私たちトライテックは、エンジニアの力を最大限に引き出し、企業とエンジニアの双方が輝ける場所を創ることをミッションとしています。</p>
+    </div>
+    <div class="hero-visual reveal-right" style="transition-delay:.2s">
+      <div class="hero-logo-wrap">
+        <img src="assets/images/logo/tritech-logo.png" alt="トライテック" class="hero-logo-main">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT (入口のみ) -->
+<section class="about-entry" id="about">
+  <p class="s-chip reveal"><span class="s-chip-dot"></span>About Us</p>
+  <h2 class="s-title reveal" style="margin-bottom:1.2rem">私たちについて</h2>
+  <div class="about-entry-layout">
+    <div class="reveal-left">
+      <div class="about-catch">
+        エンジニアの<span class="o">力</span>で、常識を超え、<br>
+        <span class="t">未来</span>を創る。
+      </div>
+      <h3 class="mission-heading reveal">トライテック(Tritech)の使命</h3>
+      <ul class="mission-list reveal" style="transition-delay:.08s">
+        <li>常に先進技術に挑戦(トライ：try)し続け、最先端の技術集団であり続ける。</li>
+        <li>お客様のビジネスに貢献し、成功・勝利(トライアンフ：triumph)に導く。</li>
+        <li>お客様とエンジニアをマッチングさせ、ビジネスを加速させることで社会貢献するといったトライアングル(triangle)を構築する。</li>
+      </ul>
+      <p class="mission-closing reveal" style="transition-delay:.16s">経験豊富なエンジニアと専門家からなるチームが、お客様の信頼と満足を第一に考え、長期的なパートナーシップの構築のために、お客様の課題に真摯に向き合い、革新的なソリューションを提供することをお約束します。</p>
+    </div>
+    <div class="about-visual reveal-right" style="transition-delay:.15s">
+      <div id="tritech-puzzle">
+        <header class="tp-header">
+          <h1 class="tp-title">Tritech Block Puzzle</h1>
+          <div class="tp-hud">
+            <span class="tp-pieces">残 <b id="tp-count">-</b>/<b id="tp-total">-</b></span>
+            <span class="tp-timer"><b id="tp-elapsed">0</b>s</span>
+          </div>
+          <div class="tp-controls">
+            <button id="tp-reset" disabled>リセット</button>
+          </div>
+        </header>
+
+        <main class="tp-main">
+          <div class="tp-board-area">
+            <div class="tp-board" id="tp-board" aria-label="盤面"></div>
+            <div class="tp-pieces-layer" id="tp-pieces-layer"></div>
+            <div class="tp-clear-flash" id="tp-clear-flash"></div>
+          </div>
+          <aside class="tp-tray" id="tp-tray">
+            <div class="tp-tray-header">
+              <strong>ピース一覧</strong>
+              <span id="tp-tray-summary"></span>
+            </div>
+            <div class="tp-tray-list" id="tp-tray-list"></div>
+          </aside>
+        </main>
+
+        <div class="tp-drag-layer" id="tp-drag-layer"></div>
+
+        <!-- クリア演出（Phase 2-4） -->
+        <div class="tp-clear-tritech" id="tp-clear-tritech">TRITECH</div>
+        <img class="tp-clear-logo" id="tp-clear-logo" src="assets/images/logo/tritech-logo-jp.png" alt="">
+        <div class="tp-clear-msg" id="tp-clear-msg">
+          <h2>Puzzle Cleared!</h2>
+          <button id="tp-clear-replay" class="tp-clear-replay">もう一度遊ぶ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-btn-wrap reveal" style="transition-delay:.3s">
+    <a href="about-detail.html" class="section-btn">私たちについて詳しく見る →</a>
+  </div>
+</section>
+
+<!-- SERVICE (入口のみ) -->
+<section class="service-entry" id="service">
+  <p class="s-chip teal reveal"><span class="s-chip-dot"></span>Service</p>
+  <h2 class="s-title reveal">事業内容</h2>
+  <p class="s-sub reveal">3つの事業領域で、企業とエンジニアの可能性を広げます。</p>
+  <div class="service-cards">
+    <a href="service-ses.html" class="sc sc-1 reveal">
+      <div class="sc-img" style="background-image:url('assets/images/photos/ses-laptop.jpg')"></div>
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <h3>SES事業</h3>
+      <p>お客様の開発現場にエンジニアを派遣し、プロジェクト成功を技術力で支えます。</p>
+    </a>
+    <a href="service-quality.html" class="sc sc-2 reveal" style="transition-delay:.1s">
+      <div class="sc-img" style="background-image:url('assets/images/photos/security-lock.jpg')"></div>
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <h3>品質保証</h3>
+      <p>テスト設計・自動化・QA体制構築で、プロダクトの品質を最前線で守ります。</p>
+    </a>
+    <a href="service-dx.html" class="sc sc-3 reveal" style="transition-delay:.2s">
+      <div class="sc-img" style="background-image:url('assets/images/photos/dx-tablet.jpg')"></div>
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+      <h3>DX支援</h3>
+      <p>業務プロセスの見直しから内製化まで、デジタル変革を伴走してサポートします。</p>
+    </a>
+  </div>
+</section>
+
+<!-- DATA -->
+<section class="data-sec" id="data">
+  <p class="s-chip reveal"><span class="s-chip-dot"></span>Data</p>
+  <h2 class="s-title reveal">数字で見るトライテック</h2>
+  <p class="s-sub reveal">働く環境も、成長環境も、数字が物語ります。</p>
+  <div class="data-grid">
+    <div class="dc dc-1 reveal">
+      <div class="dc-num"><span class="cnum" data-target="15">0</span><span class="u">名</span></div>
+      <div class="dc-label">社員数</div>
+    </div>
+    <div class="dc dc-2 reveal" style="transition-delay:.08s">
+      <div class="dc-num"><span class="cnum" data-target="91">0</span><span class="u">%</span></div>
+      <div class="dc-label">定着率</div>
+    </div>
+    <div class="dc dc-3 reveal" style="transition-delay:.16s">
+      <div class="dc-num"><span class="cnum" data-target="125">0</span><span class="u">日</span></div>
+      <div class="dc-label">年間休日</div>
+    </div>
+    <div class="dc dc-4 reveal" style="transition-delay:.24s">
+      <div class="dc-num"><span class="cnum" data-target="10">0</span><span class="u">%</span><span class="p">以上</span></div>
+      <div class="dc-label">昇給率</div>
+    </div>
+    <div class="dc dc-5 reveal" style="transition-delay:.32s">
+      <div class="dc-num"><span class="cnum" data-target="70">0</span><span class="u">%</span></div>
+      <div class="dc-label">リモート率</div>
+    </div>
+    <div class="dc dc-6 reveal" style="transition-delay:.40s">
+      <div class="dc-num"><span class="cnum" data-target="100">0</span><span class="u">%</span></div>
+      <div class="dc-label">育休復帰率</div>
+    </div>
+  </div>
+
+  <div class="data-charts">
+    <div class="chart-card reveal">
+      <h3 class="chart-title">従業員数の推移</h3>
+      <div class="chart-bar-wrap">
+        <canvas id="chart-bar"></canvas>
+      </div>
+    </div>
+    <div class="chart-card reveal" style="transition-delay:.1s">
+      <h3 class="chart-title">スキル割合</h3>
+      <div class="donut-layout">
+        <div class="donut-canvas-wrap">
+          <canvas id="chart-donut"></canvas>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#E07830"></span><span class="legend-label">WEB開発</span><span class="legend-value"><span class="lnum" data-target="40">0</span>%</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:#44AADB"></span><span class="legend-label">品質管理</span><span class="legend-value"><span class="lnum" data-target="40">0</span>%</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:#2A5A9A"></span><span class="legend-label">インフラ</span><span class="legend-value"><span class="lnum" data-target="10">0</span>%</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:#888888"></span><span class="legend-label">サポート職</span><span class="legend-value"><span class="lnum" data-target="10">0</span>%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPANY OVERVIEW + ACCESS（about-detail.html から fetch+inject、ダブルメンテ回避） -->
+<section class="ci-mirror" id="overview-mirror" data-source="about-detail.html#sec-overview"></section>
+<section class="ci-mirror" id="access-mirror" data-source="about-detail.html#sec-access"></section>
+
+<!-- ════════════════════════════════════════════
+     ★ トランジションゾーン（index → recruit-detail への切替演出）
+     文字なし・ビジュアルのみ（スキャンビーム + グロー + 矢印）
+     ════════════════════════════════════════════ -->
+<section class="transition-zone" id="transition-zone">
+  <div class="scan-beam"></div>
+  <div class="trans-arrow"></div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     RECRUIT セクション本体（旧 recruit-detail.html の中身を直接統合）
+     - スコープ: .recruit-section
+     - スタイル: assets/css/pages/index-recruit.css
+     - JS（VOICE_DATA / モーダル / タブ）: assets/js/pages/index.js
+     ════════════════════════════════════════════ -->
+<div class="recruit-section" id="recruit-zone">
+
+  <!-- HERO -->
+  <section id="sec-slogan">
+    <div class="recruit-hero-inner">
+      <h1 class="hero-catch reveal">
+        限界を超える準備は、<br><span class="ac">もうできている。</span>
+      </h1>
+      <p class="hero-body reveal" style="transition-delay:.12s">
+        トライテックは、エンジニアが本気で挑戦できる場所をつくっています。技術力・待遇・成長機会——すべてが揃った環境で、あなたのキャリアを次のステージへ。
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- REASON -->
+  <section id="sec-reason">
+    <p class="sec-chip reveal">// WHY TRITECH</p>
+    <h2 class="sec-title reveal">トライテックを選ぶ<span class="ac">5つの理由</span></h2>
+    <div class="reason-grid">
+      <div class="reason-card reveal">
+        <p class="reason-point">POINT 01</p>
+        <h3 class="reason-title">エンジニア社長の考える、エンジニアファーストの報酬設計</h3>
+        <p class="reason-body">売上の高い割合をエンジニアへ還元する仕組みを採用。市場価値を正しく反映した給与水準を実現し、スキルアップや案件単価の向上が直接収入に繋がります。資格取得報奨金・昇給制度も完備しており、頑張りが見える化される文化です。</p>
+      </div>
+      <div class="reason-card reveal">
+        <p class="reason-point">POINT 02</p>
+        <h3 class="reason-title">自分で選べる案件・技術スタック</h3>
+        <p class="reason-body">「やりたいことがある」「この技術を伸ばしたい」という希望を最優先に案件をマッチング。金融・製造・EC・SaaS など多様な業界の上流〜運用フェーズまで、キャリアプランに合わせて選択できます。希望と合わない案件は断ることができます。</p>
+      </div>
+      <div class="reason-card reveal">
+        <p class="reason-point">POINT 03</p>
+        <h3 class="reason-title">成長を止めないラーニング環境</h3>
+        <p class="reason-body">社内勉強会、資格取得支援(費用全額補助)を提供。また現役エンジニアがあなたのメンターとなり定例1on1を開催し、あなたのキャリアプランを全面的に支援します。</p>
+      </div>
+      <div class="reason-card reveal">
+        <p class="reason-point">POINT 04</p>
+        <h3 class="reason-title">エンジニアを不安にさせない透明性</h3>
+        <p class="reason-body">参画案件の単価はもちろん、あなたの報酬の算出根拠も開示します。現場で活躍するエンジニアが不安にならないように、常に透明性を意識した会社運営をしています。</p>
+      </div>
+      <div class="reason-card reveal">
+        <p class="reason-point">POINT 05</p>
+        <h3 class="reason-title">充実した福利厚生・働き方の柔軟性</h3>
+        <p class="reason-body">リモートワーク対応案件多数・フレックスタイム制・社会保険完備・交通費支給（上限3万円）など、安心して長く働くための制度を整備。「エンジニアとして、人として」尊重される職場環境を追求しています。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- REWARD STRUCTURE -->
+  <section id="sec-reward">
+    <p class="sec-chip reveal">// REWARD STRUCTURE</p>
+    <h2 class="sec-title reveal">報酬が決まる仕組み、<span class="ac">すべてお見せします。</span></h2>
+    <div class="reward-flow reveal">
+      <div class="rf-step"><div class="rf-box"><span class="rf-num">STEP 01</span><span class="rf-label">市場単価</span></div></div>
+      <div class="rf-arrow">→</div>
+      <div class="rf-step"><div class="rf-box"><span class="rf-num">STEP 02</span><span class="rf-label">会社利益率<br>30%</span></div></div>
+      <div class="rf-arrow">→</div>
+      <div class="rf-step"><div class="rf-box"><span class="rf-num">STEP 03</span><span class="rf-label">各種税・<br>保険料</span></div></div>
+      <div class="rf-arrow">→</div>
+      <div class="rf-step"><div class="rf-box rf-final"><span class="rf-num">RESULT</span><span class="rf-label">あなたの<br>報酬</span></div></div>
+    </div>
+    <p class="reward-note reveal" style="transition-delay:.1s">あなたのスキル・経験に応じて市場単価を設定し、そこからあなたの報酬が決まるまでのロジックを明示します。給与の不透明感に悩むことは、もうありません。前職給与の保証＋年10%以上の昇給を毎年目標にしています。</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CHOICE SYSTEM -->
+  <section id="sec-choice">
+    <p class="sec-chip reveal">// PROJECT CHOICE</p>
+    <h2 class="sec-title reveal">やりたいこと、やれる場所、<br><span class="ac">すべて自分で選べる。</span></h2>
+    <p class="sec-subtitle reveal">― 100%案件選択制 ―</p>
+    <div class="story-block reveal" style="transition-delay:.05s">
+      <div class="story-quote">
+        <p>「興味のない分野にアサインされて、ただこなすだけの日々になってしまった」</p>
+        <p>「キャリアを考えると本当は別の工程に挑戦したかったのに、配属は会社都合だった」</p>
+      </div>
+      <div class="story-body">
+        <p>そんな経験をしたことがあるエンジニアにこそ、トライテックの"100%案件選択制"を知ってほしいと思っています。</p>
+        <p>私たちは、5000件以上の案件から、あなたが本当にやりたい案件を一緒に選びます。</p>
+        <p>どんな希望もまずは遠慮なく話してください。会社都合の強制的なアサインは一切ありません。</p>
+        <p class="story-conclusion">やりたいことが、やれることになる。それがトライテックのスタンダードです。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- TEAM SYSTEM -->
+  <section id="sec-team">
+    <p class="sec-chip reveal">// TEAM ASSIGN</p>
+    <h2 class="sec-title reveal">ひとりじゃない。<br>仲間と進めるから、<span class="ac">挑戦できる。</span></h2>
+    <p class="sec-subtitle reveal">― チーム体制での案件参画 ―</p>
+    <div class="story-block reveal" style="transition-delay:.05s">
+      <div class="story-quote">
+        <p>「この言語、少し触ったことはあるけれど、現場で通用するかな…」</p>
+        <p>「いつかはマネジメントもやってみたいけど、自分にできるだろうか」</p>
+      </div>
+      <div class="story-body">
+        <p>そんな不安や希望を、"チームで参画する"というスタイルが支えています。</p>
+        <p>トライテックでは、複数名の体制で案件に参画する機会も豊富にあります。</p>
+        <p>仲間と一緒だから、わからないことも相談でき、得意な分野を補い合える。</p>
+        <p class="story-conclusion">やってみたいを、やってよかったに変えるのは、隣で一緒に走る仲間の存在かもしれません。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BENEFITS DETAIL -->
+  <section id="sec-benefits">
+    <p class="sec-chip reveal">// BENEFITS</p>
+    <h2 class="sec-title reveal">働き方・<span class="ac">福利厚生</span></h2>
+    <div class="benefits-grid">
+      <div class="benefit-col reveal">
+        <h3 class="benefit-col-title">待遇</h3>
+        <ul class="benefit-list">
+          <li>健康保険・厚生年金・雇用保険・労災保険</li>
+          <li>賞与あり（年1回）</li>
+          <li>待機時月給保証</li>
+          <li>交通費支給（最大30,000円/月）</li>
+          <li>固定残業あり（30h）</li>
+          <li>時間外手当・休日出勤手当・深夜労働手当</li>
+          <li>リモート手当・資格取得手当</li>
+          <li>服装自由</li>
+        </ul>
+      </div>
+      <div class="benefit-col b-r reveal" style="transition-delay:.1s">
+        <h3 class="benefit-col-title">休暇・キャリアアップ支援</h3>
+        <ul class="benefit-list">
+          <li>年間休日125日以上</li>
+          <li>完全週休2日制（土日）・祝日・夏季・年末年始</li>
+          <li>有給休暇・傷病休暇</li>
+          <li>慶弔休暇・産休育休（実績あり）</li>
+          <li>勉強会・書籍購入補助</li>
+          <li>資格取得補助・外部研修費用補助</li>
+          <li>独立支援制度・副業OK</li>
+          <li>1on1・メンター制度</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- VOICES -->
+  <section id="sec-voices">
+    <p class="sec-chip reveal">// VOICE</p>
+    <h2 class="sec-title reveal">社員の<span class="ac">声</span></h2>
+    <p class="data-sub reveal">トライテックで働く5人のリアルな声をご紹介します。</p>
+    <div class="voice-carousel reveal">
+      <div class="voice-track">
+        <div class="voice-card" data-member="kawasaki">
+          <div class="voice-svg"></div>
+          <div class="voice-avatar">YK</div>
+          <div class="voice-role">テストエンジニア／サブリーダー</div>
+          <div class="voice-catch">期待を上回るギャップでした</div>
+        </div>
+        <div class="voice-card" data-member="kikuchi">
+          <div class="voice-svg"></div>
+          <div class="voice-avatar">TK</div>
+          <div class="voice-role">システムエンジニア／開発・教育担当</div>
+          <div class="voice-catch">のびのびと働ける環境です</div>
+        </div>
+        <div class="voice-card" data-member="masuda">
+          <div class="voice-svg"></div>
+          <div class="voice-avatar">SM</div>
+          <div class="voice-role">設計エンジニア／メンター担当</div>
+          <div class="voice-catch">困った時はすぐに相談できる</div>
+        </div>
+        <div class="voice-card" data-member="nomura">
+          <div class="voice-svg"></div>
+          <div class="voice-avatar">YN</div>
+          <div class="voice-role">コンサル補佐／成長中</div>
+          <div class="voice-catch">想像を超えるアットホームさ</div>
+        </div>
+        <div class="voice-card" data-member="takano">
+          <div class="voice-svg"></div>
+          <div class="voice-avatar">ST</div>
+          <div class="voice-role">プロジェクトリーダー／大阪拠点</div>
+          <div class="voice-catch">スキルを活かせる環境</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+
+<!-- VOICE MODAL（recruit-section の外に置いて position:fixed で画面中央表示） -->
+<div class="voice-modal" id="voice-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="voice-modal-body">
+    <button class="voice-modal-close" id="voice-modal-close" aria-label="閉じる">×</button>
+    <div class="voice-modal-header">
+      <div class="voice-svg" id="voice-modal-svg"></div>
+      <div class="voice-avatar" id="voice-modal-avatar"></div>
+      <h3 id="voice-modal-name"></h3>
+      <p id="voice-modal-role"></p>
+    </div>
+    <div class="voice-chapters" id="voice-modal-chapters"></div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="cta-sec" id="contact">
+  <p class="s-chip reveal" style="margin:0 auto 1.5rem;display:inline-flex"><span class="s-chip-dot"></span>Contact</p>
+  <h2 class="s-title reveal" style="margin:0 auto 1rem;white-space:nowrap">一緒に、未来をつくりませんか？</h2>
+  <p class="s-sub reveal" style="margin:0 auto 3rem">エンジニアとして成長したい方、私たちのミッションに共感していただける方、ぜひお話しましょう。</p>
+  <div class="cta-btns reveal" style="transition-delay:.15s">
+    <a href="contact.html" class="btn-ghost">お問い合わせ</a>
+  </div>
+  <div class="next-stage-wrap reveal" style="transition-delay:.25s">
+    <a href="recruit.html" class="btn-next-stage">採用情報を見る →</a>
+  </div>
+</section>
+
+<!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
+<div data-include="footer"></div>
+
+<script src="assets/js/include-partials.js"></script>
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/pages/index.js" defer></script>
+
+<div id="game-overlay">
+  <canvas id="game-canvas"></canvas>
+  <div id="ghud">
+    <span>SCORE <span id="gs">000000</span></span>
+    <span class="gst" id="gstg">STAGE 1</span>
+    <span class="ghi">HI <span id="gh">999999</span></span>
+    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
+  </div>
+  <div id="gesc">[ ESC ] 終了</div>
+</div>
+
+<script src="assets/js/game.js" defer></script>
+
+<!-- ════════════════════════════════════════════
+     TRITECH BLOCK PUZZLE (クリック選択式)
+     ════════════════════════════════════════════ -->
+<script src="assets/js/pages/tritech-puzzle.js" defer></script>
+
+
+</body>
+</html>

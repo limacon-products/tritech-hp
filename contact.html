@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>お問い合わせ | 株式会社トライテック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<link rel="stylesheet" href="assets/css/pages/index.css">
+<link rel="stylesheet" href="assets/css/game.css">
+<style>
+/* ── お問い合わせページ専用スタイル ── */
+.contact-hero{
+  background:var(--ink);
+  padding:160px 5vw 80px;
+  position:relative;overflow:hidden;
+}
+.contact-hero::before{
+  content:'';position:absolute;
+  top:-200px;left:50%;transform:translateX(-50%);
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(217,95,26,.12) 0%,transparent 55%);
+  pointer-events:none;
+}
+.contact-hero-inner{
+  max-width:1100px;margin:0 auto;
+  text-align:center;position:relative;z-index:1;
+}
+.contact-hero .s-chip{margin:0 auto 1.5rem;display:inline-flex}
+.contact-hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.2rem,4vw,3.4rem);
+  font-weight:800;letter-spacing:-.02em;
+  line-height:1.2;color:#fff;
+  margin:0 auto 1.2rem;
+}
+.contact-hero p.lead{
+  font-size:1rem;color:rgba(255,255,255,.65);
+  line-height:1.9;max-width:680px;margin:0 auto;
+}
+
+.contact-section{
+  background:#0e0e1a;
+  padding:80px 5vw 120px;
+}
+.contact-wrap{
+  max-width:880px;margin:0 auto;
+  display:grid;grid-template-columns:1fr;gap:3rem;
+}
+.contact-info-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+}
+.ci-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:24px 22px;
+  transition:border-color .25s,background .25s;
+}
+.ci-card:hover{
+  border-color:rgba(217,95,26,.4);
+  background:rgba(217,95,26,.05);
+}
+.ci-label{
+  font-family:'Syne',sans-serif;font-size:.7rem;
+  letter-spacing:.16em;color:rgba(255,255,255,.5);
+  margin-bottom:.5rem;
+}
+.ci-value{
+  font-size:.95rem;color:#fff;line-height:1.55;
+  font-weight:500;
+}
+.ci-value a{color:var(--orange);text-decoration:none}
+.ci-value a:hover{text-decoration:underline}
+.ci-sub{
+  font-size:.72rem;color:rgba(255,255,255,.45);
+  margin-top:.5rem;
+}
+
+.contact-form-card{
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;padding:48px 44px;
+  position:relative;overflow:hidden;
+}
+.contact-form-card::before{
+  content:'';position:absolute;
+  top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--orange),var(--teal));
+}
+.cf-title{
+  font-family:'Syne',sans-serif;
+  font-size:1.4rem;font-weight:700;color:#fff;
+  margin-bottom:.5rem;
+}
+.cf-sub{
+  font-size:.85rem;color:rgba(255,255,255,.55);
+  line-height:1.75;margin-bottom:2rem;
+}
+
+.contact-form{display:grid;gap:1.4rem}
+.cf-field{display:flex;flex-direction:column;gap:.5rem}
+.cf-field.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.cf-field label{
+  font-size:.78rem;color:rgba(255,255,255,.7);
+  font-weight:600;letter-spacing:.04em;
+  display:flex;align-items:center;gap:.5rem;
+}
+.cf-required{
+  font-size:.62rem;font-weight:700;
+  background:rgba(217,95,26,.18);color:#ff9466;
+  padding:2px 7px;border-radius:3px;letter-spacing:.06em;
+}
+.cf-optional{
+  font-size:.62rem;font-weight:700;
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);
+  padding:2px 7px;border-radius:3px;letter-spacing:.06em;
+}
+.cf-field input,
+.cf-field select,
+.cf-field textarea{
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;
+  padding:12px 14px;
+  font-size:.92rem;color:#fff;
+  font-family:'Noto Sans JP',sans-serif;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+  outline:none;
+}
+.cf-field input:focus,
+.cf-field select:focus,
+.cf-field textarea:focus{
+  border-color:var(--orange);
+  background:rgba(0,0,0,.5);
+  box-shadow:0 0 0 3px rgba(217,95,26,.12);
+}
+.cf-field textarea{resize:vertical;min-height:140px;line-height:1.7}
+.cf-field select{
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:36px;cursor:pointer;
+}
+.cf-field input::placeholder,
+.cf-field textarea::placeholder{color:rgba(255,255,255,.3)}
+
+.cf-consent{
+  display:flex;align-items:flex-start;gap:.7rem;
+  font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.6;
+}
+.cf-consent input[type="checkbox"]{
+  width:18px;height:18px;
+  accent-color:var(--orange);
+  flex-shrink:0;margin-top:2px;cursor:pointer;
+}
+.cf-consent a{color:var(--orange);text-decoration:underline}
+
+.cf-submit{
+  display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
+  padding:16px 36px;
+  background:linear-gradient(135deg,var(--orange),#ff8856);
+  color:#fff;border:none;border-radius:999px;
+  font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;
+  letter-spacing:.04em;cursor:pointer;
+  box-shadow:0 8px 24px rgba(217,95,26,.3);
+  transition:transform .25s,box-shadow .25s,filter .25s;
+  margin-top:.5rem;justify-self:center;
+}
+.cf-submit:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 32px rgba(217,95,26,.45);
+  filter:brightness(1.05);
+}
+.cf-submit:disabled{
+  opacity:.5;cursor:not-allowed;
+  transform:none;box-shadow:none;
+}
+
+.cf-notice{
+  background:rgba(30,143,160,.08);
+  border:1px solid rgba(30,143,160,.25);
+  border-radius:10px;padding:14px 18px;
+  font-size:.82rem;color:rgba(255,255,255,.75);
+  line-height:1.7;
+}
+.cf-notice strong{color:var(--teal);font-weight:700}
+
+/* 送信中スピナー */
+.cf-spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:cfSpin .7s linear infinite;
+}
+@keyframes cfSpin{to{transform:rotate(360deg)}}
+
+/* 送信成功メッセージ */
+.cf-result{
+  margin-top:1.5rem;padding:20px 22px;
+  border-radius:10px;font-size:.88rem;line-height:1.75;
+  display:none;
+}
+.cf-result.show{display:block;animation:cfFadeIn .4s ease}
+@keyframes cfFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.cf-result.success{
+  background:rgba(30,143,160,.1);
+  border:1px solid rgba(30,143,160,.3);
+  color:#7adfee;
+}
+.cf-result.error{
+  background:rgba(217,95,26,.1);
+  border:1px solid rgba(217,95,26,.3);
+  color:#ff9466;
+}
+.cf-result-title{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:1rem;margin-bottom:.4rem;
+  display:flex;align-items:center;gap:.55rem;
+}
+.cf-result-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:currentColor;color:#0e0e1a;
+  font-size:.7rem;font-weight:900;
+}
+
+@media(max-width:760px){
+  .contact-hero{padding:120px 5vw 60px}
+  .contact-info-strip{grid-template-columns:1fr;gap:1rem}
+  .contact-form-card{padding:32px 24px}
+  .cf-field.cf-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
+<div data-include="header"></div>
+
+<!-- HERO -->
+<section class="contact-hero">
+  <div class="contact-hero-inner">
+    <p class="s-chip reveal"><span class="s-chip-dot"></span>Contact</p>
+    <h1 class="reveal" style="transition-delay:.1s">一緒に、未来をつくりませんか？</h1>
+    <p class="lead reveal" style="transition-delay:.2s">サービス・採用・取材など、各種お問い合わせを承ります。<br>下記フォームよりお気軽にご連絡ください。担当者より1週間以内にご返信いたします。</p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <div class="contact-wrap">
+
+    <!-- フォーム -->
+    <div class="contact-form-card reveal">
+      <h2 class="cf-title">お問い合わせフォーム</h2>
+      <p class="cf-sub">必須項目をご入力のうえ送信してください。内容を確認のうえ、担当者よりご返信いたします。<br>営業時間：10:00 〜 18:00（土日祝・年末年始除く）<br>送信後、ご入力のメールアドレス宛に受付完了の自動返信メールをお送りします。</p>
+
+      <form class="contact-form" id="contact-form" novalidate>
+
+        <div class="cf-field">
+          <label for="cf-type">お問い合わせ種別 <span class="cf-required">必須</span></label>
+          <select id="cf-type" name="お問い合わせ種別" required>
+            <option value="">選択してください</option>
+            <option value="サービス・取引について">サービス・取引について</option>
+            <option value="採用について">採用について</option>
+            <option value="パートナー企業として">パートナー企業として</option>
+            <option value="取材・メディア掲載依頼">取材・メディア掲載依頼</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+
+        <div class="cf-field cf-row">
+          <div class="cf-field">
+            <label for="cf-name">お名前 <span class="cf-required">必須</span></label>
+            <input type="text" id="cf-name" name="お名前" placeholder="山田 太郎" required>
+          </div>
+          <div class="cf-field">
+            <label for="cf-company">会社名 <span class="cf-optional">任意</span></label>
+            <input type="text" id="cf-company" name="会社名" placeholder="株式会社サンプル">
+          </div>
+        </div>
+
+        <div class="cf-field cf-row">
+          <div class="cf-field">
+            <label for="cf-email">メールアドレス <span class="cf-required">必須</span></label>
+            <input type="email" id="cf-email" name="メールアドレス" placeholder="example@company.co.jp" required>
+          </div>
+          <div class="cf-field">
+            <label for="cf-tel">電話番号 <span class="cf-optional">任意</span></label>
+            <input type="tel" id="cf-tel" name="電話番号" placeholder="03-1234-5678">
+          </div>
+        </div>
+
+        <div class="cf-field">
+          <label for="cf-message">お問い合わせ内容 <span class="cf-required">必須</span></label>
+          <textarea id="cf-message" name="お問い合わせ内容" placeholder="お問い合わせの詳細をご記入ください。" required></textarea>
+        </div>
+
+        <div class="cf-notice">
+          <strong>※</strong> 入力いただいた個人情報は、お問い合わせ対応にのみ利用いたします。詳細は<a href="privacy-policy.html" style="color:var(--teal)">プライバシーポリシー</a>をご確認ください。
+        </div>
+
+        <label class="cf-consent">
+          <input type="checkbox" id="cf-consent" required>
+          <span><a href="privacy-policy.html">プライバシーポリシー</a>に同意の上、送信します。</span>
+        </label>
+
+        <button type="submit" class="cf-submit" id="cf-submit">送信する →</button>
+
+        <div class="cf-result" id="cf-result" role="alert" aria-live="polite"></div>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
+<div data-include="footer"></div>
+
+<script src="assets/js/include-partials.js"></script>
+<script src="assets/js/common.js" defer></script>
+
+<script>
+/* ─────────────────────────────────────────────
+   お問い合わせフォーム送信処理
+   送信先: Google Apps Script Web App
+   ↓ デプロイした GAS の URL に書き換えてください ↓
+   ───────────────────────────────────────────── */
+const GAS_ENDPOINT='https://script.google.com/macros/s/AKfycbwpcX8H0F2jhMUNp5_FtWblcso4Ub0T91AxM1oTbhzmLITkBEX2cQk8EbBFrY_xv95VjA/exec';
+
+(function(){
+  const form=document.getElementById('contact-form');
+  const consent=document.getElementById('cf-consent');
+  const submit=document.getElementById('cf-submit');
+  const result=document.getElementById('cf-result');
+  if(!form||!consent||!submit||!result)return;
+
+  /* 同意チェックで送信ボタンを有効/無効切替 */
+  function updateBtn(){submit.disabled=!consent.checked;}
+  consent.addEventListener('change',updateBtn);
+  updateBtn();
+
+  function setResult(type,title,body){
+    result.className='cf-result show '+type;
+    const icon=type==='success'?'✓':'!';
+    result.innerHTML=`
+      <div class="cf-result-title">
+        <span class="cf-result-icon">${icon}</span>${title}
+      </div>
+      <div>${body}</div>`;
+  }
+  function clearResult(){result.className='cf-result';result.innerHTML='';}
+
+  /* ブラウザのHTML5バリデーションを利用 */
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    clearResult();
+    if(!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+    if(!consent.checked){
+      setResult('error','送信できませんでした','プライバシーポリシーへの同意にチェックを入れてください。');
+      return;
+    }
+    if(GAS_ENDPOINT==='YOUR_GAS_WEB_APP_URL_HERE'){
+      setResult('error','送信先が未設定です','管理者は Google Apps Script の Web App URL を contact.html に設定してください。');
+      return;
+    }
+
+    /* 送信中UI */
+    const origLabel=submit.innerHTML;
+    submit.disabled=true;
+    submit.innerHTML='<span class="cf-spinner"></span> 送信中...';
+
+    /* フォームデータをJSON化 */
+    const payload={
+      type:form['お問い合わせ種別'].value,
+      name:form['お名前'].value,
+      company:form['会社名'].value,
+      email:form['メールアドレス'].value,
+      tel:form['電話番号'].value,
+      message:form['お問い合わせ内容'].value,
+      sentAt:new Date().toISOString(),
+      userAgent:navigator.userAgent,
+    };
+
+    try{
+      /* GAS の doPost は CORS プリフライトを嫌うので
+         text/plain で送信して GAS 側で JSON.parse する */
+      const res=await fetch(GAS_ENDPOINT,{
+        method:'POST',
+        mode:'cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(payload),
+      });
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const data=await res.json().catch(()=>({ok:true}));
+      if(data.ok===false)throw new Error(data.error||'unknown');
+
+      setResult(
+        'success',
+        '送信が完了しました',
+        'お問い合わせありがとうございます。1週間以内に担当者よりご返信いたします。'
+      );
+      form.reset();
+      updateBtn();
+      result.scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(err){
+      console.error('[contact] send failed:',err);
+      setResult(
+        'error',
+        '送信に失敗しました',
+        '時間をおいて再度お試しいただくか、info@tritechinc.jp まで直接ご連絡ください。'
+      );
+    }finally{
+      submit.disabled=!consent.checked;
+      submit.innerHTML=origLabel;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

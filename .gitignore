@@ -1,0 +1,37 @@
+# ──────────────────────────────────────
+# ローカル専用 / リポジトリに含めない
+# ──────────────────────────────────────
+
+# 旧バージョン保管庫
+archive/
+
+# デモ用ヒーローアニメ (リリース対象外)
+dummy-hero/
+
+# 社内向け手順書 (公開しない)
+GAS_セットアップ手順.txt
+
+# 案件抽出元データ (PROJECT_DATAに転記済み)
+案件抽出_*.csv
+
+# Claude Code 関連
+.claude/
+
+# ローカル開発サーバ設定
+.dev-server.js
+
+# OS / Editor 系
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# Node modules (使ってないが念のため)
+node_modules/
+
+# ログ系
+*.log
+npm-debug.log*

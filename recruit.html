@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>株式会社トライテック | エンジニアのキャリアを次のステージへ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060612;
+  --bg2:#0d0d20;
+  --surface:#111128;
+  --surface2:#1a1a35;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#f0f0ff;
+  --text2:rgba(240,240,255,0.55);
+  --text3:rgba(240,240,255,0.3);
+  --cyan:#00f5c8;
+  --blue:#4d6fff;
+  --purple:#9b59ff;
+  --orange:#ff6b35;
+  --pink:#ff4d9b;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  /* システムカーソル表示（他ページと統一: 通常カーソル+菱形3つ追従） */
+}
+
+/* カスタムカーソル: トライテックロゴ統一の3つ菱形 (オレンジ→水色→紺)
+   index.html等(共通ヘッダー)と同じデザイン・色で統一 */
+#hp-cursor-group{position:fixed;top:0;left:0;pointer-events:none;z-index:99999}
+.hp-diamond{
+  position:fixed;width:10px;height:10px;
+  border-radius:2px;pointer-events:none;
+  transform:translate(-50%,-50%) rotate(45deg);
+  transition:width .25s,height .25s,opacity .25s;
+  will-change:left,top;opacity:.85;
+}
+.hp-d-orange{background:#E07830;z-index:99999}
+.hp-d-cyan  {background:#44AADB;z-index:99998}
+.hp-d-navy  {background:#2A5A9A;z-index:99997}
+body:has(a:hover) .hp-diamond,
+body:has(button:hover) .hp-diamond{
+  width:14px;height:14px;opacity:1;
+}
+
+/* CANVAS BG */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 6vw;height:70px;
+  background:#03030a;
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Noto Sans JP',sans-serif;
+  font-weight:700;font-size:1rem;
+  color:var(--text);text-decoration:none;
+  display:flex;align-items:center;gap:12px;
+  letter-spacing:.02em;
+}
+.nav-logo-img-wrap{
+  position:relative;
+  height:38px;
+  transition:filter .3s;
+}
+.nav-logo:hover .nav-logo-img-wrap{
+  filter:drop-shadow(0 0 8px rgba(255,210,0,0.7));
+}
+.nav-logo-img{
+  height:100%;width:auto;
+  display:block;
+}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{
+  font-size:.82rem;font-weight:500;
+  color:var(--text2);text-decoration:none;
+  transition:color .2s;font-family:'Space Grotesk',sans-serif;
+}
+.nav-links a:hover{color:var(--cyan)}
+
+/* HAMBURGER */
+.nav-hamburger{
+  display:none;
+  flex-direction:column;justify-content:center;align-items:center;
+  gap:5px;width:40px;height:40px;
+  background:transparent;border:1px solid var(--border2);
+  border-radius:8px;cursor:pointer;
+  transition:border-color .2s;
+  flex-shrink:0;
+}
+.nav-hamburger:hover{border-color:var(--cyan);}
+.nav-hamburger span{
+  display:block;width:18px;height:1.5px;
+  background:var(--text);border-radius:2px;
+  transition:transform .3s,opacity .3s,width .3s;
+  transform-origin:center;
+}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;width:0;}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+/* MOBILE MENU */
+.mobile-menu{
+  position:fixed;top:70px;left:0;right:0;bottom:0;
+  background:rgba(3,3,10,0.97);
+  backdrop-filter:blur(20px);
+  z-index:199;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  gap:2.5rem;
+  opacity:0;pointer-events:none;
+  transform:translateY(-12px);
+  transition:opacity .3s,transform .3s;
+}
+.mobile-menu.open{
+  opacity:1;pointer-events:all;
+  transform:translateY(0);
+}
+.mobile-menu a{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:1.3rem;font-weight:700;
+  color:var(--text2);text-decoration:none;
+  letter-spacing:.04em;
+  transition:color .2s;
+  position:relative;
+}
+.mobile-menu a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:1px;background:var(--cyan);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s;
+}
+.mobile-menu a:hover{color:var(--cyan);}
+.mobile-menu a:hover::after{transform:scaleX(1);}
+.mobile-menu .mob-cta{
+  background:transparent;
+  border:1px solid var(--cyan);
+  color:var(--cyan) !important;
+  padding:14px 40px;border-radius:8px;
+  font-size:1rem !important;
+  transition:background .3s,box-shadow .3s;
+}
+.mobile-menu .mob-cta:hover{
+  background:rgba(0,245,200,0.08);
+  box-shadow:0 0 20px rgba(0,245,200,0.2);
+}
+.mobile-menu .mob-cta::after{display:none;}
+.nav-cta{
+  background:transparent;
+  border:1px solid var(--cyan);
+  color:var(--cyan) !important;
+  padding:8px 22px;border-radius:6px;
+  font-size:.82rem !important;font-weight:600 !important;
+  transition:all .3s !important;position:relative;overflow:hidden;
+}
+.nav-cta::before{
+  content:'';position:absolute;inset:0;
+  background:var(--cyan);opacity:0;
+  transition:opacity .3s;
+}
+.nav-cta:hover::before{opacity:.15}
+.nav-cta:hover{box-shadow:0 0 20px rgba(0,245,200,0.3)!important}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:80px 6vw 0;
+  position:relative;z-index:1;
+  background:linear-gradient(135deg,rgba(7,11,20,.92) 0%,rgba(7,11,20,.65) 100%),url('assets/images/photos/building-glass.jpg') center/cover no-repeat;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 50%,rgba(0,245,200,0.08) 0%,transparent 60%);
+  pointer-events:none;z-index:-1;
+}
+.hero-inner{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:5rem;align-items:center;width:100%;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(0,245,200,0.06);
+  border:1px solid rgba(0,245,200,0.2);
+  border-radius:4px;
+  padding:7px 16px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;color:var(--cyan);
+  margin-bottom:2rem;
+}
+.eyebrow-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);
+  animation:blink 1.2s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hero h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(2.4rem,4vw,3.8rem);
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-.03em;
+  margin-bottom:1.75rem;
+}
+.hero h1 .word-highlight{
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero h1 .typed-wrap{
+  display:inline-flex;align-items:baseline;gap:4px;
+}
+#typed-text{
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.type-cursor{
+  display:inline-block;width:3px;height:.85em;
+  background:var(--blue);border-radius:1px;
+  animation:blink .8s step-end infinite;
+  vertical-align:-.05em;
+}
+.hero-desc{
+  font-size:.95rem;color:var(--text2);
+  line-height:1.85;max-width:460px;margin-bottom:2.5rem;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem}
+.btn-glow{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));
+  color:#060612;padding:14px 34px;border-radius:8px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.9rem;font-weight:700;
+  text-decoration:none;
+  transition:transform .2s,box-shadow .3s;
+}
+.btn-glow:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,245,200,0.35);
+}
+.btn-glow::after{
+  content:'';position:absolute;
+  top:-50%;left:-60%;width:40%;height:200%;
+  background:rgba(255,255,255,0.25);
+  transform:skewX(-20deg);
+  transition:left .5s;
+}
+.btn-glow:hover::after{left:120%}
+.btn-outline{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:14px 34px;border-radius:8px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.9rem;font-weight:600;
+  text-decoration:none;
+  transition:all .3s;
+}
+.btn-outline:hover{
+  border-color:var(--blue);color:var(--blue);
+  background:rgba(77,111,255,0.07);
+}
+
+/* HERO RIGHT - CODE TERMINAL */
+.terminal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 0 60px rgba(77,111,255,0.12),0 20px 60px rgba(0,0,0,0.4);
+  animation:float 5s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.terminal-bar{
+  background:rgba(255,255,255,0.04);
+  padding:14px 18px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--border);
+}
+.tb-dots{display:flex;gap:7px}
+.tb-dot{width:12px;height:12px;border-radius:50%}
+.tb-red{background:#ff5f56}.tb-yellow{background:#ffbd2e}.tb-green{background:#27c93f}
+.tb-title{
+  flex:1;text-align:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:var(--text3);
+}
+.terminal-body{padding:24px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.9}
+.tl{display:flex;gap:8px;align-items:baseline;margin-bottom:2px}
+.tl-prompt{color:var(--cyan);flex-shrink:0}
+.tl-cmd{color:var(--text2)}
+.tl-out{color:var(--text3);padding-left:16px}
+.tl-out .green{color:#27c93f}
+.tl-out .cyan{color:var(--cyan)}
+.tl-out .yellow{color:#ffbd2e}
+.tl-out .purple{color:var(--purple)}
+.tl-cursor{
+  display:inline-block;width:8px;height:1.1em;
+  background:var(--cyan);border-radius:1px;
+  animation:blink .8s step-end infinite;
+  vertical-align:-.15em;
+}
+.terminal-footer{
+  padding:14px 20px;
+  display:flex;gap:1.5rem;
+  border-top:1px solid var(--border);
+  background:rgba(0,0,0,0.2);
+}
+.tf-item{
+  display:flex;align-items:center;gap:7px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;color:var(--text3);
+}
+.tf-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan)}
+.tf-dot.on{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,245,200,.5)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(0,245,200,0)}}
+
+/* SECTION BASE */
+section{padding:110px 6vw;position:relative;z-index:1}
+.s-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:var(--cyan);
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.s-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.8rem,3vw,2.8rem);
+  font-weight:700;letter-spacing:-.03em;
+  line-height:1.15;margin-bottom:1rem;
+}
+.s-sub{font-size:.93rem;color:var(--text2);line-height:1.85;max-width:520px}
+
+/* TICKER */
+.ticker-wrap{
+  background:rgba(0,245,200,0.04);
+  border-top:1px solid rgba(0,245,200,.12);
+  border-bottom:1px solid rgba(0,245,200,.12);
+  padding:14px 0;overflow:hidden;
+  position:relative;z-index:1;
+}
+.ticker-track{
+  display:flex;gap:0;
+  animation:ticker 28s linear infinite;
+  width:max-content;
+}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{
+  display:flex;align-items:center;gap:10px;
+  padding:0 3rem;white-space:nowrap;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;color:var(--text2);
+}
+.ticker-item .dot{color:var(--cyan)}
+
+/* REASONS */
+.reasons{background:var(--bg2)}
+.reasons-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;margin-top:4rem;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+}
+/* 5枚レイアウト: 1枚目を全幅(主役)・残り4枚は2列×2行 */
+.reasons-grid > .reason-card{grid-column:span 1}
+.reasons-grid > .reason-card:nth-child(1){
+  grid-column:1 / -1;
+  padding:56px 48px;
+}
+.reasons-grid > .reason-card:nth-child(1) .rc-img{
+  height:200px;
+}
+.reasons-grid > .reason-card:nth-child(1) h3{
+  font-size:1.25rem;
+}
+.reasons-grid > .reason-card:nth-child(1) p{
+  font-size:.92rem;
+  max-width:780px;
+}
+.reason-card{
+  background:var(--bg2);
+  padding:40px 32px;
+  transition:background .3s,transform .3s;
+  position:relative;overflow:hidden;
+}
+.rc-img{
+  margin:-40px -32px 1.5rem;
+  height:140px;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  position:relative;
+}
+.rc-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(7,11,20,0) 50%,rgba(7,11,20,0.85) 100%);
+}
+.reason-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .4s;
+}
+.reason-card:hover::before{transform:scaleX(1)}
+.reason-card:hover{background:rgba(77,111,255,0.05)}
+.rc-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2.5rem;font-weight:700;
+  color:rgba(255,255,255,0.05);
+  line-height:1;margin-bottom:1.5rem;
+}
+.rc-icon{
+  width:44px;height:44px;border-radius:10px;
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.25rem;
+  background:rgba(255,255,255,0.03);
+  transition:border-color .3s,background .3s;
+  flex-shrink:0;
+}
+.rc-icon svg{width:20px;height:20px;stroke:var(--cyan);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.reason-card:hover .rc-icon{
+  border-color:var(--cyan);
+  background:rgba(0,245,200,0.08);
+}
+.reason-card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem;font-weight:600;
+  margin-bottom:.75rem;line-height:1.4;
+}
+.reason-card p{font-size:.82rem;color:var(--text2);line-height:1.75}
+.rc-badge{
+  display:inline-block;margin-top:.75rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;color:var(--cyan);
+  background:rgba(0,245,200,0.08);
+  border:1px solid rgba(0,245,200,0.2);
+  padding:3px 10px;border-radius:4px;
+}
+
+/* DATA: 数字で見るトライテック (recruit デザイン) */
+.data-rc{background:var(--bg2)}
+.data-grid-rc{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;margin-top:3.5rem;
+}
+.dc-rc{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;padding:2.25rem 1.75rem;
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.dc-rc::before{
+  content:'';position:absolute;
+  top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+}
+.dc-rc:nth-child(3n-1)::before{background:linear-gradient(90deg,var(--blue),var(--purple))}
+.dc-rc:nth-child(3n)::before{background:linear-gradient(90deg,var(--purple),var(--pink))}
+.dc-rc:hover{
+  transform:translateY(-4px);
+  border-color:rgba(0,245,200,.35);
+  box-shadow:0 12px 36px rgba(77,111,255,.18);
+}
+.dc-rc-num{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:3.2rem;font-weight:700;
+  line-height:1;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  display:flex;align-items:baseline;gap:.25rem;flex-wrap:wrap;
+}
+.dc-rc-unit{
+  font-size:1.1rem;font-weight:600;
+  -webkit-text-fill-color:initial;
+  background:none;color:var(--cyan);
+}
+.dc-rc-plus{
+  font-size:.85rem;font-weight:500;
+  color:var(--text3);
+  -webkit-text-fill-color:initial;background:none;
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.04em;align-self:center;
+}
+.dc-rc-label{
+  margin-top:.85rem;
+  font-size:.88rem;color:var(--text2);
+  letter-spacing:.04em;
+}
+
+/* DATA charts (棒グラフ・ドーナツ) */
+.data-charts-rc{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1.5rem;margin-top:1.5rem;
+}
+.chart-card-rc{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;padding:2rem 2rem 1.6rem;
+  position:relative;overflow:hidden;
+}
+.chart-card-rc::before{
+  content:'';position:absolute;
+  top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));
+}
+.chart-title-rc{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;
+  color:var(--text);margin-bottom:1.25rem;
+  padding-bottom:.75rem;
+  border-bottom:1px solid var(--border);
+  letter-spacing:.02em;
+}
+.chart-bar-wrap-rc{position:relative;width:100%;height:240px}
+.chart-bar-wrap-rc canvas{width:100%;height:100%;display:block}
+.donut-layout-rc{
+  display:grid;grid-template-columns:170px 1fr;
+  gap:1.5rem;align-items:center;
+}
+.donut-canvas-wrap-rc{position:relative;width:170px;height:170px}
+.donut-canvas-wrap-rc canvas{width:100%;height:100%;display:block}
+.donut-legend-rc{display:flex;flex-direction:column;gap:.7rem}
+.legend-item-rc{
+  display:grid;grid-template-columns:14px 1fr auto;
+  gap:.6rem;align-items:center;
+  font-size:.82rem;color:var(--text);
+}
+.legend-dot-rc{width:10px;height:10px;border-radius:50%;display:inline-block}
+.legend-label-rc{color:var(--text2)}
+.legend-value-rc{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--cyan);font-weight:700;
+}
+
+/* PROCESS */
+.process{background:var(--bg)}
+.process-flow{
+  display:flex;gap:0;margin-top:4.5rem;
+  position:relative;
+}
+.process-flow::before{
+  content:'';position:absolute;
+  top:22px;left:22px;right:22px;height:1px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));
+  opacity:.3;
+}
+.pf-step{
+  flex:1;text-align:center;
+  position:relative;z-index:1;
+  padding:0 10px;
+}
+.pf-node{
+  width:44px;height:44px;
+  border-radius:50%;
+  border:1px solid var(--border2);
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;font-weight:700;color:var(--text3);
+  margin:0 auto 1.5rem;
+  transition:all .3s;
+  cursor:default;
+}
+.pf-step:hover .pf-node{
+  border-color:var(--cyan);color:var(--cyan);
+  box-shadow:0 0 20px rgba(0,245,200,0.25);
+  background:rgba(0,245,200,0.08);
+}
+.pf-step h4{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.88rem;font-weight:600;margin-bottom:.5rem;
+}
+.pf-step p{font-size:.76rem;color:var(--text2);line-height:1.6}
+
+/* PROJECTS */
+.projects{background:var(--bg2)}
+.projects-header{
+  display:flex;align-items:flex-end;
+  justify-content:space-between;margin-bottom:3.5rem;
+}
+.proj-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+}
+/* 注目の案件カルーセル: 左→右に流れる */
+.proj-carousel{
+  margin:0 -6vw;overflow:hidden;
+  padding:16px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+}
+.proj-track{
+  display:flex;width:max-content;gap:1.5rem;
+  animation:rcProjScroll 40s linear infinite;
+}
+.proj-carousel:hover .proj-track{animation-play-state:paused}
+@keyframes rcProjScroll{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.proj-track .proj-card{flex:0 0 360px;width:360px}
+.proj-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;padding:28px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+  cursor:pointer;
+}
+.proj-card::after{
+  content:'';position:absolute;
+  inset:0;border-radius:16px;
+  background:linear-gradient(135deg,rgba(77,111,255,0.06),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.proj-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(77,111,255,0.4);
+  box-shadow:0 16px 40px rgba(0,0,0,0.3),0 0 30px rgba(77,111,255,0.1);
+}
+.proj-card:hover::after{opacity:1}
+.pc-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 12px;border-radius:4px;
+  margin-bottom:1.2rem;display:inline-block;
+}
+.tag-blue{background:rgba(77,111,255,0.12);color:#7b9fff;border:1px solid rgba(77,111,255,0.2)}
+.tag-cyan{background:rgba(0,245,200,0.08);color:var(--cyan);border:1px solid rgba(0,245,200,0.2)}
+.tag-purple{background:rgba(155,89,255,0.1);color:#b87fff;border:1px solid rgba(155,89,255,0.2)}
+.proj-card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.98rem;font-weight:600;
+  margin-bottom:.6rem;line-height:1.4;
+}
+.proj-card p{font-size:.8rem;color:var(--text2);line-height:1.65;margin-bottom:1.5rem}
+.proj-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.proj-skills{display:flex;gap:5px;flex-wrap:wrap}
+.proj-skill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  padding:3px 8px;border-radius:4px;color:var(--text2);
+}
+.proj-pay{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.95rem;font-weight:700;
+  color:var(--cyan);white-space:nowrap;
+}
+.proj-arrow{
+  position:absolute;top:24px;right:24px;
+  font-size:.85rem;color:var(--text3);
+  transition:color .3s,transform .3s;
+}
+.proj-card:hover .proj-arrow{color:var(--cyan);transform:translate(3px,-3px)}
+
+/* PROJECT: 統一カード追加要素 */
+.tag-orange{background:rgba(255,107,53,0.1);color:#ffa177;border:1px solid rgba(255,107,53,0.22)}
+.pc-tags-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.pc-tags-row .pc-tag{margin-bottom:0}
+.pc-level{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:3px;
+}
+.pc-level-初級{background:rgba(0,245,200,.08);color:#5ee8c4;border:1px solid rgba(0,245,200,.2)}
+.pc-level-中級{background:rgba(77,111,255,.12);color:#7b9fff;border:1px solid rgba(77,111,255,.22)}
+.pc-level-上級{background:rgba(155,89,255,.12);color:#c194ff;border:1px solid rgba(155,89,255,.22)}
+.proj-card .proj-detail-btn{
+  margin-top:auto;font-size:.72rem;color:var(--cyan);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.06em;
+}
+.proj-card:hover .proj-detail-btn{color:#fff}
+.proj-track .proj-card{
+  display:flex;flex-direction:column;
+  min-height:280px;
+}
+
+/* PROJECT MODAL */
+.proj-modal{
+  position:fixed;inset:0;z-index:9100;
+  background:rgba(3,3,10,.85);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;
+  padding:2rem 1rem;cursor:auto;
+}
+.proj-modal.open{display:flex}
+.proj-modal-body{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:18px;padding:42px 38px 36px;width:100%;max-width:760px;
+  position:relative;cursor:auto;
+  max-height:calc(100vh - 4rem);
+  overflow-y:auto;overscroll-behavior:contain;
+}
+.proj-modal-close{
+  position:absolute;top:14px;right:18px;
+  background:transparent;border:none;color:var(--text2);
+  font-size:1.6rem;line-height:1;cursor:pointer;
+  width:34px;height:34px;border-radius:50%;
+  transition:color .2s,background .2s;
+}
+.proj-modal-close:hover{color:var(--cyan);background:rgba(0,245,200,.08)}
+.proj-modal-tags{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1rem}
+.proj-modal-tags .pc-tag{margin-bottom:0}
+.proj-modal-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.4rem;font-weight:700;line-height:1.45;
+  color:var(--text);margin-bottom:1rem;letter-spacing:.01em;
+}
+.proj-modal-summary{
+  font-size:.92rem;color:var(--text2);line-height:1.8;
+  margin-bottom:1.6rem;
+  padding-bottom:1.5rem;border-bottom:1px solid var(--border);
+}
+.proj-modal-meta{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:.85rem 1.5rem;margin-bottom:2rem;
+}
+.proj-modal-meta dl{display:flex;gap:.6rem;align-items:baseline}
+.proj-modal-meta dt{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;color:var(--text3);
+  letter-spacing:.06em;min-width:74px;
+}
+.proj-modal-meta dd{font-size:.88rem;color:var(--text)}
+.proj-modal-meta dd.pay{color:var(--cyan);font-weight:700;font-family:'Space Grotesk',sans-serif}
+.proj-modal-section{margin-bottom:1.6rem}
+.proj-modal-section h4{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.85rem;font-weight:700;letter-spacing:.04em;
+  color:var(--text);margin-bottom:.7rem;
+  padding-left:.8rem;border-left:3px solid var(--cyan);
+}
+.proj-modal-section-want h4{border-left-color:var(--purple)}
+.proj-modal-section ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.35rem}
+.proj-modal-section li{
+  font-size:.86rem;color:var(--text2);line-height:1.75;
+  position:relative;padding-left:1.2rem;
+}
+.proj-modal-section li::before{
+  content:'▸';position:absolute;left:0;top:0;
+  color:var(--cyan);font-size:.78rem;
+}
+.proj-modal-section-want li::before{color:var(--purple)}
+
+/* モーダル本体のカスタムスクロールバー（共通: 案件詳細・社員の声） */
+.proj-modal-body,
+.voice-modal-rc-body{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,245,200,.45) transparent;
+}
+.proj-modal-body::-webkit-scrollbar,
+.voice-modal-rc-body::-webkit-scrollbar{
+  width:8px;
+}
+.proj-modal-body::-webkit-scrollbar-track,
+.voice-modal-rc-body::-webkit-scrollbar-track{
+  background:transparent;
+  margin:18px 0;
+}
+.proj-modal-body::-webkit-scrollbar-thumb,
+.voice-modal-rc-body::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(0,245,200,.55),rgba(155,89,255,.55));
+  border-radius:4px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+  transition:background .3s;
+}
+.proj-modal-body::-webkit-scrollbar-thumb:hover,
+.voice-modal-rc-body::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#00f5c8,#9b59ff);
+  background-clip:padding-box;
+  border:2px solid transparent;
+  box-shadow:inset 0 0 8px rgba(0,245,200,.3);
+}
+.proj-modal-body::-webkit-scrollbar-corner,
+.voice-modal-rc-body::-webkit-scrollbar-corner{background:transparent}
+
+/* VOICES (カルーセル: 1行を右→左へ無限スクロール) */
+.voices{background:var(--bg);overflow:hidden}
+.voices-carousel{
+  margin:3.5rem -6vw 0;
+  overflow:hidden;
+  padding:16px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+}
+.voices-track{
+  display:flex;width:max-content;gap:1.5rem;
+  animation:rcVoicesScroll 35s linear infinite;
+}
+.voices-carousel:hover .voices-track{animation-play-state:paused}
+@keyframes rcVoicesScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.voice-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;padding:28px;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+  flex:0 0 300px;width:300px;
+}
+.voice-card:hover{
+  border-color:rgba(155,89,255,0.45);
+  transform:translateY(-6px);
+  box-shadow:0 12px 40px rgba(77,111,255,.18);
+}
+.vc-quote{
+  font-size:2rem;color:var(--purple);
+  opacity:.3;line-height:1;margin-bottom:.75rem;
+  font-family:'Space Grotesk',sans-serif;
+}
+.vc-text{
+  font-size:.85rem;color:var(--text2);
+  line-height:1.8;margin-bottom:1.5rem;
+}
+.vc-person{display:flex;align-items:center;gap:12px}
+.vc-av{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:.82rem;
+  flex-shrink:0;
+}
+.av1{background:linear-gradient(135deg,#4d6fff,#9b59ff)}
+.av2{background:linear-gradient(135deg,#00f5c8,#4d6fff)}
+.av3{background:linear-gradient(135deg,#ff6b35,#ff4d9b)}
+.vc-info h5{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:600}
+.vc-info h5:empty{display:none}
+.vc-info p{font-size:.73rem;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.vc-stars{margin-top:1rem;color:#ffd700;font-size:.8rem;letter-spacing:2px}
+
+/* VOICE CARD: クリック可能化 + SVGアバター + キャッチコピー */
+.voice-card{cursor:pointer;position:relative}
+.voice-card .vc-head{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:1rem;
+}
+.voice-card .vc-svg{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(77,111,255,.18),rgba(155,89,255,.22));
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex-shrink:0;
+}
+.voice-card .vc-svg svg{width:100%;height:100%;display:block}
+.voice-card .vc-initial{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.5rem;font-weight:700;
+  color:var(--cyan);letter-spacing:.06em;
+  line-height:1;
+}
+.voice-card .vc-catch{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;color:var(--text);
+  line-height:1.5;margin-bottom:1rem;letter-spacing:.01em;
+}
+.voice-card .vc-readmore{
+  margin-top:1.25rem;font-size:.72rem;color:var(--cyan);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.06em;
+}
+.voice-card:hover .vc-readmore{color:#fff}
+.av-yk{background:linear-gradient(135deg,#00f5c8,#4d6fff)}
+.av-tk{background:linear-gradient(135deg,#4d6fff,#9b59ff)}
+.av-sm{background:linear-gradient(135deg,#9b59ff,#ff4d9b)}
+.av-yn{background:linear-gradient(135deg,#ff6b35,#ff4d9b)}
+.av-st{background:linear-gradient(135deg,#00f5c8,#9b59ff)}
+
+/* VOICE MODAL (recruit専用) */
+.voice-modal-rc{
+  position:fixed;inset:0;z-index:9100;
+  background:rgba(3,3,10,.85);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;
+  padding:2rem 1rem;cursor:auto;
+}
+.voice-modal-rc.open{display:flex}
+.voice-modal-rc-body{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:18px;padding:38px 36px;width:100%;max-width:720px;
+  position:relative;cursor:auto;
+  max-height:calc(100vh - 4rem);
+  overflow-y:auto;overscroll-behavior:contain;
+}
+.voice-modal-rc-close{
+  position:absolute;top:14px;right:18px;
+  background:transparent;border:none;color:var(--text2);
+  font-size:1.6rem;line-height:1;cursor:pointer;
+  width:34px;height:34px;border-radius:50%;
+  transition:color .2s,background .2s;
+}
+.voice-modal-rc-close:hover{color:var(--cyan);background:rgba(0,245,200,.08)}
+.voice-modal-rc-header{display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.voice-modal-rc-svg{
+  width:84px;height:84px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(77,111,255,.22),rgba(155,89,255,.26));
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.voice-modal-rc-svg svg{width:100%;height:100%;display:block}
+.voice-modal-rc-avatar{display:none}
+.voice-modal-rc-head-row{display:flex;align-items:center;gap:18px}
+.voice-modal-rc-initial{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:2rem;font-weight:700;
+  color:var(--cyan);letter-spacing:.06em;line-height:1;
+}
+.voice-modal-rc-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;letter-spacing:.01em}
+.voice-modal-rc-header h3:empty{display:none;margin:0}
+.voice-modal-rc-header p{font-size:.82rem;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.voice-modal-rc-chapters .voice-chapter{margin-bottom:1.75rem}
+.voice-modal-rc-chapters .voice-chapter h4{
+  font-family:'Space Grotesk',sans-serif;font-size:.78rem;
+  color:var(--cyan);letter-spacing:.08em;margin-bottom:.55rem;
+  text-transform:uppercase;
+}
+.voice-modal-rc-chapters .voice-chapter p{font-size:.9rem;color:var(--text2);line-height:1.85}
+
+/* DAY FLOW (エンジニアの1日の流れ) */
+.day-sec{background:var(--bg)}
+.tab-nav{
+  display:flex;gap:0;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
+  margin-top:3rem;
+}
+.tab-btn{
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  color:var(--text3);
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:.78rem;font-weight:700;letter-spacing:.06em;
+  padding:14px 22px;cursor:pointer;
+  transition:color .2s,border-color .2s;
+  white-space:nowrap;
+}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.tab-panels{margin-top:2rem}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.day-panel{
+  display:grid;grid-template-columns:1fr 360px;
+  gap:2.5rem;align-items:start;
+}
+.day-image{
+  position:sticky;top:90px;
+  border-radius:14px;overflow:hidden;
+  border:1px solid var(--border2);
+  aspect-ratio:3/4;background:#000;
+  position:sticky;
+}
+.day-image img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:saturate(.85) brightness(.92);
+  transition:filter .4s ease,transform .6s ease;
+}
+.day-image:hover img{filter:saturate(1) brightness(1);transform:scale(1.03)}
+.day-image::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%);
+  pointer-events:none;
+}
+.day-flow{display:flex;flex-direction:column;gap:0}
+.day-item{
+  display:grid;grid-template-columns:100px 1fr;
+  gap:20px;padding:20px 0;
+  border-bottom:1px solid var(--border);
+}
+.day-item:last-child{border-bottom:none}
+.day-time{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;
+  color:var(--cyan);
+}
+.day-title{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:.92rem;font-weight:700;
+  color:var(--text);margin-bottom:.35rem;
+}
+.day-desc{font-size:.82rem;color:var(--text2);line-height:1.75}
+
+/* JOB DETAILS (募集要項) */
+.job-sec{background:var(--bg2)}
+.job-tbl{
+  width:100%;border-collapse:collapse;margin-top:3rem;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;overflow:hidden;
+}
+.job-tbl tr{border-bottom:1px solid var(--border)}
+.job-tbl tr:last-child{border-bottom:none}
+.job-tbl th{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:var(--text3);
+  font-weight:700;letter-spacing:.06em;text-align:left;
+  padding:1.4rem 1.5rem;width:180px;
+  vertical-align:top;
+  background:rgba(255,255,255,0.02);
+}
+.job-tbl td{
+  font-size:.88rem;color:var(--text);
+  padding:1.4rem 1.5rem;vertical-align:top;line-height:1.85;
+}
+.job-tbl td ul{list-style:none;padding:0;margin:0}
+.job-tbl td ul li{padding:.2rem 0;position:relative;padding-left:1.1rem}
+.job-tbl td ul li::before{
+  content:'▸';position:absolute;left:0;top:.2rem;
+  color:var(--cyan);font-size:.78rem;
+}
+
+/* 待遇 / 休暇・キャリアアップ支援 (2カラム) */
+.benefits-grid-rc{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1.5rem;margin-top:2.5rem;
+}
+.bg-col{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;padding:2rem 2.25rem;
+  position:relative;overflow:hidden;
+}
+.bg-col::before{
+  content:'';position:absolute;
+  top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+}
+.bg-col.bg-col-right::before{
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+}
+.bg-col-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.1rem;font-weight:700;
+  color:var(--text);
+  margin-bottom:1.25rem;
+  padding-bottom:.75rem;
+  border-bottom:1px solid var(--border);
+  letter-spacing:.02em;
+}
+.bg-list{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.bg-list li{
+  font-size:.88rem;color:var(--text);
+  line-height:1.7;
+  padding-left:1.3rem;position:relative;
+}
+.bg-list li::before{
+  content:'▸';position:absolute;left:0;top:.05rem;
+  color:var(--cyan);font-size:.78rem;
+}
+.bg-col-right .bg-list li::before{color:var(--purple)}
+
+/* CTA */
+.cta-sec{
+  background:var(--bg);
+  text-align:center;padding:130px 6vw;
+  position:relative;overflow:hidden;
+}
+.cta-grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(77,111,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(77,111,255,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.cta-glow{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(77,111,255,0.12) 0%,transparent 60%);
+  pointer-events:none;
+}
+.cta-sec .s-title{max-width:600px;margin:0 auto .75rem}
+.cta-sec .s-sub{margin:0 auto 3rem}
+.cta-btns{display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap}
+
+/* FOOTER */
+footer{
+  background:#03030a;
+  padding:32px 6vw;
+  border-top:1px solid var(--border);
+  position:relative;z-index:1;
+}
+.ft-bottom{
+  display:flex;justify-content:center;align-items:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;color:var(--text3);
+  flex-wrap:wrap;gap:.75rem;
+  text-align:center;
+}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* GLITCH BADGE */
+.glitch{
+  position:relative;display:inline-block;
+}
+.glitch::before,.glitch::after{
+  content:attr(data-text);
+  position:absolute;top:0;left:0;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.glitch::before{
+  animation:glitch1 4s infinite;
+  clip-path:polygon(0 0,100% 0,100% 35%,0 35%);
+}
+.glitch::after{
+  animation:glitch2 4s infinite;
+  clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);
+}
+@keyframes glitch1{
+  0%,90%,100%{transform:translate(0)}
+  92%{transform:translate(-3px,1px)}
+  94%{transform:translate(3px,-1px)}
+  96%{transform:translate(-2px,0)}
+}
+@keyframes glitch2{
+  0%,90%,100%{transform:translate(0)}
+  92%{transform:translate(3px,1px)}
+  94%{transform:translate(-3px,-1px)}
+  96%{transform:translate(2px,0)}
+}
+
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr}
+  .terminal{display:none}
+  .data-grid-rc{grid-template-columns:1fr 1fr;gap:1rem}
+  .data-charts-rc{grid-template-columns:1fr;gap:1rem}
+  .chart-bar-wrap-rc{height:220px}
+  .proj-grid{grid-template-columns:1fr 1fr}
+  .day-panel{grid-template-columns:1fr;gap:1.5rem}
+  .day-image{position:static;aspect-ratio:16/9;max-width:480px}
+  .job-tbl th,.job-tbl td{display:block;padding:1rem 1.25rem;width:100%}
+  .job-tbl th{padding-bottom:.3rem;background:transparent}
+  .job-tbl td{padding-top:.3rem}
+  .benefits-grid-rc{grid-template-columns:1fr;gap:1rem;margin-top:2rem}
+  .bg-col{padding:1.6rem 1.8rem}
+  .tab-btn{padding:10px 14px;font-size:.72rem}
+  .day-item{grid-template-columns:80px 1fr;gap:14px}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  .process-flow{flex-direction:column;gap:2rem}
+  .process-flow::before{display:none}
+}
+@media(max-width:600px){
+  .reasons-grid{grid-template-columns:1fr}
+  .reasons-grid > .reason-card,
+  .reasons-grid > .reason-card:nth-child(1),
+  .reasons-grid > .reason-card:nth-child(5){grid-column:1 / -1}
+  .reasons-grid > .reason-card:nth-child(1){padding:40px 32px}
+  .reasons-grid > .reason-card:nth-child(1) .rc-img{height:140px}
+  .reasons-grid > .reason-card:nth-child(1) h3{font-size:1rem}
+  .reasons-grid > .reason-card:nth-child(1) p{font-size:.82rem}
+  .data-grid-rc{grid-template-columns:1fr}
+  .donut-layout-rc{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .proj-grid{grid-template-columns:1fr}
+}
+</style>
+<link rel="stylesheet" href="assets/css/game.css">
+</head>
+<body>
+
+<!-- カスタムカーソル: トライテックロゴ統一の3つ菱形（common.cssで共通化） -->
+<div id="hp-cursor-group" aria-hidden="true">
+  <div class="hp-diamond hp-d-orange"></div>
+  <div class="hp-diamond hp-d-cyan"></div>
+  <div class="hp-diamond hp-d-navy"></div>
+</div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-img-wrap">
+      <img src="assets/images/logo/tritech-logo.png" alt="トライテックロゴ" class="nav-logo-img">
+    </div>
+    株式会社トライテック
+  </a>
+  <ul class="nav-links">
+    <li><a href="#reasons">選ばれる理由</a></li>
+    <li><a href="#data-rc">データ</a></li>
+    <li><a href="#projects">案件イメージ</a></li>
+    <li><a href="#voices">社員の声</a></li>
+    <li><a href="#job-details">募集要項</a></li>
+    <li><a href="#contact" class="nav-cta">エントリー →</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#reasons" class="mob-link">選ばれる理由</a>
+  <a href="#data-rc" class="mob-link">データ</a>
+  <a href="#projects" class="mob-link">案件イメージ</a>
+  <a href="#voices" class="mob-link">社員の声</a>
+  <a href="#job-details" class="mob-link">募集要項</a>
+  <a href="#contact" class="mob-cta">エントリーする →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        // NOW_HIRING · エンジニア積極採用中
+      </div>
+      <h1>
+        あなたの<span class="word-highlight">技術力</span>を、<br>
+        <span class="typed-wrap"><span id="typed-text"></span><span class="type-cursor"></span></span><br>
+        で発揮しよう。
+      </h1>
+      <p class="hero-desc">株式会社トライテックは、エンジニア一人ひとりのスキルと希望に合った案件をご提案。未経験〜ベテランまで、全員が活躍できる環境をご用意しています。</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-glow">エントリーする →</a>
+        <a href="#projects" class="btn-outline">案件を見る</a>
+      </div>
+    </div>
+
+    <!-- TERMINAL -->
+    <div class="terminal" id="terminal" onclick="focusTermInput()">
+      <div class="terminal-bar">
+        <div class="tb-dots">
+          <div class="tb-dot tb-red"></div>
+          <div class="tb-dot tb-yellow"></div>
+          <div class="tb-dot tb-green"></div>
+        </div>
+        <div class="tb-title" id="tb-title">tritech-match.sh</div>
+      </div>
+      <div class="terminal-body" id="term-body">
+        <!-- lines are injected by JS -->
+      </div>
+      <div class="terminal-footer">
+        <div class="tf-item"><div class="tf-dot on"></div>リモート対応可</div>
+        <div class="tf-item"><div class="tf-dot on"></div>即日対応</div>
+        <div class="tf-item"><div class="tf-dot on"></div>完全無料</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item"><span class="dot">◆</span> Java</span>
+    <span class="ticker-item"><span class="dot">◆</span> TypeScript</span>
+    <span class="ticker-item"><span class="dot">◆</span> React</span>
+    <span class="ticker-item"><span class="dot">◆</span> AWS</span>
+    <span class="ticker-item"><span class="dot">◆</span> Python</span>
+    <span class="ticker-item"><span class="dot">◆</span> Go</span>
+    <span class="ticker-item"><span class="dot">◆</span> Kubernetes</span>
+    <span class="ticker-item"><span class="dot">◆</span> Terraform</span>
+    <span class="ticker-item"><span class="dot">◆</span> Vue.js</span>
+    <span class="ticker-item"><span class="dot">◆</span> Docker</span>
+    <span class="ticker-item"><span class="dot">◆</span> Spring Boot</span>
+    <span class="ticker-item"><span class="dot">◆</span> GCP</span>
+    <span class="ticker-item"><span class="dot">◆</span> Next.js</span>
+    <span class="ticker-item"><span class="dot">◆</span> PostgreSQL</span>
+    <span class="ticker-item"><span class="dot">◆</span> Java</span>
+    <span class="ticker-item"><span class="dot">◆</span> TypeScript</span>
+    <span class="ticker-item"><span class="dot">◆</span> React</span>
+    <span class="ticker-item"><span class="dot">◆</span> AWS</span>
+    <span class="ticker-item"><span class="dot">◆</span> Python</span>
+    <span class="ticker-item"><span class="dot">◆</span> Go</span>
+    <span class="ticker-item"><span class="dot">◆</span> Kubernetes</span>
+    <span class="ticker-item"><span class="dot">◆</span> Terraform</span>
+    <span class="ticker-item"><span class="dot">◆</span> Vue.js</span>
+    <span class="ticker-item"><span class="dot">◆</span> Docker</span>
+    <span class="ticker-item"><span class="dot">◆</span> Spring Boot</span>
+    <span class="ticker-item"><span class="dot">◆</span> GCP</span>
+    <span class="ticker-item"><span class="dot">◆</span> Next.js</span>
+    <span class="ticker-item"><span class="dot">◆</span> PostgreSQL</span>
+  </div>
+</div>
+
+<!-- REASONS (内容は index.html #sec-reason から JS fetch で取得・recruit デザインを維持) -->
+<section class="reasons" id="reasons">
+  <p class="s-label">// why_tritech</p>
+  <h2 class="s-title reveal" style="white-space:nowrap">株式会社トライテックが選ばれる理由</h2>
+  <p class="s-sub reveal" style="max-width:none;white-space:nowrap">エンジニアファーストのSES企業として、働きやすさとキャリア成長を両立しています。</p>
+
+  <div class="reasons-grid" id="reasons-grid" style="margin-top:4rem">
+    <div class="reason-card reveal" data-reason-idx="0">
+      <div class="rc-img" style="background-image:url('assets/images/photos/ses-laptop.jpg')"></div>
+      <div class="rc-num">01</div>
+      <div class="rc-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <h3 class="rc-title"></h3>
+      <p class="rc-body"></p>
+    </div>
+    <div class="reason-card reveal" data-reason-idx="1" style="transition-delay:.1s">
+      <div class="rc-img" style="background-image:url('assets/images/photos/dx-tablet.jpg')"></div>
+      <div class="rc-num">02</div>
+      <div class="rc-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M2 12h20"/></svg></div>
+      <h3 class="rc-title"></h3>
+      <p class="rc-body"></p>
+    </div>
+    <div class="reason-card reveal" data-reason-idx="2" style="transition-delay:.2s">
+      <div class="rc-img" style="background-image:url('assets/images/photos/digital-devices.jpg')"></div>
+      <div class="rc-num">03</div>
+      <div class="rc-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+      <h3 class="rc-title"></h3>
+      <p class="rc-body"></p>
+    </div>
+    <div class="reason-card reveal" data-reason-idx="3" style="transition-delay:.3s">
+      <div class="rc-img" style="background-image:url('assets/images/photos/infra-network.jpg')"></div>
+      <div class="rc-num">04</div>
+      <div class="rc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <h3 class="rc-title"></h3>
+      <p class="rc-body"></p>
+    </div>
+    <div class="reason-card reveal" data-reason-idx="4" style="transition-delay:.4s">
+      <div class="rc-img" style="background-image:url('assets/images/photos/office-meeting.jpg')"></div>
+      <div class="rc-num">05</div>
+      <div class="rc-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <h3 class="rc-title"></h3>
+      <p class="rc-body"></p>
+    </div>
+  </div>
+</section>
+
+<!-- DATA: 数字で見るトライテック (index.html #data から JS fetch で取得・recruit デザイン) -->
+<section class="data-rc" id="data-rc">
+  <p class="s-label">// data</p>
+  <h2 class="s-title reveal">数字で見るトライテック</h2>
+  <p class="s-sub reveal">働く環境も、成長環境も、数字が物語ります。</p>
+  <div class="data-grid-rc" id="data-grid-rc">
+    <!-- JSにより index.html #data から自動生成 -->
+  </div>
+
+  <div class="data-charts-rc">
+    <div class="chart-card-rc reveal">
+      <h3 class="chart-title-rc">従業員数の推移</h3>
+      <div class="chart-bar-wrap-rc"><canvas id="chart-bar-rc"></canvas></div>
+    </div>
+    <div class="chart-card-rc reveal" style="transition-delay:.1s">
+      <h3 class="chart-title-rc">スキル割合</h3>
+      <div class="donut-layout-rc">
+        <div class="donut-canvas-wrap-rc"><canvas id="chart-donut-rc"></canvas></div>
+        <div class="donut-legend-rc" id="donut-legend-rc">
+          <!-- JSにより自動生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+  <div class="projects-header reveal">
+    <div>
+      <p class="s-label">// project_examples</p>
+      <h2 class="s-title">案件イメージ</h2>
+      <p class="s-sub" style="margin-top:.8rem">トライテックで取り扱っている案件を一部ご紹介します。</p>
+    </div>
+    <a href="#contact" class="btn-outline">気になる案件がある →</a>
+  </div>
+  <div class="proj-carousel reveal">
+    <div class="proj-track" id="proj-track">
+      <!-- カードはJSにより PROJECT_DATA から自動生成 -->
+    </div>
+  </div>
+
+</section>
+
+<!-- VOICES (index.html の VOICE_DATA から動的取得・カルーセル) -->
+<section class="voices" id="voices">
+  <p class="s-label">// employee_voices</p>
+  <h2 class="s-title reveal">社員の声</h2>
+  <p class="s-sub reveal">トライテックで働くエンジニアたちのリアルな声をご紹介します。</p>
+  <div class="voices-carousel reveal">
+    <div class="voices-track" id="voices-track">
+      <!-- JSにより index.html#sec-voices の内容で自動生成 (5枚 → 複製で10枚) -->
+    </div>
+  </div>
+
+</section>
+
+<!-- DAY FLOW (エンジニアの1日の流れ) -->
+<section class="day-sec" id="day-flow">
+  <p class="s-label">// a_day_in_the_life</p>
+  <h2 class="s-title reveal" style="white-space:nowrap">エンジニアの1日の流れ</h2>
+  <p class="s-sub reveal" style="max-width:none;white-space:nowrap">役割やフェーズによって働き方はさまざま。代表的な5つのスタイルをご紹介します。</p>
+  <div class="tab-nav reveal">
+    <button class="tab-btn active" data-tab="tab1">中堅エンジニア</button>
+    <button class="tab-btn" data-tab="tab2">若手テスト</button>
+    <button class="tab-btn" data-tab="tab3">SREエンジニア</button>
+    <button class="tab-btn" data-tab="tab4">ベテランTL</button>
+    <button class="tab-btn" data-tab="tab5">PM</button>
+  </div>
+  <div class="tab-panels reveal" style="transition-delay:.1s">
+    <div class="tab-panel active" id="tab1">
+      <div class="day-panel">
+        <div class="day-flow">
+          <div class="day-item"><span class="day-time">09:00</span><div class="day-content"><p class="day-title">リモートスタート・Slackチェック</p><p class="day-desc">自宅または客先にてログイン。Slack・Jira でタスク状況を確認し、優先度を整理します。</p></div></div>
+          <div class="day-item"><span class="day-time">09:30</span><div class="day-content"><p class="day-title">チームデイリー（15分）</p><p class="day-desc">スクラムチームで進捗共有・ブロッカー確認。短時間で要点を押さえます。</p></div></div>
+          <div class="day-item"><span class="day-time">10:00</span><div class="day-content"><p class="day-title">開発・コーディング</p><p class="day-desc">バックエンドAPI実装が中心。設計レビューを経て実装に集中する午前の時間帯です。</p></div></div>
+          <div class="day-item"><span class="day-time">12:00</span><div class="day-content"><p class="day-title">昼休憩</p><p class="day-desc">自由に休憩。社内ランチ会や技術記事をインプットする時間に充てることも。</p></div></div>
+          <div class="day-item"><span class="day-time">13:00</span><div class="day-content"><p class="day-title">コードレビュー・PR対応</p><p class="day-desc">チームメンバーのPRレビュー。建設的なフィードバックでコード品質を高めます。</p></div></div>
+          <div class="day-item"><span class="day-time">15:00</span><div class="day-content"><p class="day-title">営業担当と月次面談（30分）</p><p class="day-desc">トライテック担当営業と現場状況・キャリア希望を共有。気軽に何でも話せる場です。</p></div></div>
+          <div class="day-item"><span class="day-time">15:30</span><div class="day-content"><p class="day-title">実装・テスト</p><p class="day-desc">ユニットテストを書きながら実装を進めます。品質意識の高いチームで学びが多い環境です。</p></div></div>
+          <div class="day-item"><span class="day-time">18:00</span><div class="day-content"><p class="day-title">業務終了</p><p class="day-desc">タスクをクローズし翌日の優先度をメモして終了。残業はほぼありません。</p></div></div>
+        </div>
+        <div class="day-image"><img src="assets/images/photos/day-dev.jpg" alt="開発エンジニアのデスク" loading="lazy"></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab2">
+      <div class="day-panel">
+        <div class="day-flow">
+          <div class="day-item"><span class="day-time">09:00</span><div class="day-content"><p class="day-title">出社・朝会</p><p class="day-desc">客先に出社。チームの朝会でテスト進捗を報告し、本日のテストケースを確認します。</p></div></div>
+          <div class="day-item"><span class="day-time">09:30</span><div class="day-content"><p class="day-title">テストケース作成</p><p class="day-desc">仕様書をもとに、正常系・異常系のテストケースを設計します。メンターに確認しながら進めます。</p></div></div>
+          <div class="day-item"><span class="day-time">11:00</span><div class="day-content"><p class="day-title">手動テスト・バグ記録</p><p class="day-desc">実際の画面を操作してテストを実施。発見したバグをRedmineに起票し、開発チームに共有します。</p></div></div>
+          <div class="day-item"><span class="day-time">12:00</span><div class="day-content"><p class="day-title">昼休憩</p><p class="day-desc">チームメンバーと一緒に昼食。人間関係もフラットで話しやすい環境です。</p></div></div>
+          <div class="day-item"><span class="day-time">13:00</span><div class="day-content"><p class="day-title">自動化スクリプト学習</p><p class="day-desc">Selenium や Playwright を使った自動テストの書き方をUdemyで自習。業務の合間にスキルアップ。</p></div></div>
+          <div class="day-item"><span class="day-time">15:00</span><div class="day-content"><p class="day-title">リグレッションテスト</p><p class="day-desc">修正後の影響確認テストを実施。品質を守る重要な役割を担います。</p></div></div>
+          <div class="day-item"><span class="day-time">17:30</span><div class="day-content"><p class="day-title">日報・退社</p><p class="day-desc">本日のテスト件数・バグ数を日報にまとめて提出。定時退社を徹底しています。</p></div></div>
+        </div>
+        <div class="day-image"><img src="assets/images/photos/day-test.jpg" alt="テストエンジニアの作業風景" loading="lazy"></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab3">
+      <div class="day-panel">
+        <div class="day-flow">
+          <div class="day-item"><span class="day-time">09:30</span><div class="day-content"><p class="day-title">アラート確認・インシデントチェック</p><p class="day-desc">Grafana・Datadog のダッシュボードで前夜のアラート状況を確認。異常があれば即対応。</p></div></div>
+          <div class="day-item"><span class="day-time">10:00</span><div class="day-content"><p class="day-title">インフラ改善作業</p><p class="day-desc">Terraform でのインフラコード修正、Kubernetes のリソース最適化など。コードとしてインフラを管理します。</p></div></div>
+          <div class="day-item"><span class="day-time">12:00</span><div class="day-content"><p class="day-title">昼休憩</p><p class="day-desc">フルリモートのため自宅でゆっくり休憩。好きな音楽を聴きながらリフレッシュ。</p></div></div>
+          <div class="day-item"><span class="day-time">13:00</span><div class="day-content"><p class="day-title">開発チームとの連携MTG</p><p class="day-desc">新機能リリースに向けたインフラ要件確認。CI/CDパイプラインの設計を開発側と擦り合わせます。</p></div></div>
+          <div class="day-item"><span class="day-time">15:00</span><div class="day-content"><p class="day-title">SLI/SLO レビュー</p><p class="day-desc">可用性・レイテンシの数値を確認し、改善ポイントを洗い出してドキュメントにまとめます。</p></div></div>
+          <div class="day-item"><span class="day-time">16:30</span><div class="day-content"><p class="day-title">AWS 勉強・資格対策</p><p class="day-desc">業務時間内に資格学習が認められています。SAP（Professional）取得に向けて学習中。</p></div></div>
+          <div class="day-item"><span class="day-time">18:00</span><div class="day-content"><p class="day-title">業務終了</p><p class="day-desc">オンコール体制はローテーションで公平に管理。急なインシデントも仕組みで対応します。</p></div></div>
+        </div>
+        <div class="day-image"><img src="assets/images/photos/day-sre.jpg" alt="サーバー・インフラ運用" loading="lazy"></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab4">
+      <div class="day-panel">
+        <div class="day-flow">
+          <div class="day-item"><span class="day-time">09:00</span><div class="day-content"><p class="day-title">設計レビュー準備</p><p class="day-desc">チームが提出した設計書・アーキテクチャ図を事前確認し、フィードバックポイントを整理します。</p></div></div>
+          <div class="day-item"><span class="day-time">10:00</span><div class="day-content"><p class="day-title">設計レビューMTG</p><p class="day-desc">若手〜中堅エンジニアの設計案をレビュー。技術的な正確さだけでなく、保守性・拡張性の観点でフィードバック。</p></div></div>
+          <div class="day-item"><span class="day-time">11:30</span><div class="day-content"><p class="day-title">実装・技術調査</p><p class="day-desc">難易度の高いコア部分の実装。新技術の PoC も兼ねて試行錯誤します。</p></div></div>
+          <div class="day-item"><span class="day-time">12:00</span><div class="day-content"><p class="day-title">昼休憩</p><p class="day-desc">後輩エンジニアとランチしながら、キャリアや技術について気軽に話す機会に。</p></div></div>
+          <div class="day-item"><span class="day-time">13:00</span><div class="day-content"><p class="day-title">メンタリング・1on1</p><p class="day-desc">担当の若手エンジニアと1on1。技術的な壁だけでなく、働き方・キャリアの悩みにも向き合います。</p></div></div>
+          <div class="day-item"><span class="day-time">15:00</span><div class="day-content"><p class="day-title">社内勉強会 登壇準備</p><p class="day-desc">月次勉強会で発表する技術テーマの資料作成。社内ナレッジの底上げに貢献します。</p></div></div>
+          <div class="day-item"><span class="day-time">18:00</span><div class="day-content"><p class="day-title">業務終了</p><p class="day-desc">技術と後進育成、両方に向き合える環境がトライテックの強みです。</p></div></div>
+        </div>
+        <div class="day-image"><img src="assets/images/photos/day-tl.jpg" alt="ベテラン・テックリードのチームMTG" loading="lazy"></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab5">
+      <div class="day-panel">
+        <div class="day-flow">
+          <div class="day-item"><span class="day-time">09:00</span><div class="day-content"><p class="day-title">メール・Slack 確認・タスク整理</p><p class="day-desc">顧客・社内からの連絡を確認し、本日の優先事項をリスト化します。</p></div></div>
+          <div class="day-item"><span class="day-time">09:30</span><div class="day-content"><p class="day-title">顧客定例MTG</p><p class="day-desc">プロジェクト進捗・課題・次週計画を顧客と共有。問題点があれば即座に方針を決定します。</p></div></div>
+          <div class="day-item"><span class="day-time">11:00</span><div class="day-content"><p class="day-title">スプリント計画・工数調整</p><p class="day-desc">開発チームの稼働状況を確認しながら、スプリント計画をアップデート。リスクを早期に検知します。</p></div></div>
+          <div class="day-item"><span class="day-time">12:00</span><div class="day-content"><p class="day-title">昼休憩</p><p class="day-desc">チームと情報交換しながら昼食。雑談から課題が見えることも多々あります。</p></div></div>
+          <div class="day-item"><span class="day-time">13:00</span><div class="day-content"><p class="day-title">社内ステークホルダー報告</p><p class="day-desc">経営・営業・開発への進捗共有。透明性の高い情報共有がトライテックの文化です。</p></div></div>
+          <div class="day-item"><span class="day-time">15:00</span><div class="day-content"><p class="day-title">提案書・見積書作成</p><p class="day-desc">次フェーズに向けた提案書を作成。技術的正確さと顧客視点を両立させた資料を仕上げます。</p></div></div>
+          <div class="day-item"><span class="day-time">17:30</span><div class="day-content"><p class="day-title">業務終了</p><p class="day-desc">PMとして技術とビジネス両方に関われる案件が豊富。成長実感の高い役割です。</p></div></div>
+        </div>
+        <div class="day-image"><img src="assets/images/photos/day-pm.jpg" alt="プロジェクトマネージャーの打ち合わせ" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOB DETAILS (募集要項) -->
+<section class="job-sec" id="job-details">
+  <p class="s-label">// job_details</p>
+  <h2 class="s-title reveal">募集要項</h2>
+  <p class="s-sub reveal">エンジニアとして長く活躍できる環境と条件を整えています。</p>
+  <table class="job-tbl reveal">
+    <tr><th>職種</th><td>ITエンジニア（インフラ・バックエンド・フロントエンド・テスト・PM）</td></tr>
+    <tr><th>雇用形態</th><td>正社員（試用期間6ヶ月）</td></tr>
+    <tr><th>給与</th><td>月給 250,000円〜700,000円（経験・スキルに応じて決定）<br>※昇給年1回・賞与年1回</td></tr>
+    <tr><th>勤務地</th><td>東京都内・神奈川・埼玉・千葉（顧客先常駐またはリモート）<br>※希望考慮・リモート案件多数　※大阪での雇用実績もあり</td></tr>
+    <tr><th>勤務時間</th><td>9:00〜18:00（実働8時間）<br>※案件により変動あり　※フレックスタイム対応案件あり</td></tr>
+  </table>
+
+  <!-- 待遇 / 休暇・キャリアアップ支援: index.html#sec-benefits からJSで取得 -->
+  <div class="benefits-grid-rc reveal">
+    <div class="bg-col">
+      <h3 class="bg-col-title">待遇</h3>
+      <ul class="bg-list" id="bg-list-treatment"></ul>
+    </div>
+    <div class="bg-col bg-col-right">
+      <h3 class="bg-col-title">休暇・キャリアアップ支援</h3>
+      <ul class="bg-list" id="bg-list-leave"></ul>
+    </div>
+  </div>
+</section>
+<!-- PROCESS -->
+<section class="process" id="process">
+  <p class="s-label">// how_it_works</p>
+  <h2 class="s-title reveal">入社までの流れ</h2>
+  <p class="s-sub reveal">最短2週間で案件参画が可能。面倒な手続きはすべてサポートします。</p>
+
+  <div class="process-flow">
+    <div class="pf-step reveal"><div class="pf-node">01</div><h4>無料相談・登録</h4><p>オンライン or 電話で<br>気軽にご相談</p></div>
+    <div class="pf-step reveal" style="transition-delay:.1s"><div class="pf-node">02</div><h4>ヒアリング</h4><p>スキルと希望を<br>丁寧にヒアリング</p></div>
+    <div class="pf-step reveal" style="transition-delay:.2s"><div class="pf-node">03</div><h4>案件提案</h4><p>希望に合う案件を<br>複数ご提案</p></div>
+    <div class="pf-step reveal" style="transition-delay:.3s"><div class="pf-node">04</div><h4>入社・参画</h4><p>最短2週間で<br>プロジェクト参画</p></div>
+    <div class="pf-step reveal" style="transition-delay:.4s"><div class="pf-node">05</div><h4>継続サポート</h4><p>定期面談で<br>長期的に伴走</p></div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta-sec" id="contact">
+  <div class="cta-grid-bg"></div>
+  <div class="cta-glow"></div>
+  <div style="position:relative;z-index:1">
+    <p class="s-label" style="display:inline-block">// get_started</p>
+    <h2 class="s-title reveal">まずは、気軽に<br>ご相談ください。</h2>
+    <p class="s-sub reveal" style="margin:0 auto 3rem;max-width:none;white-space:nowrap">登録・相談は完全無料。あなたのペースで、次のキャリアを一緒に考えましょう。</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-glow">エントリーする →</a>
+      <a href="index.html" class="btn-outline">まず会社を知る</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-bottom">
+    <span>© 2026 株式会社トライテック. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+/* ─────────────────────────────────────────────
+   スクロール位置の記憶 & 復元
+   - リロード/離脱時のスクロール位置を sessionStorage に保存
+   - 次回ロード時、DOM高さが揃ったら復元
+   - 復元完了までは body を不可視にして「最上部チラ見え」を防ぐ
+   ───────────────────────────────────────────── */
+(function(){
+  if('scrollRestoration' in history){history.scrollRestoration='manual';}
+  const KEY='recruit-scroll-y';
+
+  /* このページ遷移の種別を判定:
+     - 'reload': F5/Ctrl+R によるリロード → 位置を復元
+     - 'navigate' / 'back_forward' / その他: 通常の遷移 → トップから表示 */
+  let navType='navigate';
+  try{
+    const nav=performance.getEntriesByType('navigation')[0];
+    if(nav&&nav.type)navType=nav.type;
+    else if(performance.navigation&&performance.navigation.type===1)navType='reload';
+  }catch(e){}
+  const isReload=(navType==='reload');
+
+  /* リロード以外（他ページからの遷移含む）は保存値をクリアしてトップ表示 */
+  if(!isReload){
+    sessionStorage.removeItem(KEY);
+  }
+
+  const saved=isReload?parseInt(sessionStorage.getItem(KEY)||'0',10):0;
+
+  let restored=false;
+  let allowSave=false;
+  let saveT=null;
+  window.addEventListener('scroll',()=>{
+    if(!allowSave)return;
+    if(saveT)return;
+    saveT=setTimeout(()=>{
+      sessionStorage.setItem(KEY,String(window.scrollY||0));
+      saveT=null;
+    },150);
+  },{passive:true});
+
+  window.addEventListener('pagehide',()=>{
+    sessionStorage.setItem(KEY,String(window.scrollY||0));
+  });
+
+  if(!saved){allowSave=true;return;}
+
+  /* 復元中は body 不可視 + scroll-behavior:auto 強制 */
+  const styleEl=document.createElement('style');
+  styleEl.id='__scroll-restore-hide';
+  styleEl.textContent='html{scroll-behavior:auto!important}body{visibility:hidden!important}';
+  (document.head||document.documentElement).appendChild(styleEl);
+
+  /* ユーザー操作を検出したら保護を即解除（操作可能にする） */
+  let userInteracted=false;
+  function releaseAll(){
+    const ss=document.getElementById('__scroll-restore-hide');
+    if(ss)ss.remove();
+    allowSave=true;
+  }
+  function onUserInteract(){
+    if(userInteracted)return;
+    userInteracted=true;
+    releaseAll();
+  }
+  /* wheel / touchstart / keydown はユーザー操作のみが発火するので信頼できる
+     scroll イベントは scrollTo でも発火するため使えない */
+  window.addEventListener('wheel',onUserInteract,{passive:true,once:true});
+  window.addEventListener('touchstart',onUserInteract,{passive:true,once:true});
+  window.addEventListener('keydown',e=>{
+    /* スクロール系キー(矢印, PageUp/Down, Space, Home, End)のみ反応 */
+    if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(e.key)){
+      onUserInteract();
+    }
+  },{once:false});
+
+  function attemptRestore(){
+    if(restored)return;
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    if(max>=saved-2){
+      restored=true;
+      window.scrollTo(0,saved);
+      requestAnimationFrame(()=>{
+        window.scrollTo(0,saved);
+        requestAnimationFrame(()=>{
+          window.scrollTo(0,saved);
+          /* 即座に可視化 */
+          const s=document.getElementById('__scroll-restore-hide');
+          if(s)s.textContent='html{scroll-behavior:auto!important}';
+          /* ホールド期間中、ユーザーが操作していなければ scroll を強制保持
+             ユーザー操作があったら即解除して自由にスクロールさせる */
+          const holdEnd=Date.now()+2500;
+          const hold=setInterval(()=>{
+            if(userInteracted){clearInterval(hold);return;}
+            if(Math.abs(window.scrollY-saved)>4){window.scrollTo(0,saved);}
+            if(Date.now()>holdEnd){
+              clearInterval(hold);
+              releaseAll();
+            }
+          },20);
+        });
+      });
+    }
+  }
+
+  const iv=setInterval(()=>{
+    attemptRestore();
+    if(restored){clearInterval(iv);}
+  },50);
+
+  /* 最大3秒のセーフティタイムアウト */
+  setTimeout(()=>{
+    if(!restored){
+      releaseAll();
+      clearInterval(iv);
+    }
+  },3000);
+})();
+
+/* CUSTOM CURSOR: トライテックロゴ統一の3つ菱形（common.cssの.hp-diamond対応） */
+(function(){
+  const diamonds=document.querySelectorAll('.hp-diamond');
+  if(diamonds.length!==3)return;
+  const items=[];
+  let tx=window.innerWidth/2,ty=window.innerHeight/2;
+  const easings=[0.32,0.18,0.10];
+  diamonds.forEach((el,i)=>items.push({el,x:tx,y:ty,ease:easings[i]}));
+  document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
+  (function tick(){
+    items.forEach(it=>{
+      it.x+=(tx-it.x)*it.ease;
+      it.y+=(ty-it.y)*it.ease;
+      it.el.style.left=it.x+'px';
+      it.el.style.top=it.y+'px';
+    });
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* PARTICLE CANVAS */
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;this.y=Math.random()*H;
+    this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;
+    this.r=Math.random()*1.5+.3;this.alpha=Math.random()*.5+.1;
+    this.color=Math.random()>.5?'0,245,200':'77,111,255';
+  }
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${this.color},${this.alpha})`;ctx.fill();
+  }
+}
+for(let i=0;i<120;i++)particles.push(new Particle());
+function drawLines(){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(77,111,255,${.08*(1-dist/120)})`;
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+  }
+}
+function animParticles(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw()});
+  drawLines();
+  requestAnimationFrame(animParticles);
+}
+animParticles();
+
+/* TYPING */
+const words=['最高の舞台','リモート案件','フルスタック','高単価プロジェクト','理想の環境'];
+let wi=0,ci=0,deleting=false;
+function type(){
+  const w=words[wi];
+  const el=document.getElementById('typed-text');
+  if(!deleting){
+    ci++;el.textContent=w.slice(0,ci);
+    if(ci===w.length){deleting=true;setTimeout(type,1800);return}
+    setTimeout(type,90);
+  }else{
+    ci--;el.textContent=w.slice(0,ci);
+    if(ci===0){deleting=false;wi=(wi+1)%words.length;setTimeout(type,400);return}
+    setTimeout(type,45);
+  }
+}
+type();
+
+/* REVEAL */
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* HAMBURGER MENU */
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobile-menu');
+hamburger.addEventListener('click',()=>{
+  const isOpen=mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open',isOpen);
+  document.body.style.overflow=isOpen?'hidden':'';
+});
+document.querySelectorAll('.mobile-menu a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow='';
+  });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
+  });
+});
+
+/* ── INTERACTIVE TERMINAL ── */
+const termBody=document.getElementById('term-body');
+const tbTitle=document.getElementById('tb-title');
+let termDone=false;
+
+/* ターミナル表示用ライン配列を毎回生成。
+   注目の案件データ (window.PROJECT_DATA) からランダムに最大3件を選んで表示
+   → 案件編集は PROJECT_DATA 1箇所のみで完全一元化（ダブルメンテなし） */
+function buildLines(){
+  const pool=(window.PROJECT_DATA||[]).slice();
+  // シャッフル
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+  const picks=pool.slice(0,3);
+  const cnt=picks.length;
+  // 単価で色分け: 100万以上=green / それ未満=yellow
+  const payColor=v=>v>=100?'green':'yellow';
+  const projLines=picks.map((p,i)=>({
+    type:'out',
+    html:`<span class="cyan">[${i+1}]</span> ${p.short||p.title||''} <span class="${payColor(p.payVal||0)}">~${(p.pay||'').replace(/[〜~]/g,'')}</span>`,
+    delay:2400+i*300,
+  }));
+  return [
+    {type:'cmd',text:'./find-project --skill=React --remote=true',delay:0},
+    {type:'out',html:'<span class="green">✓</span> スキル分析完了',delay:600},
+    {type:'out',html:'<span class="cyan">→</span> マッチング案件を検索中<span id="dots"></span>',delay:1000},
+    {type:'gap',delay:1800},
+    {type:'out',html:`<span class="yellow">📦</span> <span class="green">${cnt}件</span> の案件が見つかりました`,delay:2100},
+    {type:'gap',delay:2100},
+    ...projLines,
+    {type:'gap',delay:3000},
+    {type:'out',html:'<span class="purple">?</span> 詳細を確認しますか？ <span class="green">[Y/n]</span>',delay:3300},
+    {type:'gap',delay:3300},
+    {type:'input',delay:3600},
+  ];
+}
+
+function addLine(html,cls){
+  const d=document.createElement('div');
+  d.className=cls||'tl-out';
+  d.innerHTML=html;
+  termBody.appendChild(d);
+}
+function addGap(){
+  const d=document.createElement('div');
+  d.style.height='.5rem';
+  termBody.appendChild(d);
+}
+
+let inputEl=null;
+function renderTerminal(){
+  termBody.innerHTML='';
+  const LINES=buildLines();
+  LINES.forEach(l=>{
+    setTimeout(()=>{
+      if(l.type==='cmd'){
+        const d=document.createElement('div');d.className='tl';
+        d.innerHTML=`<span class="tl-prompt">$</span><span class="tl-cmd" id="tl-cmd-anim"></span>`;
+        termBody.appendChild(d);
+        typeCmd(document.getElementById('tl-cmd-anim'),l.text);
+      } else if(l.type==='out'){
+        addLine(l.html);
+        if(l.html.includes('検索中')){animateDots()}
+      } else if(l.type==='gap'){
+        addGap();
+      } else if(l.type==='input'){
+        const wrap=document.createElement('div');wrap.className='tl';wrap.id='term-input-wrap';
+        wrap.innerHTML=`<span class="tl-prompt">$</span>`;
+        inputEl=document.createElement('input');
+        inputEl.id='term-input';
+        inputEl.type='text';
+        inputEl.maxLength=8;
+        inputEl.autocomplete='off';
+        inputEl.spellcheck=false;
+        inputEl.style.cssText=`
+          background:transparent;border:none;outline:none;
+          font-family:'JetBrains Mono',monospace;font-size:.78rem;
+          color:var(--cyan);caret-color:var(--cyan);
+          width:80px;margin-left:6px;
+        `;
+        inputEl.addEventListener('keydown',handleTermInput);
+        wrap.appendChild(inputEl);
+        termBody.appendChild(wrap);
+        /* preventScroll:true で「フォーカス時の自動スクロール」を抑止
+           （ターミナル input にフォーカスするとブラウザが上方に
+            自動スクロールしてしまい、復元位置が崩れる） */
+        inputEl.focus({preventScroll:true});
+        termDone=true;
+      }
+    },l.delay);
+  });
+}
+
+function typeCmd(el,text,i=0){
+  if(i<=text.length){el.textContent=text.slice(0,i);setTimeout(()=>typeCmd(el,text,i+1),28);}
+}
+
+function animateDots(){
+  const el=document.getElementById('dots');
+  if(!el)return;
+  let n=0;
+  const iv=setInterval(()=>{
+    if(!document.getElementById('dots')){clearInterval(iv);return}
+    n=(n+1)%4;el.textContent='.'.repeat(n);
+  },300);
+  setTimeout(()=>clearInterval(iv),800);
+}
+
+function handleTermInput(e){
+  if(e.key!=='Enter')return;
+  const val=inputEl.value.trim().toLowerCase();
+  if(val==='y'||val===''){
+    commitInput('y');
+    runYes();
+  } else if(val==='n'){
+    commitInput('n');
+    runNo();
+  } else {
+    inputEl.style.color='#ff4d4d';
+    setTimeout(()=>{inputEl.style.color='var(--cyan)';inputEl.value='';},600);
+  }
+}
+
+function commitInput(val){
+  const wrap=document.getElementById('term-input-wrap');
+  if(!wrap)return;
+  wrap.innerHTML=`<span class="tl-prompt">$</span><span class="tl-cmd" style="margin-left:6px;color:var(--cyan)">${val}</span>`;
+}
+
+function runYes(){
+  setTimeout(()=>{
+    addGap();
+    addLine('<span class="green">✓</span> 案件詳細ページを開きます...','tl-out');
+  },120);
+  setTimeout(()=>{
+    addLine('<span class="cyan">→</span> <span class="green">案件イメージにジャンプ中...</span>','tl-out');
+    tbTitle.textContent='navigating...';
+    const term=document.getElementById('terminal');
+    term.style.borderColor='rgba(0,245,200,0.5)';
+    term.style.boxShadow='0 0 30px rgba(0,245,200,0.2)';
+  },500);
+  setTimeout(()=>{
+    const target=document.getElementById('projects');
+    if(target)target.scrollIntoView({behavior:'smooth'});
+  },1100);
+  setTimeout(()=>{
+    const term=document.getElementById('terminal');
+    term.style.borderColor='';
+    term.style.boxShadow='';
+    termDone=false;
+    renderTerminal();
+  },2200);
+}
+
+function runNo(){
+  setTimeout(()=>{
+    addGap();
+    addLine('<span class="purple">!</span> キャンセルしました。また探す場合は再度コマンドを実行してください。','tl-out');
+  },200);
+  setTimeout(()=>{
+    termDone=false;
+    renderTerminal();
+  },3000);
+}
+
+function focusTermInput(){if(termDone&&inputEl)inputEl.focus({preventScroll:true});}
+
+/* PROJECT_DATA (下のIIFEで window 公開) を待ってからターミナル開始 */
+setTimeout(renderTerminal,0);
+
+/* ─────────────────────────────────────────────
+   VOICES: index.html の VOICE_DATA / AVATARS を
+   ランタイム取得して recruit.html のデザインで描画
+   （ダブルメンテ防止 — 編集は assets/js/pages/index.js）
+   ───────────────────────────────────────────── */
+(async function(){
+  const track=document.getElementById('voices-track');
+  if(!track)return;
+  let VOICE_DATA={},AVATARS={};
+  try{
+    const res=await fetch('assets/js/pages/index.js',{cache:'no-store'});
+    const src=await res.text();
+    // VOICE_DATA と AVATARS の宣言部を抜き出して eval（モジュール外なので window 公開されないため）
+    const extract=name=>{
+      const i=src.indexOf('const '+name+'=');
+      if(i<0)return null;
+      // 対応するオブジェクトの最終 } の位置を、波括弧の深さで追跡して特定
+      let depth=0,start=src.indexOf('{',i),end=-1;
+      for(let p=start;p<src.length;p++){
+        const c=src[p];
+        if(c==='{')depth++;
+        else if(c==='}'){depth--;if(depth===0){end=p;break;}}
+      }
+      return end>0?src.slice(start,end+1):null;
+    };
+    const vdSrc=extract('VOICE_DATA'),avSrc=extract('AVATARS');
+    if(vdSrc)VOICE_DATA=new Function('return ('+vdSrc+')')();
+    if(avSrc)AVATARS=new Function('return ('+avSrc+')')();
+  }catch(e){
+    console.warn('[voices] index.js の取得に失敗:',e);
+  }
+
+  const order=['kawasaki','kikuchi','masuda','nomura','takano'];
+  const avClass={kawasaki:'av-yk',kikuchi:'av-tk',masuda:'av-sm',nomura:'av-yn',takano:'av-st'};
+  // catch コピー: index.html 上の voice-catch とそろえる
+  const CATCHES={
+    kawasaki:'期待を上回るギャップでした',
+    kikuchi:'のびのびと働ける環境です',
+    masuda:'困った時はすぐに相談できる',
+    nomura:'想像を超えるアットホームさ',
+    takano:'スキルを活かせる環境',
+  };
+
+  track.innerHTML='';
+  const buildCard=(key)=>{
+    const d=VOICE_DATA[key];if(!d)return null;
+    const card=document.createElement('div');
+    card.className='voice-card';
+    card.dataset.member=key;
+    const svg=AVATARS[key]||'';
+    const catchTxt=CATCHES[key]||'';
+    const intro=(d.chapters&&d.chapters[0]&&d.chapters[0].body||'').split('\n')[0].slice(0,90)+'…';
+    card.innerHTML=`
+      <div class="vc-head">
+        <div class="vc-svg ${avClass[key]||''}">${svg||`<span style="font-family:'Space Grotesk';font-weight:700;color:#fff;font-size:1rem">${d.initial||''}</span>`}</div>
+        <div class="vc-initial">${d.initial||''}</div>
+      </div>
+      <p class="vc-catch">${catchTxt}</p>
+      <p class="vc-text">${intro}</p>
+      <div class="vc-person">
+        <div class="vc-info">
+          <h5>${d.name||''}</h5>
+          <p>${d.role||''}</p>
+        </div>
+      </div>
+      <div class="vc-readmore">READ MORE →</div>`;
+    card.addEventListener('click',()=>openVoiceModal(key));
+    return card;
+  };
+  // 5枚生成
+  order.forEach(k=>{const c=buildCard(k);if(c)track.appendChild(c);});
+  // 無限ループ用に複製（合計10枚: -50%スクロールでシームレス）
+  [...track.children].forEach(c=>{
+    const clone=c.cloneNode(true);
+    const key=clone.dataset.member;
+    clone.addEventListener('click',()=>openVoiceModal(key));
+    track.appendChild(clone);
+  });
+
+  // モーダル制御
+  const modal=document.getElementById('voice-modal-rc');
+  const mSvg=document.getElementById('voice-modal-rc-svg');
+  const mInitial=document.getElementById('voice-modal-rc-initial');
+  const mName=document.getElementById('voice-modal-rc-name');
+  const mRole=document.getElementById('voice-modal-rc-role');
+  const mCh=document.getElementById('voice-modal-rc-chapters');
+  const mClose=document.getElementById('voice-modal-rc-close');
+  function openVoiceModal(key){
+    const d=VOICE_DATA[key];if(!d||!modal)return;
+    if(mSvg)mSvg.innerHTML=AVATARS[key]||'';
+    if(mInitial)mInitial.textContent=d.initial||'';
+    if(mName)mName.textContent=d.name||'';
+    if(mRole)mRole.textContent=d.role||'';
+    if(mCh){
+      mCh.innerHTML=(d.chapters||[]).map(c=>{
+        const body=(c.body||'').split('\n').filter(Boolean).map(p=>`<p>${p}</p>`).join('');
+        return `<div class="voice-chapter"><h4>${c.title||''}</h4>${body}</div>`;
+      }).join('');
+    }
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    modal.scrollTop=0;
+    const body=modal.querySelector('.voice-modal-rc-body');
+    if(body)body.scrollTop=0;
+  }
+  function closeVoiceModal(){
+    if(!modal)return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+  if(mClose)mClose.addEventListener('click',closeVoiceModal);
+  if(modal)modal.addEventListener('click',e=>{if(e.target===modal)closeVoiceModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeVoiceModal();});
+})();
+
+/* index.html ミラー: 待遇/休暇・選ばれる理由・数字
+   （ダブルメンテ防止 — 編集は index.html 側のみで両ページに反映） */
+(async function(){
+  let doc=null;
+  try{
+    const res=await fetch('index.html',{cache:'no-store'});
+    const html=await res.text();
+    doc=new DOMParser().parseFromString(html,'text/html');
+  }catch(e){
+    console.warn('[mirror] index.html の取得に失敗:',e);
+    return;
+  }
+
+  /* ── 待遇 / 休暇・キャリアアップ支援: #sec-benefits の2カラム ── */
+  const slotT=document.getElementById('bg-list-treatment');
+  const slotL=document.getElementById('bg-list-leave');
+  if(slotT&&slotL){
+    const cols=doc.querySelectorAll('#sec-benefits .benefit-col');
+    [[slotT,cols[0]],[slotL,cols[1]]].forEach(([slot,col])=>{
+      if(!slot||!col)return;
+      slot.innerHTML='';
+      col.querySelectorAll('li').forEach(li=>{
+        const l=document.createElement('li');l.textContent=li.textContent.trim();slot.appendChild(l);
+      });
+    });
+  }
+
+  /* ── 選ばれる理由 (5カード): #sec-reason の reason-card から title/body を流し込み ── */
+  const sourceReasons=doc.querySelectorAll('#sec-reason .reason-card');
+  const targetReasons=document.querySelectorAll('#reasons-grid .reason-card');
+  targetReasons.forEach(card=>{
+    const idx=parseInt(card.dataset.reasonIdx,10);
+    const src=sourceReasons[idx];if(!src)return;
+    const title=src.querySelector('.reason-title');
+    const body=src.querySelector('.reason-body');
+    const tEl=card.querySelector('.rc-title');
+    const bEl=card.querySelector('.rc-body');
+    if(tEl&&title)tEl.textContent=title.textContent.trim();
+    if(bEl&&body)bEl.textContent=body.textContent.trim();
+  });
+
+  /* ── 数字で見るトライテック: #data の .dc から num/unit/label を取得して recruit デザインで描画 ── */
+  const dataGrid=document.getElementById('data-grid-rc');
+  const numTargets=[];
+  if(dataGrid){
+    const dcs=doc.querySelectorAll('#data .data-grid .dc');
+    dataGrid.innerHTML='';
+    dcs.forEach(dc=>{
+      const num=dc.querySelector('.cnum')?.dataset.target||'0';
+      const unit=dc.querySelector('.dc-num .u')?.textContent.trim()||'';
+      const plus=dc.querySelector('.dc-num .p')?.textContent.trim()||'';
+      const label=dc.querySelector('.dc-label')?.textContent.trim()||'';
+      const card=document.createElement('div');
+      card.className='dc-rc';
+      card.innerHTML=`
+        <div class="dc-rc-num">
+          <span class="dc-rc-cnum" data-target="${num}">0</span>
+          <span class="dc-rc-unit">${unit}</span>
+          ${plus?`<span class="dc-rc-plus">${plus}</span>`:''}
+        </div>
+        <div class="dc-rc-label">${label}</div>`;
+      dataGrid.appendChild(card);
+      numTargets.push(card.querySelector('.dc-rc-cnum'));
+    });
+  }
+
+  /* ── 数字カウントアップ（recruitセクションが画面に入ったら一度だけ） ── */
+  function countUp(el,target,dur){
+    let start=null;
+    const step=ts=>{
+      if(!start)start=ts;
+      const p=Math.min((ts-start)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      el.textContent=Math.round(ease*target);
+      if(p<1)requestAnimationFrame(step);
+      else el.textContent=target;
+    };
+    requestAnimationFrame(step);
+  }
+  if(numTargets.length){
+    const cIo=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(!e.isIntersecting)return;
+        numTargets.forEach(el=>countUp(el,+el.dataset.target,1600));
+        cIo.disconnect();
+      });
+    },{threshold:.3});
+    cIo.observe(dataGrid);
+  }
+
+  /* ── チャート: index.js から barData / donutData を抽出 ── */
+  let barData=[],donutData=[];
+  try{
+    const jsRes=await fetch('assets/js/pages/index.js',{cache:'no-store'});
+    const src=await jsRes.text();
+    const mBar=src.match(/const\s+barData\s*=\s*(\[[\s\S]*?\])\s*;/);
+    if(mBar)barData=new Function('return '+mBar[1])();
+    // donut の data 配列を関数内から抽出: [{v:..,c:..},..]
+    const mDonut=src.match(/function\s+drawDonut[\s\S]*?const\s+data\s*=\s*(\[[\s\S]*?\])\s*;/);
+    if(mDonut)donutData=new Function('return '+mDonut[1])();
+  }catch(e){
+    console.warn('[chart] index.js の取得に失敗:',e);
+  }
+
+  /* ドーナツ凡例: index.html の凡例ラベルを取得 */
+  const legendBox=document.getElementById('donut-legend-rc');
+  if(legendBox){
+    const items=doc.querySelectorAll('#data .donut-legend .legend-item');
+    legendBox.innerHTML='';
+    items.forEach((it,i)=>{
+      const label=it.querySelector('.legend-label')?.textContent.trim()||'';
+      const value=it.querySelector('.lnum')?.dataset.target||'0';
+      const color=donutData[i]?.c||'#888';
+      const row=document.createElement('div');
+      row.className='legend-item-rc';
+      row.innerHTML=`<span class="legend-dot-rc" style="background:${color}"></span><span class="legend-label-rc">${label}</span><span class="legend-value-rc">${value}%</span>`;
+      legendBox.appendChild(row);
+    });
+  }
+
+  /* ── 棒グラフ描画 ── */
+  function setupDPR(cv){
+    const dpr=window.devicePixelRatio||1;
+    const r=cv.getBoundingClientRect();
+    if(r.width<=0||r.height<=0)return false;
+    cv.width=Math.round(r.width*dpr);
+    cv.height=Math.round(r.height*dpr);
+    cv.getContext('2d').setTransform(dpr,0,0,dpr,0,0);
+    return true;
+  }
+  function drawBar(cv,progresses){
+    const ctx=cv.getContext('2d');
+    const r=cv.getBoundingClientRect();
+    const W=r.width,H=r.height;
+    ctx.clearRect(0,0,W,H);
+    if(!barData.length)return;
+    const max=40,pL=44,pR=20,pT=26,pB=36;
+    const cW=W-pL-pR,cH=H-pT-pB;
+    ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;
+    ctx.font='10px "JetBrains Mono",monospace';
+    ctx.fillStyle='rgba(240,240,255,.4)';
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    for(let i=0;i<=4;i++){
+      const y=pT+cH*(i/4);
+      ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
+      ctx.fillText(String(Math.round(max-max*(i/4))),pL-8,y);
+    }
+    const slot=cW/barData.length,bW=slot*.5;
+    barData.forEach((d,i)=>{
+      const bp=Array.isArray(progresses)?progresses[i]:progresses;
+      const fH=cH*(d.v/max),h=fH*bp;
+      const x=pL+slot*i+(slot-bW)/2;
+      const by=pT+cH-h;
+      const grd=ctx.createLinearGradient(0,by,0,by+h);
+      grd.addColorStop(0,'#00f5c8');grd.addColorStop(1,'#4d6fff');
+      ctx.fillStyle=grd;
+      ctx.shadowColor='rgba(0,245,200,.35)';ctx.shadowBlur=10;
+      ctx.fillRect(x,by,bW,h);
+      ctx.shadowBlur=0;
+      if(bp>.88){
+        ctx.globalAlpha=Math.min(1,(bp-.88)/.12);
+        ctx.font='bold 13px "Space Grotesk",sans-serif';
+        ctx.fillStyle='#fff';
+        ctx.textAlign='center';ctx.textBaseline='bottom';
+        ctx.fillText(d.v+'名'+(d.note?'（'+d.note+'）':''),x+bW/2,by-6);
+        ctx.globalAlpha=1;
+      }
+      ctx.font='11px "JetBrains Mono",monospace';
+      ctx.fillStyle='rgba(240,240,255,.55)';
+      ctx.textAlign='center';ctx.textBaseline='top';
+      ctx.fillText(d.y,x+bW/2,pT+cH+8);
+    });
+  }
+  function animateBar(cv){
+    const stagger=180,barDur=900;
+    const total=barDur+stagger*(barData.length-1);
+    let start=null;
+    const step=ts=>{
+      if(!start)start=ts;
+      const el=ts-start;
+      const pr=barData.map((_,i)=>{
+        const be=el-i*stagger;
+        if(be<=0)return 0;
+        const p=Math.min(be/barDur,1);
+        return 1-Math.pow(1-p,3);
+      });
+      drawBar(cv,pr);
+      if(el<total)requestAnimationFrame(step);
+      else drawBar(cv,1);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ── ドーナツ描画 ── */
+  function drawDonut(cv,progress){
+    const ctx=cv.getContext('2d');
+    const r=cv.getBoundingClientRect();
+    const W=r.width,H=r.height;
+    ctx.clearRect(0,0,W,H);
+    if(!donutData.length)return;
+    const cx=W/2,cy=H/2;
+    const oR=Math.min(W,H)*.46,iR=oR*.62;
+    const startAng=-Math.PI/2;
+    const sweep=Math.PI*2*progress;
+    let covered=0;
+    donutData.forEach(d=>{
+      const ang=(d.v/100)*Math.PI*2;
+      const s=startAng+covered;
+      const e=Math.min(startAng+covered+ang,startAng+sweep);
+      if(e>s){
+        ctx.beginPath();
+        ctx.arc(cx,cy,oR,s,e);
+        ctx.arc(cx,cy,iR,e,s,true);
+        ctx.closePath();
+        ctx.fillStyle=d.c;ctx.fill();
+      }
+      covered+=ang;
+    });
+    if(progress>.80){
+      ctx.globalAlpha=Math.min(1,(progress-.80)/.20);
+      ctx.font='bold 22px "Space Grotesk",sans-serif';
+      ctx.fillStyle='#fff';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('100%',cx,cy-4);
+      ctx.font='10px "JetBrains Mono",monospace';
+      ctx.fillStyle='rgba(240,240,255,.5)';
+      ctx.fillText('Skills',cx,cy+16);
+      ctx.globalAlpha=1;
+    }
+  }
+  function animateDonut(cv){
+    const dur=1500;let start=null;
+    const step=ts=>{
+      if(!start)start=ts;
+      const p=Math.min((ts-start)/dur,1);
+      drawDonut(cv,1-Math.pow(1-p,3));
+      if(p<1)requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  function initChart(id,drawFn,animFn){
+    const cv=document.getElementById(id);
+    if(!cv)return;
+    requestAnimationFrame(()=>setupDPR(cv));
+    const io=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(e.isIntersecting){
+          if(setupDPR(cv))animFn(cv);
+          io.disconnect();
+        }
+      });
+    },{threshold:.3});
+    io.observe(cv);
+    let rt=null;
+    window.addEventListener('resize',()=>{
+      clearTimeout(rt);
+      rt=setTimeout(()=>{if(setupDPR(cv))drawFn(cv,1)},150);
+    });
+  }
+  initChart('chart-bar-rc',drawBar,animateBar);
+  initChart('chart-donut-rc',drawDonut,animateDonut);
+})();
+
+/* 注目の案件: PROJECT_DATA から統一フォーマットでカード生成・モーダル詳細表示・無限ループ */
+(function(){
+  const track=document.getElementById('proj-track');
+  if(!track)return;
+
+  /* カテゴリ別のタグ色 */
+  const catColor={
+    '開発':'tag-blue',
+    'インフラ':'tag-cyan',
+    'PMO':'tag-purple',
+  };
+
+  /* 案件データ (assets/data/案件抽出_カテゴリ別最高単価_v4.csv より) */
+  const PROJECT_DATA=[
+    {
+      cat:'開発',level:'初級',
+      title:'車載Androidアプリ テストエンジニア',
+      short:'車載アプリQA',
+      summary:'タクシー車内で動く車載Androidアプリの品質向上をリード。アプリ単体テストに留まらず、ハードウェア・ソフトウェアが連携する車載システム全体の品質作り込みを担っていただきます。',
+      pay:'〜80万/月',payVal:80,
+      location:'六本木一丁目（フルリモート可）',
+      term:'4月〜長期',years:'5年以上',
+      interview:'1回',foreign:'N1必須・在日5年以上',
+      tasks:[
+        '車載Androidアプリのテスト計画・実行・自動化',
+        'ハード/ソフト連携の品質作り込み',
+        'CI/CD（GitHub Actions / Bitrise）の運用改善',
+        '不具合検出と再発防止策の提案',
+      ],
+      must:[
+        'WebアプリまたはモバイルアプリのKotlin開発実務経験（目安3年以上）',
+        '自動テストの実装経験',
+        'Gitの利用経験',
+      ],
+      want:[
+        'AndroidアプリのE2Eテスト経験（Appium等）',
+        'GitHub ActionsでのCI/CD構築経験',
+        'パブリッククラウドの運用経験',
+      ],
+      skills:['Kotlin','Android','Appium'],
+    },
+    {
+      cat:'開発',level:'中級',
+      title:'Wallet系 サーバーサイド機能拡張',
+      short:'Walletサーバ拡張',
+      summary:'交通系ICカードと連携するWalletアプリのサーバーサイド機能拡張。BtoCで大量アクセスを捌くJava/Spring環境で、決済・金融領域の堅牢なシステムを支えます。',
+      pay:'〜120万/月',payVal:120,
+      location:'横浜鶴見（出社前提）',
+      term:'即日〜2026/6/30（長期前提）',years:'3年以上',
+      interview:'2回（1回目弊社同席）',foreign:'外国籍不可',
+      tasks:[
+        'Walletアプリのサーバーサイドシステム開発',
+        '交通系ICカードの機能拡張',
+        'REST APIの設計・実装',
+        '大量アクセス環境向けのチューニング',
+      ],
+      must:[
+        'Java / Spring Framework / Spring Boot でのWeb開発経験（3年以上）',
+        'モバイルアクセスがあるサーバー開発経験',
+        '自動化テスト・REST API実装経験',
+        '基本情報技術者試験以上の資格保有',
+      ],
+      want:[
+        '決済・金融系システム開発経験',
+        'Dockerでのサーバーサイド開発経験',
+        'OAuth・OpenID 知見',
+      ],
+      skills:['Java','Spring','REST API'],
+    },
+    {
+      cat:'開発',level:'上級',
+      title:'AIエージェント推進プロジェクト PM',
+      short:'AIエージェント PM',
+      summary:'DX推進ロードマップ策定から導入・定着化まで一貫してリード。最先端のAI技術を活用した業務システム構築のプロジェクトマネジメントをお任せします。',
+      pay:'〜170万/月',payVal:170,
+      location:'西新宿（週2リモート / 週3出社）',
+      term:'5月〜長期',years:'5年以上',
+      interview:'1回',foreign:'外国籍不可',
+      tasks:[
+        'AX推進ロードマップの作成・優先順位付け',
+        'プロジェクト推進、導入・定着化',
+        '最先端AI技術を活用した業務システム構築',
+        '業務要件に基づく技術要件定義',
+      ],
+      must:[
+        'DX推進・基幹システム刷新プロジェクトのPM経験5年以上',
+        'AIプロダクト導入コンサル経験（ChatGPT/Copilot/生成AI SaaS等）',
+        'スタートアップ環境での就業経験',
+        '何らかの言語での開発経験（Python尚可）',
+      ],
+      want:[
+        'AIエージェント・LLM・RAG の知見',
+        'Salesforce / HubSpot / kintone / SFA の導入経験',
+      ],
+      skills:['PM','AI/LLM','Python'],
+    },
+    {
+      cat:'インフラ',level:'初級',
+      title:'公共系 ネットワークセキュリティ構築',
+      short:'公共系NWセキュリティ',
+      summary:'自治体向け情報セキュリティクラウドの設計構築。Cisco・FortiGate・プロキシ等の有識者として、公共インフラの心臓部を支えるネットワーク基盤を担います。',
+      pay:'〜80万/月',payVal:80,
+      location:'東新宿（テレワーク併用・半々程度）',
+      term:'6月〜',years:'3年以上',
+      interview:'1回',foreign:'外国籍不可',
+      tasks:[
+        '自治体向け情報セキュリティクラウドの設計・構築',
+        'Ciscoスイッチ・FortiGate構築',
+        'プロキシサーバー、メールリレー、DNS、WAF構築',
+        '運用フローの整備・改善',
+      ],
+      must:[
+        'インターネット接続含むネットワーク（Cisco）の設計構築経験3年以上',
+        'セキュリティ設計（FW、プロキシ、DNS等）の知識と経験',
+      ],
+      want:[
+        'FortiGate構築経験',
+        'WAF・CDN・メールリレー等の知識',
+        '公共系案件の経験',
+      ],
+      skills:['Cisco','FortiGate','Security'],
+    },
+    {
+      cat:'インフラ',level:'中級',
+      title:'某省庁向け M365クラウドサービス担当',
+      short:'省庁M365導入',
+      summary:'ユーザ数14,000名のOAシステムを、M365などクラウドサービス前提に刷新する大規模プロジェクト。Teams / SharePoint / Intune 等の詳細設計から構築・テストまでをご担当いただきます。',
+      pay:'〜120万/月',payVal:120,
+      location:'基本新川常駐（まれに市ヶ谷出社）',
+      term:'2026年4月〜9月（スライド検討あり）',years:'3年以上',
+      interview:'2回',foreign:'外国籍不可',
+      tasks:[
+        '某省OAシステムの提案活動支援、設計・構築支援',
+        'IaaS（クラウド）設計、ネットワーク・セキュリティ設計',
+        'サービス設計、端末設計',
+        'テスト・マニュアル作成',
+      ],
+      must:[
+        '下記M365サービスいずれか3つの詳細設計〜テスト、マニュアル作成経験3年以上',
+        'Teams / SharePoint Online / Data Loss Prevention',
+        'Purview Information Protection / Intune',
+      ],
+      want:[
+        '省庁・公共系プロジェクトの経験',
+        '大規模ユーザ向けクラウド導入経験',
+      ],
+      skills:['M365','Teams','SharePoint'],
+    },
+    {
+      cat:'インフラ',level:'上級',
+      title:'スマート農業実証事業 全体統括PM',
+      short:'スマート農業 統括PM',
+      summary:'スマート農業実証事業および共用施設運営の全体統括PM。実証に留まらず事業の自走化・横展開を見据えた運営モデル構築までリードいただける方を募集します。',
+      pay:'〜160万/月',payVal:160,
+      location:'ハイブリッド：横浜近郊',
+      term:'即日〜長期',years:'3年以上',
+      interview:'3回',foreign:'要相談',
+      tasks:[
+        '1億円以上規模プロジェクトのPMリード',
+        '15名以上のチームマネジメント',
+        '自治体・民間・現場事業者を巻き込んだ推進',
+        '工程・課題・リスク・品質・収支管理',
+      ],
+      must:[
+        '1億円以上規模のPM経験（3年以上）',
+        '15名以上のマネジメント経験（2年以上）',
+        '複数ステークホルダーを巻き込んだ推進経験',
+        'ネットワーク・サーバー・クラウドの構築経験',
+      ],
+      want:[
+        '実証事業（PoC）の企画・運営経験',
+        'スマート農業・アグリテック領域の知見',
+        'PMP または プロジェクトマネージャ資格',
+      ],
+      skills:['PM','PoC','Infra'],
+    },
+    {
+      cat:'PMO',level:'初級',
+      title:'航空・整備システム 顧客側PMO',
+      short:'航空システム PMO',
+      summary:'14システムを1つに統合する航空・整備系の次期システム開発案件。顧客情報子会社側のPMOとして、対向先・関連部署との調整を一人称で推進いただきます。',
+      pay:'〜80万/月',payVal:80,
+      location:'リモート中心／週1回 天空橋出社',
+      term:'5月or6月〜12月末（27年1月以降継続可能性あり）',years:'3年以上',
+      interview:'1〜2回',foreign:'外国籍不可',
+      tasks:[
+        '対向先システム・他チームとの仕様調整、各種調整',
+        'I/F開発作業の標準化（管理プロセス策定/運用）',
+        '技術支援（各種規約策定）',
+        'I/F開発の管理業務（計画/管理）',
+      ],
+      must:[
+        '設計開発経験3年以上（基本設計経験者尚可）',
+        'PM/PMOとしての各種管理・計画経験',
+        '自律的・能動的に動けること',
+      ],
+      want:[
+        '航空・整備系業務知識',
+        '大規模システム統合経験',
+      ],
+      skills:['PMO','基本設計','調整'],
+    },
+    {
+      cat:'PMO',level:'中級',
+      title:'AML 海外金融パッケージ導入 PMO',
+      short:'AML 海外PMO',
+      summary:'アンチマネーロンダリング（AML）海外パッケージの導入PMO。海外ベンダーとの調整を英語で実施し、グローバルな金融プロジェクトを推進します。',
+      pay:'〜120万/月',payVal:120,
+      location:'基本リモート予定',
+      term:'4月〜',years:'5年以上',
+      interview:'1回',foreign:'日本国籍が望ましい',
+      tasks:[
+        '海外ベンダーとの英語での調整・会議ファシリテーション',
+        'PMOとしての各種管理業務',
+        '海外SaaSパッケージ導入推進',
+        'ドキュメント整備・進捗管理',
+      ],
+      must:[
+        'AML・SWIFTなどの知見',
+        'PMO実務経験（5年以上）',
+        'ビジネスレベルの英語力（会議ファシリ、調整、ドキュメント読解）',
+      ],
+      want:[
+        '海外製SaaSパッケージの導入プロジェクト経験',
+      ],
+      skills:['PMO','AML','English'],
+    },
+    {
+      cat:'PMO',level:'上級',
+      title:'SAP S/4HANA 導入コンサル（製造業）',
+      short:'SAP S/4HANA コンサル',
+      summary:'製造業向け SAP S/4HANA 導入プロジェクトの実現化フェーズ（設計〜実装支援）。PM/PL・SD・FIなど複数ポジションで、製造業の業務プロセスを深く理解した上流推進をお任せします。',
+      pay:'〜130万/月',payVal:130,
+      location:'鶴見（週1〜3日出社・リモート併用）',
+      term:'4月〜',years:'5年以上',
+      interview:'2回（Web）',foreign:'日本語ビジネスレベル必須',
+      tasks:[
+        'SAP S/4HANA導入プロジェクトのPM/PL/PMO',
+        '販売管理（SD）、会計（FI）モジュール導入',
+        'プロジェクト管理・管理会計・在庫購買管理',
+        '品質管理・固定資産会計対応',
+      ],
+      must:[
+        'SAP導入経験5年以上（コンサルクラス）',
+        'S/4HANA環境での実務経験',
+        '製造業の業務プロセス理解',
+      ],
+      want:[
+        'SAPプロジェクトのPM経験',
+        '各モジュール（SD/FI/PS/CO/MM/QM）の導入経験',
+      ],
+      skills:['SAP','S/4HANA','製造業'],
+    },
+  ];
+
+  /* カード生成 */
+  function buildCard(p,idx){
+    const card=document.createElement('div');
+    card.className='proj-card';
+    card.dataset.idx=idx;
+    card.innerHTML=`
+      <span class="proj-arrow">↗</span>
+      <h3>${p.title}</h3>
+      <p>${p.summary.length>80?p.summary.slice(0,78)+'…':p.summary}</p>
+      <div class="proj-footer">
+        <div class="proj-skills">
+          ${p.skills.map(s=>`<span class="proj-skill">${s}</span>`).join('')}
+        </div>
+        <div class="proj-pay">${p.pay}</div>
+      </div>
+      <div class="proj-detail-btn">DETAIL →</div>`;
+    card.addEventListener('click',()=>openProjModal(idx));
+    return card;
+  }
+
+  /* ターミナルなど他スクリプトから参照できるようグローバル公開 */
+  window.PROJECT_DATA=PROJECT_DATA;
+  PROJECT_DATA.forEach((p,i)=>track.appendChild(buildCard(p,i)));
+  /* 無限ループ用に複製 */
+  [...track.children].forEach(c=>{
+    const clone=c.cloneNode(true);
+    const idx=parseInt(clone.dataset.idx,10);
+    clone.addEventListener('click',()=>openProjModal(idx));
+    track.appendChild(clone);
+  });
+
+  /* モーダル制御
+     ※モーダルDOM (proj-modal) はこのスクリプトより下にあるため、
+       スクリプト実行時点では document.getElementById が null になる。
+       呼び出し時に都度取得して、確実に動作させる。 */
+  function $(id){return document.getElementById(id);}
+  function openProjModal(idx){
+    const p=PROJECT_DATA[idx];if(!p)return;
+    const modal=$('proj-modal');if(!modal)return;
+    const mCat=$('proj-modal-cat');
+    const mLevel=$('proj-modal-level');
+    const mTitle=$('proj-modal-title');
+    const mSummary=$('proj-modal-summary');
+    const mMeta=$('proj-modal-meta');
+    const mTasks=$('proj-modal-tasks');
+    const mMust=$('proj-modal-must');
+    const mWant=$('proj-modal-want');
+    if(mCat){mCat.className='pc-tag '+(catColor[p.cat]||'tag-blue');mCat.textContent=p.cat;}
+    if(mLevel){mLevel.className='pc-level pc-level-'+p.level;mLevel.textContent=p.level;}
+    if(mTitle)mTitle.textContent=p.title;
+    if(mSummary)mSummary.textContent=p.summary;
+    if(mMeta)mMeta.innerHTML=`
+      <dl><dt>単価</dt><dd class="pay">${p.pay}</dd></dl>
+      <dl><dt>必要経験</dt><dd>${p.years}</dd></dl>
+      <dl><dt>勤務地</dt><dd>${p.location}</dd></dl>
+      <dl><dt>面談</dt><dd>${p.interview}</dd></dl>`;
+    if(mTasks)mTasks.innerHTML=p.tasks.map(t=>`<li>${t}</li>`).join('');
+    if(mMust)mMust.innerHTML=p.must.map(t=>`<li>${t}</li>`).join('');
+    if(mWant)mWant.innerHTML=p.want.map(t=>`<li>${t}</li>`).join('');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    const body=modal.querySelector('.proj-modal-body');
+    if(body)body.scrollTop=0;
+  }
+  function closeProjModal(){
+    const modal=$('proj-modal');if(!modal)return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+
+  /* モーダルDOMが揃ったタイミング(DOMContentLoaded)で閉じる系のイベントをバインド */
+  function bindModalEvents(){
+    const modal=$('proj-modal');if(!modal)return;
+    const mClose=$('proj-modal-close');
+    if(mClose)mClose.addEventListener('click',closeProjModal);
+    modal.addEventListener('click',e=>{if(e.target===modal)closeProjModal();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProjModal();});
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',bindModalEvents);
+  } else {
+    bindModalEvents();
+  }
+})();
+
+/* DAY FLOW: タブ切替 */
+(function(){
+  const tabs=document.querySelectorAll('.day-sec .tab-btn');
+  if(!tabs.length)return;
+  tabs.forEach(b=>{
+    b.addEventListener('click',()=>{
+      const id=b.dataset.tab;
+      document.querySelectorAll('.day-sec .tab-btn').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.day-sec .tab-panel').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const panel=document.getElementById(id);
+      if(panel)panel.classList.add('active');
+    });
+  });
+})();
+</script>
+<div id="game-overlay">
+  <canvas id="game-canvas"></canvas>
+  <div id="ghud">
+    <span>SCORE <span id="gs">000000</span></span>
+    <span class="gst" id="gstg">STAGE 1</span>
+    <span class="ghi">HI <span id="gh">999999</span></span>
+    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
+  </div>
+  <div id="gesc">[ ESC ] 終了</div>
+</div>
+<script src="assets/js/game.js" defer></script>
+
+<!-- ════════════════════════════════════════════
+     モーダル類は body 直下に配置
+     （祖先要素の overflow/transform/filter 等の影響を受けないため）
+     ════════════════════════════════════════════ -->
+
+<!-- 案件詳細モーダル -->
+<div class="proj-modal" id="proj-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="proj-modal-body">
+    <button class="proj-modal-close" id="proj-modal-close" aria-label="閉じる">×</button>
+    <h3 class="proj-modal-title" id="proj-modal-title"></h3>
+    <div class="proj-modal-summary" id="proj-modal-summary"></div>
+    <div class="proj-modal-meta" id="proj-modal-meta"></div>
+    <div class="proj-modal-section">
+      <h4>業務内容</h4>
+      <ul id="proj-modal-tasks"></ul>
+    </div>
+    <div class="proj-modal-section">
+      <h4>必須スキル</h4>
+      <ul id="proj-modal-must"></ul>
+    </div>
+    <div class="proj-modal-section proj-modal-section-want">
+      <h4>歓迎スキル</h4>
+      <ul id="proj-modal-want"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- 社員の声 詳細モーダル -->
+<div class="voice-modal-rc" id="voice-modal-rc" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="voice-modal-rc-body">
+    <button class="voice-modal-rc-close" id="voice-modal-rc-close" aria-label="閉じる">×</button>
+    <div class="voice-modal-rc-header">
+      <div class="voice-modal-rc-head-row">
+        <div class="voice-modal-rc-svg" id="voice-modal-rc-svg"></div>
+        <div class="voice-modal-rc-initial" id="voice-modal-rc-initial"></div>
+      </div>
+      <h3 id="voice-modal-rc-name"></h3>
+      <p id="voice-modal-rc-role"></p>
+    </div>
+    <div class="voice-modal-rc-chapters" id="voice-modal-rc-chapters"></div>
+  </div>
+</div>
+</body>
+</html>

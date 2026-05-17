@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>プライバシーポリシー | 株式会社トライテック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<link rel="stylesheet" href="assets/css/pages/index.css">
+<link rel="stylesheet" href="assets/css/game.css">
+<style>
+/* ── プライバシーポリシーページ ── */
+.pp-hero{
+  background:var(--ink);
+  padding:140px 5vw 70px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.pp-hero::before{
+  content:'';position:absolute;
+  top:-200px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(30,143,160,.1) 0%,transparent 55%);
+  pointer-events:none;
+}
+.pp-hero-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
+.pp-hero .s-chip{margin:0 auto 1.4rem;display:inline-flex}
+.pp-hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2rem,3.5vw,3rem);font-weight:800;
+  letter-spacing:-.02em;color:#fff;margin-bottom:1rem;
+}
+.pp-hero .lead{
+  font-size:.95rem;color:rgba(255,255,255,.6);line-height:1.9;
+  max-width:680px;margin:0 auto;
+}
+
+.pp-section{background:#fafafa;padding:80px 5vw 120px}
+.pp-wrap{
+  max-width:880px;margin:0 auto;
+  background:#fff;border-radius:14px;
+  padding:60px 56px;
+  box-shadow:0 8px 36px rgba(15,18,36,.06);
+}
+.pp-intro{
+  font-size:.92rem;color:var(--muted);
+  line-height:1.95;margin-bottom:2.5rem;
+  padding-bottom:2rem;border-bottom:1px solid #eee;
+}
+
+.pp-toc{
+  background:rgba(217,95,26,.04);
+  border:1px solid rgba(217,95,26,.12);
+  border-radius:10px;
+  padding:24px 28px;margin-bottom:3rem;
+}
+.pp-toc-title{
+  font-family:'Syne',sans-serif;font-size:.78rem;
+  letter-spacing:.14em;color:var(--orange);
+  font-weight:700;margin-bottom:1rem;
+}
+.pp-toc ol{
+  list-style:none;padding:0;margin:0;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:.55rem 1.6rem;
+  counter-reset:toc;
+}
+.pp-toc li{
+  counter-increment:toc;
+  font-size:.85rem;
+}
+.pp-toc li::before{
+  content:counter(toc,decimal-leading-zero) ".";
+  color:var(--orange);font-weight:700;
+  margin-right:.55rem;font-family:'Syne',sans-serif;
+}
+.pp-toc a{
+  color:var(--ink);text-decoration:none;
+  transition:color .15s;
+}
+.pp-toc a:hover{color:var(--orange)}
+
+.pp-article{counter-reset:section}
+.pp-h2{
+  counter-increment:section;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:1.15rem;font-weight:700;
+  color:var(--ink);
+  padding:1.5rem 0 .8rem;
+  margin-top:2.5rem;
+  border-bottom:2px solid var(--orange);
+  display:flex;align-items:baseline;gap:.7rem;
+  scroll-margin-top:90px;
+}
+.pp-h2::before{
+  content:counter(section,decimal-leading-zero);
+  font-family:'Syne',sans-serif;font-size:.85rem;
+  color:var(--orange);letter-spacing:.06em;
+  padding:3px 8px;background:rgba(217,95,26,.08);
+  border-radius:4px;flex-shrink:0;
+}
+.pp-h3{
+  font-size:.95rem;font-weight:700;color:var(--ink);
+  margin:1.5rem 0 .6rem;
+}
+.pp-article p{
+  font-size:.88rem;color:var(--ink);
+  line-height:1.95;margin-bottom:1rem;
+}
+.pp-article ul,
+.pp-article ol{
+  margin:.5rem 0 1.2rem 1.5rem;
+  font-size:.88rem;color:var(--ink);
+  line-height:1.85;
+}
+.pp-article li{margin-bottom:.4rem}
+.pp-article ul li::marker{color:var(--orange)}
+.pp-article ol li::marker{color:var(--teal);font-weight:700}
+
+.pp-contact-box{
+  background:#0e0e1a;color:#fff;
+  border-radius:12px;padding:24px 28px;
+  margin-top:1rem;
+}
+.pp-contact-box dt{
+  font-family:'Syne',sans-serif;font-size:.7rem;
+  letter-spacing:.14em;color:rgba(255,255,255,.5);
+  margin-bottom:.3rem;
+}
+.pp-contact-box dd{
+  font-size:.9rem;margin:0 0 1rem;line-height:1.6;
+}
+.pp-contact-box dd:last-child{margin-bottom:0}
+.pp-contact-box a{color:#ff9466;text-decoration:none}
+.pp-contact-box a:hover{text-decoration:underline}
+
+.pp-footer-meta{
+  margin-top:3rem;padding-top:1.5rem;
+  border-top:1px solid #eee;
+  display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:.5rem;
+  font-size:.78rem;color:var(--muted);
+}
+
+@media(max-width:760px){
+  .pp-hero{padding:110px 5vw 50px}
+  .pp-wrap{padding:36px 24px}
+  .pp-toc ol{grid-template-columns:1fr}
+  .pp-h2{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
+<div data-include="header"></div>
+
+<!-- HERO -->
+<section class="pp-hero">
+  <div class="pp-hero-inner">
+    <p class="s-chip teal reveal"><span class="s-chip-dot"></span>Privacy Policy</p>
+    <h1 class="reveal" style="transition-delay:.1s">プライバシーポリシー</h1>
+    <p class="lead reveal" style="transition-delay:.2s">株式会社トライテック（以下「当社」といいます）は、お客様・取引先・採用応募者・登録エンジニアの個人情報を適切に取り扱うため、本プライバシーポリシーを定め、これを遵守します。</p>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<section class="pp-section">
+  <div class="pp-wrap">
+
+    <p class="pp-intro">
+      当社は、SES（システムエンジニアリングサービス）事業、システム開発・運用支援事業、DX推進支援事業を通じて、お客様・パートナー企業・エンジニアの皆様から個人情報をお預かりする機会があります。当社は、これらの個人情報の重要性を認識し、個人情報の保護に関する法律（個人情報保護法）その他関連法令を遵守するとともに、本ポリシーに従い、適正に取扱います。
+    </p>
+
+    <!-- 目次 -->
+    <div class="pp-toc">
+      <div class="pp-toc-title">// CONTENTS</div>
+      <ol>
+        <li><a href="#pp-1">事業者情報</a></li>
+        <li><a href="#pp-2">取得する個人情報</a></li>
+        <li><a href="#pp-3">利用目的</a></li>
+        <li><a href="#pp-4">第三者への提供</a></li>
+        <li><a href="#pp-5">業務委託</a></li>
+        <li><a href="#pp-6">安全管理措置</a></li>
+        <li><a href="#pp-7">開示・訂正・削除の請求</a></li>
+        <li><a href="#pp-8">Cookie・アクセス解析</a></li>
+        <li><a href="#pp-9">未成年者の個人情報</a></li>
+        <li><a href="#pp-10">本ポリシーの改定</a></li>
+        <li><a href="#pp-11">お問い合わせ窓口</a></li>
+      </ol>
+    </div>
+
+    <article class="pp-article">
+
+      <h2 id="pp-1" class="pp-h2">事業者情報</h2>
+      <p>本ポリシーを定める事業者の情報は以下のとおりです。</p>
+      <ul>
+        <li>事業者名：株式会社トライテック</li>
+        <li>所在地：東京都台東区台東 2-30-10 THE GATE 御徒町 4F</li>
+        <li>代表者：代表取締役 清水 幸秀</li>
+      </ul>
+
+      <h2 id="pp-2" class="pp-h2">取得する個人情報</h2>
+      <p>当社は、事業遂行に必要な範囲で、以下の個人情報を適法かつ公正な手段により取得します。</p>
+
+      <h3 class="pp-h3">(1) お問い合わせをいただく方</h3>
+      <ul>
+        <li>氏名、会社名、メールアドレス、電話番号、お問い合わせ内容</li>
+      </ul>
+
+      <h3 class="pp-h3">(2) 採用応募者・登録エンジニア</h3>
+      <ul>
+        <li>氏名、生年月日、住所、連絡先（電話・メール）</li>
+        <li>履歴書・職務経歴書に記載される学歴・職歴・保有資格等</li>
+        <li>スキルセット、希望条件、ポートフォリオ、面談における回答内容</li>
+      </ul>
+
+      <h3 class="pp-h3">(3) 取引先・パートナー企業のご担当者様</h3>
+      <ul>
+        <li>会社名、部署名、役職、氏名、メールアドレス、電話番号</li>
+        <li>取引・契約に関する情報、商談内容、案件情報</li>
+      </ul>
+
+      <h3 class="pp-h3">(4) ウェブサイト訪問者</h3>
+      <ul>
+        <li>IPアドレス、ブラウザ種類、参照元URL、閲覧履歴、Cookie情報</li>
+      </ul>
+
+      <h2 id="pp-3" class="pp-h2">利用目的</h2>
+      <p>当社は、取得した個人情報を以下の目的の範囲内でのみ利用します。</p>
+      <ol>
+        <li>お問い合わせ・ご相談への対応、各種サービス・情報のご提供</li>
+        <li>SES契約その他取引の遂行、契約の履行・管理、請求業務</li>
+        <li>登録エンジニアと案件・取引先企業とのマッチング、商談調整、参画後のフォロー</li>
+        <li>採用選考・採用活動、入社後の人事労務管理</li>
+        <li>パートナー企業との協業、案件情報の共有・調整</li>
+        <li>サービス品質の向上、新サービスの開発、利用状況の分析</li>
+        <li>セミナー・イベント・ニュースレター等のご案内</li>
+        <li>当社サービスに関する重要なお知らせの通知</li>
+        <li>法令に基づく対応、不正利用の防止、紛争・トラブルの対応</li>
+      </ol>
+
+      <h2 id="pp-4" class="pp-h2">第三者への提供</h2>
+      <p>当社は、以下のいずれかに該当する場合を除き、あらかじめご本人の同意を得ることなく、個人情報を第三者に提供しません。</p>
+      <ol>
+        <li>法令に基づく場合</li>
+        <li>人の生命、身体または財産の保護のために必要があり、ご本人の同意を得ることが困難である場合</li>
+        <li>公衆衛生の向上または児童の健全な育成の推進のために特に必要があり、ご本人の同意を得ることが困難である場合</li>
+        <li>国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合</li>
+      </ol>
+      <p>なお、SES事業の遂行にあたり、エンジニアのスキル・経歴情報を案件参画候補先となる取引先企業へ提供することがありますが、その場合は事前にご本人の同意を得たうえで行います。</p>
+
+      <h2 id="pp-5" class="pp-h2">業務委託</h2>
+      <p>当社は、利用目的の達成に必要な範囲で、個人情報の取扱いの全部または一部を外部委託する場合があります。委託先の選定にあたっては、個人情報を適切に取り扱うと認められる事業者を選定し、契約等により適切な監督を行います。</p>
+      <p>主な委託先：会計・経理処理、システム運用保守、クラウドサービス事業者、給与計算事業者 等</p>
+
+      <h2 id="pp-6" class="pp-h2">安全管理措置</h2>
+      <p>当社は、個人情報の漏えい、滅失または毀損の防止その他の個人情報の安全管理のために、以下の措置を講じます。</p>
+      <ul>
+        <li><strong>組織的安全管理措置：</strong>個人情報保護管理者の設置、社内規程の整備、教育・研修の実施</li>
+        <li><strong>人的安全管理措置：</strong>従業員との秘密保持契約の締結、定期的な情報セキュリティ教育</li>
+        <li><strong>物理的安全管理措置：</strong>個人情報を取り扱う区域へのアクセス制限、施錠管理</li>
+        <li><strong>技術的安全管理措置：</strong>アクセス権限管理、通信の暗号化、ウイルス対策、ログの取得と監視</li>
+      </ul>
+
+      <h2 id="pp-7" class="pp-h2">開示・訂正・削除の請求</h2>
+      <p>ご本人またはその代理人から、ご本人の個人情報に関する開示・訂正・追加・削除・利用停止・第三者提供の停止のご請求があった場合、当社は法令に基づき遅滞なく対応いたします。</p>
+      <p>ご請求の際は、本ポリシー末尾の「お問い合わせ窓口」までご連絡ください。本人確認のため、所定の書類のご提出をお願いする場合があります。</p>
+
+      <h2 id="pp-8" class="pp-h2">Cookie・アクセス解析</h2>
+      <p>当社ウェブサイトでは、サービス品質向上およびご利用状況把握のため、Cookie（クッキー）およびアクセス解析ツールを使用する場合があります。</p>
+      <p>Cookieによって収集される情報には、個人を特定する情報は含まれません。ブラウザの設定によりCookieの受け入れを拒否することができますが、その場合、サイトの一部機能が正しく動作しない可能性があります。</p>
+      <p>当社は、必要に応じて Google Analytics 等のアクセス解析ツールを利用することがあります。各サービスの利用については、各サービス提供事業者のプライバシーポリシーをご確認ください。</p>
+
+      <h2 id="pp-9" class="pp-h2">未成年者の個人情報</h2>
+      <p>当社は、未成年者から個人情報を取得する場合、保護者の同意を得たうえで取得することを原則とします。</p>
+
+      <h2 id="pp-10" class="pp-h2">本ポリシーの改定</h2>
+      <p>当社は、法令の改正、事業内容の変更、その他の理由により、本ポリシーを改定することがあります。改定後の内容は、当社ウェブサイトに掲載した時点から効力を生じるものとします。</p>
+
+      <h2 id="pp-11" class="pp-h2">お問い合わせ窓口</h2>
+      <p>個人情報の取扱いに関するお問い合わせ、開示・訂正等のご請求は、以下の窓口までご連絡ください。</p>
+      <dl class="pp-contact-box">
+        <dt>事業者名</dt>
+        <dd>株式会社トライテック</dd>
+        <dt>所在地</dt>
+        <dd>東京都台東区台東 2-30-10 THE GATE 御徒町 4F</dd>
+        <dt>担当窓口</dt>
+        <dd>個人情報保護担当</dd>
+        <dt>メールアドレス</dt>
+        <dd><a href="mailto:info@tritechinc.jp">info@tritechinc.jp</a></dd>
+        <dt>受付時間</dt>
+        <dd>平日 10:00 〜 18:00（土日祝・年末年始除く）</dd>
+      </dl>
+
+      <div class="pp-footer-meta">
+        <span>制定日：2025年4月1日</span>
+        <span>最終改定日：2026年5月1日</span>
+      </div>
+
+    </article>
+
+  </div>
+</section>
+
+<!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
+<div data-include="footer"></div>
+
+<script src="assets/js/include-partials.js"></script>
+<script src="assets/js/common.js" defer></script>
+
+</body>
+</html>

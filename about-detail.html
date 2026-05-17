@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>会社情報 | 株式会社トライテック</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;
+  --card:#ffffff;
+  --border:#e8e8e8;
+  --accent:#E07830;
+  --blue:#44AADB;
+  --orange:#E07830;
+  --teal:#1e8fa0;
+  --navy:#1d3557;
+  --text:#111111;
+  --muted:#555555;
+  --footer-bg:#1a1a2e;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;line-height:1.7;overflow-x:hidden}
+
+/* SECTIONS */
+/* index.html と同じ「左寄せ・画面端から 5vw」方針に統一 */
+section{padding:100px 5vw 80px;position:relative}
+.sec-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(224,120,48,.08);color:var(--accent);border:1px solid rgba(224,120,48,.22);border-radius:100px;padding:5px 16px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.4rem}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:1rem;letter-spacing:-.02em;line-height:1.2;color:var(--text)}
+.sec-title .ac{color:var(--accent)}
+.divider{width:100%;height:1px;background:var(--border)}
+
+/* HERO SLOGAN */
+#sec-slogan{min-height:56vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:130px;padding-bottom:60px;position:relative;max-width:100%}
+#sec-slogan::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(224,120,48,.07) 0%,transparent 65%);pointer-events:none}
+.slogan-text{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3.5vw,3rem);font-weight:800;line-height:1.45;letter-spacing:-.02em;position:relative;z-index:1;max-width:1200px;padding:0 5vw;color:var(--text)}
+.slogan-text .ac{color:var(--accent)}
+
+/* INTRO */
+.intro-body p{font-size:.95rem;color:var(--muted);line-height:2;margin-bottom:1.3rem}
+/* テキストブロック：可読性を保ちつつ右側余白を抑える。section 左端に揃える */
+.about-detail{max-width:1100px;margin:0;padding:2rem 0}
+.about-detail-lead{font-size:1.02rem;line-height:2;margin-bottom:1.5em;color:var(--text)}
+.about-mission-heading{font-size:clamp(1.3rem,2.5vw,1.6rem);font-weight:700;color:var(--text);margin:2.5rem 0 1.5rem;padding-left:1rem;border-left:4px solid #E07830;line-height:1.4}
+.about-mission-list{list-style:none;padding-left:0;margin:0 0 1rem}
+.about-mission-list li{position:relative;padding-left:1.5em;margin-bottom:1rem;line-height:1.8;font-size:1rem;color:var(--text)}
+.about-mission-list li::before{content:'▸';position:absolute;left:0;color:#E07830;font-weight:700}
+.about-detail-closing{font-size:1.02rem;line-height:2;color:var(--text);margin-top:2rem}
+
+/* ════════════════════════════════════════
+   MVV - 案E（番号大表示・縦並び・透かし文字背景）
+   コンテナは 1400px に制限し section 左端に揃える
+   ════════════════════════════════════════ */
+.mvv-list{display:flex;flex-direction:column;margin-top:2.5rem;max-width:1400px}
+.mvv-row{position:relative;padding:64px 0;border-top:1px solid var(--border);overflow:hidden}
+.mvv-row:last-child{border-bottom:1px solid var(--border)}
+.mvv-watermark{position:absolute;top:50%;right:3%;transform:translateY(-50%);font-family:'Syne',sans-serif;font-size:300px;font-weight:800;color:#111;opacity:0.03;line-height:.85;letter-spacing:-.05em;pointer-events:none;user-select:none;z-index:0}
+.mvv-content{position:relative;z-index:1;display:grid;grid-template-columns:240px 1fr;gap:3rem;align-items:start}
+.mvv-num{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;line-height:1;color:var(--accent);letter-spacing:-.04em}
+.mvv-row.vision .mvv-num{color:var(--blue)}
+.mvv-row.values .mvv-num{color:var(--navy)}
+.mvv-num small{display:block;font-size:.78rem;font-weight:700;letter-spacing:.22em;color:var(--muted);margin-top:.65rem;font-family:'Noto Sans JP',sans-serif}
+.mvv-body h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:1rem;line-height:1.5;letter-spacing:-.01em}
+.mvv-body p{font-size:.95rem;color:var(--muted);line-height:1.95;margin-bottom:.85rem}
+.mvv-body p:last-child{margin-bottom:0}
+.mvv-sub{font-size:.85rem;color:var(--muted);line-height:1.85;font-style:italic;margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--border)}
+
+/* VALUES 各項目 */
+.vals-list{list-style:none;margin-top:0}
+.vals-list li{display:block;padding:1rem 0;border-bottom:1px solid var(--border)}
+.vals-list li:last-child{border-bottom:none}
+.val-title{display:block;font-size:.95rem;color:var(--text);font-weight:700;margin-bottom:.4rem;position:relative;padding-left:1.2rem;line-height:1.5}
+.val-title::before{content:'▸';position:absolute;left:0;color:var(--accent);font-size:.85rem;top:0}
+.val-desc{display:block;font-size:.85rem;color:var(--muted);line-height:1.85;padding-left:1.2rem}
+
+/* CEO */
+.ceo-wrap{border:1px solid var(--border);border-left:3px solid var(--orange);background:var(--card);padding:40px 44px;max-width:1300px;margin-top:2.5rem;box-shadow:0 4px 24px rgba(0,0,0,.04)}
+.ceo-ttl{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:1.75rem;line-height:1.4;color:var(--text)}
+.ceo-body p{font-size:.92rem;color:var(--muted);line-height:2;margin-bottom:1.2rem}
+.ceo-sign{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);text-align:right;letter-spacing:.06em}
+.ceo-layout{display:grid;grid-template-columns:240px 1fr;gap:2.25rem;align-items:start}
+.ceo-photo{position:relative;width:100%;aspect-ratio:3/4;border-radius:6px;overflow:hidden;background:#eaeaea}
+.ceo-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.15)}
+.ceo-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,0.6) 100%);pointer-events:none}
+.ceo-photo-cap{position:absolute;left:14px;bottom:12px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:800;color:rgba(255,255,255,.92);letter-spacing:.12em;z-index:2}
+.ceo-photo-cap small{display:block;font-size:.62rem;color:rgba(255,255,255,.65);font-weight:500;letter-spacing:.06em;margin-top:2px}
+@media(max-width:760px){
+  .ceo-layout{grid-template-columns:1fr;gap:1.5rem}
+  .ceo-photo{max-width:240px;margin:0 auto}
+  .ceo-wrap{padding:28px 20px}
+}
+
+/* OVERVIEW TABLE */
+.ov-tbl{width:100%;border-collapse:collapse;margin-top:2.5rem;max-width:1000px}
+.ov-tbl tr{border-bottom:1px solid var(--border)}
+.ov-tbl th{font-size:.74rem;color:var(--muted);font-weight:700;letter-spacing:.06em;text-align:left;padding:1.1rem 0;width:160px;vertical-align:top}
+.ov-tbl td{font-size:.9rem;color:var(--text);padding:1.1rem 0;vertical-align:top;line-height:1.75}
+
+/* CTA */
+.pg-cta-wrap{text-align:center;padding:72px 5vw 90px}
+.pg-btn{display:inline-block;border:2px solid var(--orange);color:var(--orange);background:transparent;padding:14px 44px;font-size:.9rem;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:.12em;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s,transform .15s}
+.pg-btn:hover{background:var(--orange);color:#fff;box-shadow:0 8px 24px rgba(224,120,48,.3);transform:translateY(-2px)}
+
+/* FOOTER */
+
+/* DATA セクション */
+.data-block{margin-top:2rem;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:32px;box-shadow:0 2px 18px rgba(0,0,0,.04)}
+.data-block:first-child{margin-top:2.5rem}
+.data-h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:1.5rem;color:var(--text);display:flex;align-items:center;gap:.6rem;letter-spacing:-.01em}
+.data-h3::before{content:'';width:3px;height:18px;background:var(--accent);border-radius:2px}
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.data-card{background:rgba(0,0,0,0.02);border:1px solid var(--border);border-radius:6px;padding:24px}
+.data-card h4{font-size:.85rem;font-weight:700;margin-bottom:1rem;color:var(--text);letter-spacing:.04em}
+.data-canvas-wrap{width:100%;position:relative}
+.data-canvas-wrap.donut{height:200px}
+.data-canvas-wrap.bar{height:280px}
+.data-canvas-wrap canvas{width:100%;height:100%;display:block}
+.chart-headline{font-family:'Noto Sans JP',sans-serif;font-size:.85rem;color:var(--muted);margin:.5rem 0 1rem;display:flex;align-items:baseline;gap:.5rem;letter-spacing:.04em}
+.chart-headline strong{font-family:'Syne',sans-serif;color:var(--accent);font-size:1.7rem;font-weight:800;letter-spacing:-.02em}
+.chart-headline small{color:var(--muted);font-size:.72rem;font-weight:500;letter-spacing:.02em}
+.data-note{margin-top:1rem;font-size:.85rem;color:var(--muted);text-align:center}
+.data-note strong{font-family:'Syne',sans-serif;color:var(--accent);font-size:1.4rem;font-weight:800;margin:0 .15rem}
+.data-legend{display:flex;flex-wrap:wrap;gap:.85rem 1.25rem;margin-top:1rem;justify-content:center;font-size:.78rem;color:var(--muted)}
+.data-legend-item{display:flex;align-items:center;gap:.45rem}
+.data-legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+@media(max-width:760px){
+  .mvv-content{grid-template-columns:1fr;gap:1.25rem}
+  .mvv-num{font-size:3.5rem}
+  .mvv-watermark{font-size:180px;right:-2%}
+  .mvv-row{padding:44px 0}
+  .data-row{grid-template-columns:1fr}
+  .data-block{padding:24px}
+  .data-canvas-wrap.bar{height:240px}
+}
+</style>
+<link rel="stylesheet" href="assets/css/game.css">
+</head>
+<body>
+<!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
+<div data-include="header"></div>
+
+<!-- SLOGAN -->
+<section id="sec-slogan">
+  <p class="slogan-text reveal">
+    エンジニアの力で、常識を超え、<br><span class="ac">未来を創る。</span>
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="sec-about">
+  <p class="sec-chip reveal">// ABOUT</p>
+  <h2 class="sec-title reveal">会社紹介</h2>
+  <div class="about-detail">
+    <p class="about-detail-lead reveal">私たちトライテックは、お客様のビジネス成功をサポートするためにここにいます。最新のテクノロジーと専門知識を駆使し、最適なソリューションを提供します。</p>
+    <p class="about-detail-lead reveal" style="transition-delay:.08s">Try（挑戦）・Triumph（勝利）・Triangle（三角形）の3つの精神で、エンジニア・企業・社会をつなぎます。</p>
+    <h3 class="about-mission-heading reveal" style="transition-delay:.15s">トライテック(Tritech)の使命</h3>
+    <ul class="about-mission-list reveal" style="transition-delay:.3s">
+      <li>常に先進技術に挑戦(トライ：try)し続け、最先端の技術集団であり続ける。</li>
+      <li>お客様のビジネスに貢献し、成功・勝利(トライアンフ：triumph)に導く。</li>
+      <li>お客様とエンジニアをマッチングさせ、ビジネスを加速させることで社会貢献するといったトライアングル(triangle)を構築する。</li>
+    </ul>
+    <p class="about-detail-closing reveal" style="transition-delay:.45s">経験豊富なエンジニアと専門家からなるチームが、お客様の信頼と満足を第一に考え、長期的なパートナーシップの構築のために、お客様の課題に真摯に向き合い、革新的なソリューションを提供することをお約束します。</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MVV -->
+<section id="sec-mvv">
+  <p class="sec-chip reveal">// MISSION · VISION · VALUES</p>
+  <h2 class="sec-title reveal">私たちが大切にすること</h2>
+  <div class="mvv-list">
+
+    <div class="mvv-row mission reveal">
+      <span class="mvv-watermark" aria-hidden="true">M</span>
+      <div class="mvv-content">
+        <div class="mvv-num">01<small>MISSION</small></div>
+        <div class="mvv-body">
+          <h3>新たな視点と技術力で、社会とビジネスの在り方を再定義する。</h3>
+          <p class="mvv-sub">― 私たちは、現場で生まれる気づきと挑戦を起点に、革新的な価値を創出します。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mvv-row vision reveal" style="transition-delay:.05s">
+      <span class="mvv-watermark" aria-hidden="true">V</span>
+      <div class="mvv-content">
+        <div class="mvv-num">02<small>VISION</small></div>
+        <div class="mvv-body">
+          <h3>エンジニア一人ひとりの挑戦が、次の世界を動かす力になる。</h3>
+          <p class="mvv-sub">― エンジニアの成長と創意が、社会の変化と未来の可能性を切り拓いていきます。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mvv-row values reveal" style="transition-delay:.1s">
+      <span class="mvv-watermark" aria-hidden="true">V</span>
+      <div class="mvv-content">
+        <div class="mvv-num">03<small>VALUES</small></div>
+        <div class="mvv-body">
+          <ul class="vals-list">
+            <li>
+              <span class="val-title">Engineer First｜エンジニアを主役に。</span>
+              <span class="val-desc">現場に立つエンジニアの声を最優先に、働きやすさ・成長・納得のある環境をつくる。</span>
+            </li>
+            <li>
+              <span class="val-title">革新は現場から生まれる。</span>
+              <span class="val-desc">目の前の課題に向き合い、現場発のアイデアと技術で本質的な変化を生み出す。</span>
+            </li>
+            <li>
+              <span class="val-title">三位一体の信頼。</span>
+              <span class="val-desc">エンジニア・クライアント・社会貢献、全員の成功と成長が連動する関係を築く。</span>
+            </li>
+            <li>
+              <span class="val-title">透明で、正当な評価。</span>
+              <span class="val-desc">努力と成果を正しく評価し、昇給・待遇・キャリアに反映。納得感ある働き方を支える。</span>
+            </li>
+            <li>
+              <span class="val-title">変化を楽しみ、スピードを大切に。</span>
+              <span class="val-desc">変化を歓迎し、誠実かつ迅速に動くことで、チャンスを逃さず成長を加速させる。</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CEO MESSAGE -->
+<section id="sec-ceo">
+  <p class="sec-chip reveal">// CEO MESSAGE</p>
+  <h2 class="sec-title reveal">代表メッセージ</h2>
+  <div class="ceo-wrap reveal">
+    <div class="ceo-layout">
+      <div class="ceo-photo">
+        <img src="assets/images/photos/ceo.jpg" alt="代表取締役 清水 幸秀">
+        <div class="ceo-photo-cap">CEO<small>代表取締役 清水 幸秀</small></div>
+      </div>
+      <div class="ceo-text">
+        <h3 class="ceo-ttl">「エンジニアの未来を、共に描く」</h3>
+        <div class="ceo-body">
+      <p>トライテックは、「エンジニアファースト」を掲げ、技術者一人ひとりが理想のキャリアを築ける環境を本気で追求しています。</p>
+      <p>私自身、現役エンジニアとして10年以上現場に立ち続けてきた経験をもとに、エンジニアの気持ちや課題を誰よりも理解していると自負しています。その実感があるからこそ、誰もが安心して長く働き、挑戦し続けられる会社をつくることが私の使命です。</p>
+      <p>私たちのチームは、先進技術に果敢に挑み続ける「トライ（try）」の精神を持ち、クライアントの成功をともに喜び合える「トライアンフ（triumph）」の瞬間を生み出し、そしてエンジニア・企業・社会を結ぶ「トライアングル（triangle）」の関係を構築することに全力を注いでいます。</p>
+      <p>エンジニアが活躍し続けるために必要なのは、技術力だけではありません。働く環境、待遇、成長の機会、そして人として尊重される文化があってこそ、その力が最大限に発揮されると私たちは信じています。</p>
+      <p>トライテックでは、リモートワークや副業の推奨、年間125日の休日など、柔軟な働き方を実現しながらも、昇給率10%以上を目標とした年次給与改定など、公正かつ透明な評価制度を整えています。</p>
+      <p>スピーディーな選考プロセスで、あなたの次の一歩を後押しし、入社後は定期的な1on1でキャリアの悩みや展望をしっかり受け止め、共に成長していける関係性を大切にしています。</p>
+      <p>「開発やテストが好きだ」「もっと成長したい」「安心して働きたい」</p>
+      <p>そんな思いを持つあなたへ。トライテックは、あなたの挑戦を心から応援します。エンジニアが主役の未来を、ここから一緒に創っていきましょう。</p>
+        </div>
+        <p class="ceo-sign">代表取締役　清水 幸秀</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OVERVIEW TABLE -->
+<section id="sec-overview" class="ci-block">
+  <style>
+    /* index.html へ fetch+inject された際にもスタイルが追従するよう、
+       #sec-overview と #sec-access にスコープを限定した自己完結インラインスタイル
+       （CSS 変数は使わず具体色で記述） */
+    #sec-overview{padding:80px 5vw;position:relative}
+    #sec-overview .sec-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(224,120,48,.10);color:#E07830;border:1px solid rgba(224,120,48,.25);border-radius:100px;padding:5px 16px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.2rem}
+    #sec-overview .sec-title{font-family:'Syne','Noto Sans JP',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:1.5rem;letter-spacing:-.02em;line-height:1.2;color:#111}
+    /* 会社概要：左にテーブル、右にロゴの 2 列レイアウト */
+    #sec-overview .ci-overview-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:3rem;align-items:start;max-width:1100px;margin-top:1.5rem}
+    #sec-overview .ci-tbl{width:100%;border-collapse:collapse}
+    #sec-overview .ci-tbl tr{border-bottom:1px solid rgba(0,0,0,.08)}
+    #sec-overview .ci-tbl th{font-size:.78rem;color:#7a7a90;font-weight:700;letter-spacing:.06em;text-align:left;padding:1.15rem 0;width:140px;vertical-align:top;white-space:nowrap}
+    #sec-overview .ci-tbl td{font-size:.95rem;color:#111;padding:1.15rem 0;vertical-align:top;line-height:1.85}
+    #sec-overview .ci-logo-wrap{display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,rgba(224,120,48,.04) 0%,rgba(68,170,219,.04) 100%);border-radius:16px;min-height:280px}
+    #sec-overview .ci-logo-img{max-width:100%;width:240px;height:auto;display:block;filter:drop-shadow(0 4px 18px rgba(0,0,0,.08))}
+    @media(max-width:760px){
+      #sec-overview .ci-overview-layout{grid-template-columns:1fr;gap:1.5rem}
+      #sec-overview .ci-logo-wrap{min-height:200px;padding:1.5rem}
+      #sec-overview .ci-logo-img{width:180px}
+    }
+    @media(max-width:600px){
+      #sec-overview .ci-tbl th{width:100px;font-size:.72rem;padding:.9rem 0}
+      #sec-overview .ci-tbl td{font-size:.88rem;padding:.9rem 0}
+    }
+  </style>
+  <p class="sec-chip reveal">// COMPANY OVERVIEW</p>
+  <h2 class="sec-title reveal">会社概要</h2>
+  <div class="ci-overview-layout reveal">
+    <table class="ci-tbl">
+      <tr><th>会社名</th><td>株式会社トライテック</td></tr>
+      <tr><th>設立日</th><td>2023年4月27日</td></tr>
+      <tr><th>資本金</th><td>1,900,000 円</td></tr>
+      <tr><th>役員</th><td>代表　清水 幸秀<br>取締役　矢野 隆雄</td></tr>
+      <tr><th>電話番号</th><td>03-6824-0539</td></tr>
+      <tr><th>所在地</th><td>〒110-0016<br>東京都台東区台東2-30-10 THE GATE 御徒町4F</td></tr>
+      <tr><th>事業内容</th><td>・ソフトウェアの品質保証サービス<br>・システムエンジニアリングサービス（SES）</td></tr>
+    </table>
+    <div class="ci-logo-wrap">
+      <img class="ci-logo-img" src="assets/images/logo/tritech-logo.png" alt="株式会社トライテック">
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ACCESS -->
+<section id="sec-access" class="ci-block">
+  <style>
+    #sec-access{padding:80px 5vw;position:relative}
+    #sec-access .sec-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(224,120,48,.10);color:#E07830;border:1px solid rgba(224,120,48,.25);border-radius:100px;padding:5px 16px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.2rem}
+    #sec-access .sec-title{font-family:'Syne','Noto Sans JP',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:1.5rem;letter-spacing:-.02em;line-height:1.2;color:#111}
+    #sec-access .ci-access-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:2.25rem;margin-top:2rem;align-items:stretch;max-width:1400px}
+    #sec-access .ci-map{position:relative;width:100%;min-height:340px;border-radius:12px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.06)}
+    #sec-access .ci-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+    #sec-access .ci-info{display:flex;flex-direction:column;justify-content:center;padding:1rem 0}
+    #sec-access .ci-name{font-family:'Noto Sans JP',sans-serif;font-size:1.05rem;font-weight:800;color:#111;letter-spacing:.02em;margin-bottom:.85rem}
+    #sec-access .ci-zip{font-size:.85rem;color:#7a7a90;letter-spacing:.05em;margin-bottom:.4rem}
+    #sec-access .ci-addr{font-size:1.1rem;font-weight:700;color:#111;line-height:1.7;margin-bottom:1.25rem}
+    #sec-access .ci-station{font-size:.85rem;color:#555;line-height:1.85;padding-top:1rem;border-top:1px dashed rgba(0,0,0,.12)}
+    #sec-access .ci-station strong{color:#E07830;font-weight:700}
+    #sec-access .ci-mapbtn{display:inline-block;margin-top:1rem;font-size:.82rem;color:#E07830;text-decoration:none;font-weight:700;letter-spacing:.04em;border-bottom:1px solid currentColor;padding-bottom:2px;transition:color .2s,border-color .2s;width:fit-content}
+    #sec-access .ci-mapbtn:hover{color:#C8521A;border-color:#C8521A}
+    @media(max-width:760px){
+      #sec-access .ci-access-layout{grid-template-columns:1fr;gap:1.5rem}
+      #sec-access .ci-map{min-height:280px}
+      #sec-access .ci-addr{font-size:1rem}
+    }
+  </style>
+  <p class="sec-chip reveal">// ACCESS</p>
+  <h2 class="sec-title reveal">アクセス</h2>
+  <div class="ci-access-layout reveal">
+    <div class="ci-map">
+      <iframe
+        src="https://maps.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E5%8F%B0%E6%9D%B12%E4%B8%81%E7%9B%AE30-10&z=18&output=embed&hl=ja&iwloc=B"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="株式会社トライテック 所在地マップ"></iframe>
+    </div>
+    <div class="ci-info">
+      <p class="ci-name">株式会社トライテック</p>
+      <p class="ci-zip">〒110-0016</p>
+      <p class="ci-addr">東京都台東区台東2-30-10 THE GATE 御徒町4F</p>
+      <p class="ci-station">
+        <strong>東京メトロ日比谷線</strong>「仲御徒町駅」徒歩約3分<br>
+        <strong>JR山手線・京浜東北線</strong>「御徒町駅」徒歩約5分<br>
+        <strong>都営大江戸線</strong>「上野御徒町駅」徒歩約5分<br>
+        <strong>東京メトロ銀座線</strong>「上野広小路駅」徒歩約5分<br>
+        <strong>つくばエクスプレス</strong>「新御徒町駅」徒歩約6分<br>
+        <strong>JR山手線・京浜東北線</strong>「上野駅」徒歩約10分
+      </p>
+      <a class="ci-mapbtn" href="https://maps.google.com/?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8F%B0%E6%9D%B1%E5%8C%BA%E5%8F%B0%E6%9D%B12-30-10" target="_blank" rel="noopener">Google マップで見る →</a>
+    </div>
+  </div>
+</section>
+
+<!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
+<div data-include="footer"></div>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+</script>
+<script style="display:none">
+/* ════════════════════════════════════════
+   (REMOVED) DATA セクション用のチャート描画
+   ════════════════════════════════════════ */
+(function(){
+  function setupDPR(canvas){
+    var dpr = window.devicePixelRatio || 1;
+    var r = canvas.getBoundingClientRect();
+    if (r.width <= 0 || r.height <= 0) return false;
+    canvas.width  = Math.round(r.width  * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+    return true;
+  }
+
+  function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+  /* ── 共通ドーナツ描画 ── */
+  function drawDonut(canvas, segments, progress, centerLabel){
+    var ctx = canvas.getContext('2d');
+    var r = canvas.getBoundingClientRect();
+    var W = r.width, H = r.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var cx = W / 2, cy = H / 2;
+    var oR = Math.min(W, H) * 0.42;
+    var iR = oR * 0.62;
+    var startAng = -Math.PI / 2;
+    var sweep = Math.PI * 2 * progress;
+    var total = segments.reduce(function(s, d){ return s + d.v; }, 0);
+    var covered = 0;
+
+    segments.forEach(function(d){
+      var ang = (d.v / total) * Math.PI * 2;
+      var s = startAng + covered;
+      var e = Math.min(startAng + covered + ang, startAng + sweep);
+      if (e > s) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, oR, s, e);
+        ctx.arc(cx, cy, iR, e, s, true);
+        ctx.closePath();
+        ctx.fillStyle = d.c;
+        ctx.fill();
+      }
+      covered += ang;
+    });
+
+    if (progress > 0.85 && centerLabel) {
+      ctx.globalAlpha = Math.min(1, (progress - 0.85) / 0.15);
+      ctx.font = 'bold 18px "Syne", sans-serif';
+      ctx.fillStyle = '#111';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(centerLabel, cx, cy);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  /* ── 棒グラフ ── */
+  function drawBars(canvas, data, max, progresses, opts){
+    opts = opts || {};
+    var ctx = canvas.getContext('2d');
+    var r = canvas.getBoundingClientRect();
+    var W = r.width, H = r.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var pL = opts.pL || 50, pR = opts.pR || 16;
+    var pT = opts.pT || 26, pB = opts.pB || 44;
+    var cW = W - pL - pR, cH = H - pT - pB;
+
+    /* グリッド + Y軸ラベル */
+    ctx.strokeStyle = 'rgba(0,0,0,.08)';
+    ctx.lineWidth = 1;
+    ctx.font = '10px "Noto Sans JP", sans-serif';
+    ctx.fillStyle = 'rgba(0,0,0,.55)';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    var ticks = opts.yTicks || 4;
+    for (var i = 0; i <= ticks; i++){
+      var y = pT + cH * (i / ticks);
+      ctx.beginPath();
+      ctx.moveTo(pL, y);
+      ctx.lineTo(W - pR, y);
+      ctx.stroke();
+      var val = max - max * (i / ticks);
+      var lbl = opts.yFmt ? opts.yFmt(val) : String(Math.round(val));
+      ctx.fillText(lbl, pL - 8, y);
+    }
+
+    /* 角丸バッジヘルパー */
+    function drawBadge(cx, cy, text, fontSize, opacity){
+      ctx.save();
+      ctx.globalAlpha = opacity != null ? opacity : 1;
+      ctx.font = 'bold ' + fontSize + 'px "Syne", sans-serif';
+      var tw = ctx.measureText(text).width;
+      var bgW = tw + 14, bgH = fontSize + 10, brad = bgH/2;
+      var bx = cx - bgW/2, by = cy - bgH/2;
+      ctx.fillStyle = 'rgba(224,120,48,0.15)';
+      ctx.strokeStyle = '#E07830';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(bx + brad, by);
+      ctx.lineTo(bx + bgW - brad, by);
+      ctx.arcTo(bx + bgW, by, bx + bgW, by + brad, brad);
+      ctx.lineTo(bx + bgW, by + bgH - brad);
+      ctx.arcTo(bx + bgW, by + bgH, bx + bgW - brad, by + bgH, brad);
+      ctx.lineTo(bx + brad, by + bgH);
+      ctx.arcTo(bx, by + bgH, bx, by + bgH - brad, brad);
+      ctx.lineTo(bx, by + brad);
+      ctx.arcTo(bx, by, bx + brad, by, brad);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#E07830';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(text, cx, cy);
+      ctx.restore();
+    }
+
+    /* バー */
+    var slot = cW / data.length;
+    var bW = slot * 0.55;
+    data.forEach(function(d, i){
+      var bp = progresses[i];
+      var fH = cH * (d.v / max);
+      var h = fH * bp;
+      var x = pL + slot * i + (slot - bW) / 2;
+      var y = pT + cH - h;
+
+      var col = d.c || '#E07830';
+      if (d.dotted) {
+        /* 点線枠の目標バー */
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.strokeRect(x, y, bW, h);
+        ctx.setLineDash([]);
+        /* 「目標」バッジを枠内中央に */
+        if (d.badge && bp > 0.85) {
+          ctx.globalAlpha = Math.min(1, (bp - 0.85) / 0.15);
+          ctx.font = 'bold 11px "Noto Sans JP", sans-serif';
+          ctx.fillStyle = col;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(d.badge, x + bW/2, y + h/2);
+          ctx.globalAlpha = 1;
+        }
+        ctx.restore();
+      } else {
+        ctx.fillStyle = col;
+        ctx.shadowColor = 'rgba(0,0,0,.08)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 2;
+        ctx.fillRect(x, y, bW, h);
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+      }
+
+      /* 値ラベル（角丸バッジ） */
+      if (bp > 0.85) {
+        var alpha = Math.min(1, (bp - 0.85) / 0.15);
+        var label = opts.barFmt ? opts.barFmt(d.v) : String(d.v);
+        drawBadge(x + bW/2, y - 14, label, 11, alpha);
+      }
+
+      /* X軸ラベル */
+      ctx.font = '11px "Noto Sans JP", sans-serif';
+      ctx.fillStyle = 'rgba(0,0,0,.7)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(d.label, x + bW / 2, pT + cH + 8);
+    });
+  }
+
+  /* ── アニメーション制御 ── */
+  function animate(canvas, drawFn, dur){
+    var start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      drawFn(canvas, easeOutCubic(p));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function animateBars(canvas, drawFn, count, barDur, stagger){
+    var totalDur = barDur + stagger * (count - 1);
+    var start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var elapsed = ts - start;
+      var progresses = [];
+      for (var i = 0; i < count; i++){
+        var be = elapsed - i * stagger;
+        var p = be <= 0 ? 0 : Math.min(be / barDur, 1);
+        progresses.push(easeOutCubic(p));
+      }
+      drawFn(canvas, progresses);
+      if (elapsed < totalDur) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── 各チャートのデータ＆描画関数 ── */
+
+  // 年齢割合
+  var ageData = [
+    { v: 10, c: '#E07830' },
+    { v: 80, c: '#44AADB' },
+    { v: 10, c: '#1d3557' },
+  ];
+  function drawAge(canvas, p){ drawDonut(canvas, ageData, p); }
+
+  // 男女比
+  var genderData = [
+    { v: 60, c: '#1e8fa0' },
+    { v: 40, c: '#E07830' },
+  ];
+  function drawGender(canvas, p){ drawDonut(canvas, genderData, p); }
+
+  // 職種別年収（万円）
+  var salaryData = [
+    { label: 'PG',      v: 450, c: '#44AADB' },
+    { label: 'SE',      v: 600, c: '#44AADB' },
+    { label: 'PM',      v: 880, c: '#E07830' },
+    { label: 'PMO',     v: 720, c: '#E07830' },
+    { label: 'QA',      v: 540, c: '#1e8fa0' },
+    { label: 'インフラ', v: 580, c: '#1e8fa0' },
+  ];
+  function drawSalary(canvas, progresses){
+    drawBars(canvas, salaryData, 1000, progresses, {
+      pL: 56,
+      yFmt: function(v){ return Math.round(v) + '万'; },
+      barFmt: function(v){ return v + '万'; }
+    });
+  }
+
+  // 売上推移（万円）
+  function fmtMoney(v){
+    if (v >= 10000) {
+      var oku = v / 10000;
+      var man = v % 10000;
+      if (man === 0) return oku.toFixed(0) + '億円';
+      return oku.toFixed(0) + '億' + man.toLocaleString() + '万円';
+    }
+    return v.toLocaleString() + '万円';
+  }
+  var salesData = [
+    { label: '2024年',     v: 2800,  c: '#1e8fa0' },
+    { label: '2025年',     v: 18000, c: '#44AADB' },
+    { label: '2026年(目標)', v: 40000, c: '#E07830', dotted: true, badge: '目標' },
+  ];
+  function drawSales(canvas, progresses){
+    drawBars(canvas, salesData, 45000, progresses, {
+      pL: 64,
+      pT: 36,
+      yFmt: function(v){ return (v / 10000).toFixed(1) + '億'; },
+      barFmt: fmtMoney
+    });
+  }
+
+  /* ── 初期化（IntersectionObserver で発火） ── */
+  function initChart(id, drawFn, animFn){
+    var cv = document.getElementById(id);
+    if (!cv) return;
+    requestAnimationFrame(function(){ setupDPR(cv); });
+
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting){
+          if (setupDPR(cv)) animFn(cv);
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(cv);
+
+    var rT = null;
+    window.addEventListener('resize', function(){
+      clearTimeout(rT);
+      rT = setTimeout(function(){
+        if (setupDPR(cv)) drawFn(cv);
+      }, 150);
+    });
+  }
+
+  initChart('chart-age', function(cv){ drawAge(cv, 1); }, function(cv){
+    animate(cv, drawAge, 1500);
+  });
+  initChart('chart-gender', function(cv){ drawGender(cv, 1); }, function(cv){
+    animate(cv, drawGender, 1500);
+  });
+  initChart('chart-salary', function(cv){
+    drawSalary(cv, salaryData.map(function(){ return 1; }));
+  }, function(cv){
+    animateBars(cv, function(c, ps){ drawSalary(c, ps); }, salaryData.length, 1000, 120);
+  });
+  initChart('chart-sales', function(cv){
+    drawSales(cv, salesData.map(function(){ return 1; }));
+  }, function(cv){
+    animateBars(cv, function(c, ps){ drawSales(c, ps); }, salesData.length, 1000, 200);
+  });
+})();
+</script>
+<div id="game-overlay">
+  <canvas id="game-canvas"></canvas>
+  <div id="ghud">
+    <span>SCORE <span id="gs">000000</span></span>
+    <span class="gst" id="gstg">STAGE 1</span>
+    <span class="ghi">HI <span id="gh">999999</span></span>
+    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
+  </div>
+  <div id="gesc">[ ESC ] 終了</div>
+</div>
+<script src="assets/js/include-partials.js"></script>
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/game.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+/* ==========================================================
+   service-list.css — 事業内容一覧ページ固有
+   common.css の color tokens と nav/footer を前提
+   ========================================================== */
+
+/* ── HERO ── */
+.sl-hero{padding:140px 5vw 80px;background:var(--white);position:relative;overflow:hidden;text-align:center}
+.sl-hero::before{content:'';position:absolute;top:-180px;right:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(217,95,26,.08) 0%,transparent 60%);pointer-events:none}
+.sl-hero::after{content:'';position:absolute;bottom:-160px;left:-120px;width:480px;height:480px;background:radial-gradient(circle,rgba(30,143,160,.07) 0%,transparent 60%);pointer-events:none}
+.sl-hero-inner{max-width:880px;margin:0 auto;position:relative;z-index:1}
+.sl-hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,4.4vw,3.8rem);font-weight:800;line-height:1.15;letter-spacing:-.03em;color:var(--ink);margin:1rem 0 1.4rem}
+.sl-hero-sub{font-size:1rem;color:var(--muted);line-height:1.95;max-width:560px;margin:0 auto}
+
+/* ── SERVICE BLOCKS ── */
+.sl-blocks{background:var(--bg);padding:120px 5vw}
+.sl-blocks-inner{max-width:1200px;margin:0 auto}
+.sl-block{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-bottom:120px}
+.sl-block:last-child{margin-bottom:0}
+.sl-block.reverse{direction:rtl}
+.sl-block.reverse > *{direction:ltr}
+.sl-block-img{position:relative;width:100%;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 22px 56px rgba(0,0,0,.12)}
+.sl-block-img::after{content:'';position:absolute;inset:0;border:1px solid rgba(0,0,0,.04);border-radius:24px;pointer-events:none}
+.sl-block-text{display:flex;flex-direction:column}
+
+.biz-name{font-family:'Noto Sans JP',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.2;letter-spacing:-.02em;color:var(--ink);margin-bottom:.6em;position:relative;align-self:flex-start;cursor:default}
+.biz-name::after{content:'';position:absolute;left:0;bottom:-10px;width:0;height:4px;background:currentColor;border-radius:2px;transition:width .55s cubic-bezier(.4,0,.2,1)}
+.biz-name:hover::after{width:100%}
+.biz-name--ses{color:#E07830}
+.biz-name--qa{color:#44AADB}
+.biz-name--dx{color:#2A5A9A}
+.biz-name.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.biz-name.reveal.in{opacity:1;transform:translateY(0)}
+
+.sl-eyebrow{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.18em;color:var(--orange);text-transform:uppercase;margin:.75rem 0 1rem;display:inline-flex;align-items:center;gap:.5rem}
+.sl-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block}
+.sl-eyebrow.teal{color:var(--teal)}
+.sl-eyebrow.navy{color:var(--navy)}
+
+.sl-catch{font-family:'Noto Sans JP',sans-serif;font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:700;line-height:1.4;letter-spacing:-.01em;color:var(--ink);margin-bottom:1.5rem}
+.sl-lead{font-size:1rem;color:var(--ink2);line-height:1.95;margin-bottom:1.5rem;font-weight:500}
+.sl-detail{font-size:.92rem;color:var(--muted);line-height:1.95;margin-bottom:1.75rem}
+.sl-detail p{margin-bottom:1rem}
+.sl-detail p:last-child{margin-bottom:0}
+
+.sl-points{list-style:none;margin-bottom:2.25rem;display:flex;flex-direction:column;gap:.65rem}
+.sl-points li{display:flex;align-items:center;gap:.7rem;font-size:.92rem;color:var(--ink2);font-weight:600}
+.sl-points li::before{content:'';flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--orange)}
+.sl-points.teal li::before{background:var(--teal)}
+.sl-points.navy li::before{background:var(--navy)}
+
+.sl-btn{display:inline-flex;align-items:center;gap:.5rem;align-self:flex-start;background:var(--orange);color:var(--white);padding:14px 32px;font-family:'Noto Sans JP',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.06em;text-decoration:none;border-radius:100px;transition:background .25s,box-shadow .3s,transform .18s;box-shadow:0 6px 20px rgba(217,95,26,.32)}
+.sl-btn:hover{background:#c0521a;transform:translateY(-2px);box-shadow:0 10px 28px rgba(217,95,26,.45)}
+.sl-btn .arrow{display:inline-block;transition:transform .25s}
+.sl-btn:hover .arrow{transform:translateX(4px)}
+
+/* ── CTA ── */
+.sl-cta{background:var(--white);text-align:center;overflow:hidden}
+.sl-cta::after{content:'';position:absolute;bottom:-100px;right:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(217,95,26,.14) 0%,transparent 60%);pointer-events:none;animation:ctaFloat 6s ease-in-out infinite alternate}
+@keyframes ctaFloat{from{transform:translate(0,0)}to{transform:translate(-30px,-25px)}}
+.sl-cta-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.sl-cta h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,2.6vw,2.4rem);font-weight:800;letter-spacing:-.02em;line-height:1.25;margin-bottom:1rem;color:var(--ink)}
+.sl-cta p{font-size:.95rem;color:var(--muted);line-height:1.85;margin-bottom:2.5rem}
+.sl-cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.sl-cta-btn{display:inline-block;padding:14px 36px;font-size:.9rem;font-weight:700;letter-spacing:.06em;text-decoration:none;border-radius:100px;transition:background .25s,color .25s,box-shadow .3s,transform .18s;border:2px solid transparent}
+.sl-cta-btn.primary{background:var(--orange);color:var(--white);box-shadow:0 6px 20px rgba(217,95,26,.32)}
+.sl-cta-btn.primary:hover{background:#c0521a;transform:translateY(-2px);box-shadow:0 10px 28px rgba(217,95,26,.45)}
+.sl-cta-btn.secondary{border-color:var(--border2);color:var(--ink2);background:transparent}
+.sl-cta-btn.secondary:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-2px)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .sl-blocks{padding:80px 5vw}
+  .sl-block{grid-template-columns:1fr;gap:2.25rem;margin-bottom:80px}
+  .sl-block.reverse{direction:ltr}
+  .sl-block-img{aspect-ratio:16/10}
+}
+@media(max-width:600px){
+  .sl-hero{padding:120px 5vw 60px}
+  .sl-blocks{padding:70px 5vw}
+  .sl-block{margin-bottom:70px}
+}

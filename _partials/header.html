@@ -1,0 +1,42 @@
+<!-- ════════════════════════════════════════════
+     共通ヘッダー（全ページ共通）
+     編集はこのファイル 1 つで全ページに反映されます
+     注入: <div data-include="header"></div>
+     ════════════════════════════════════════════ -->
+<div id="hp-progress"></div>
+<!-- カスタムカーソル: トライテックロゴ統一の3つ菱形(オレンジ→水色→紺) -->
+<div id="hp-cursor-group" aria-hidden="true">
+  <div class="hp-diamond hp-d-orange"></div>
+  <div class="hp-diamond hp-d-cyan"></div>
+  <div class="hp-diamond hp-d-navy"></div>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <!-- ロゴ画像：クリックでゲーム開始 -->
+    <div class="nav-logo-img-btn" id="nav-logo-game-btn" title="クリックしてゲームスタート！">
+      <img src="assets/images/logo/tritech-logo.png" alt="トライテック" class="nav-logo-img">
+      <span class="nav-logo-click-hint">▲ CLICK HERE!</span>
+    </div>
+    <!-- 社名：クリックでホームへ -->
+    <a href="index.html" class="nav-logo-name">株式会社トライテック</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html" data-nav="home">ホーム</a></li>
+    <li><a href="index.html#transition-zone" data-nav="for-engineers">エンジニアの方へ</a></li>
+    <li><a href="about-detail.html" data-nav="about">会社情報</a></li>
+    <li><a href="service-list.html" data-nav="service">事業内容</a></li>
+    <li><a href="contact.html" data-nav="contact">お問い合わせ</a></li>
+    <li><a href="recruit.html" class="nav-recruit" data-nav="recruit-cta">採用情報 →</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html" data-nav="home">ホーム</a>
+  <a href="index.html#transition-zone" data-nav="for-engineers">エンジニアの方へ</a>
+  <a href="about-detail.html" data-nav="about">会社情報</a>
+  <a href="service-list.html" data-nav="service">事業内容</a>
+  <a href="contact.html" data-nav="contact">お問い合わせ</a>
+  <a href="recruit.html" class="mob-recruit" data-nav="recruit-cta">採用情報 →</a>
+</div>

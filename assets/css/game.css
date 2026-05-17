@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+#fly-logo{position:fixed;pointer-events:none;z-index:10000;transition:left .8s cubic-bezier(.4,0,.2,1),top .8s cubic-bezier(.4,0,.2,1),width .8s cubic-bezier(.4,0,.2,1),height .8s cubic-bezier(.4,0,.2,1)}
+#fly-logo img{width:100%;height:100%;object-fit:contain;display:block}
+#game-overlay{position:fixed;inset:0;z-index:9000;background:#000;opacity:0;pointer-events:none;transition:opacity 0.8s ease;overflow:hidden}
+#game-overlay.active{opacity:1;pointer-events:all}
+/* 仮想キャンバスを中央配置（CSS幅/高さはJSが動的設定）。
+   アスペクト比 16:9 を維持し、左右または上下にレターボックス（黒帯）を入れる。 */
+#game-canvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:block;cursor:none;background:#000}
+/* lightweight CRT: CSS only, no JS cost */
+#game-overlay::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px)}
+#ghud{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:11px 18px;font-family:'Press Start 2P',monospace;font-size:.62rem;color:#00ff88;z-index:22;background:rgba(0,0,0,.7);border-bottom:1px solid rgba(0,255,136,.1);opacity:0;transition:opacity .3s;flex-wrap:wrap;gap:6px}
+#ghud.vis{opacity:1}
+.ghi{color:#ffcc00}
+.gst{color:rgba(255,255,255,.6)}
+#gesc{position:absolute;bottom:10px;right:16px;font-family:'Press Start 2P',monospace;font-size:.58rem;color:rgba(0,255,136,.4);z-index:23;cursor:pointer;user-select:none;padding:10px 14px;background:rgba(0,0,0,.55);border:1px solid rgba(0,255,136,.2);border-radius:6px;min-height:36px;min-width:80px;display:flex;align-items:center;justify-content:center}
+#gesc:hover{color:rgba(0,255,136,.95);border-color:rgba(0,255,136,.5)}
+/* スマホ：HUD をやや小さく＋折返し許可、ESC ボタンはタップしやすい大きさを維持 */
+@media(max-width:600px){
+  #ghud{font-size:.50rem;padding:8px 12px;gap:4px}
+  #gesc{font-size:.50rem;padding:8px 12px;bottom:8px;right:10px;min-height:32px}
+}
+
+/* ── スマホ縦向き時の「画面を横にしてください」オーバーレイ ── */
+#rotate-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:#000;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  color:#00ff88;text-align:center;
+  font-family:'Press Start 2P',monospace;
+  user-select:none;
+}
+#rotate-overlay.show{display:flex}
+.rotate-icon{
+  width:80px;height:80px;
+  border:4px solid #00ff88;border-radius:8px;
+  position:relative;
+  animation:rotate-spin 2.4s cubic-bezier(.5,0,.5,1) infinite;
+  box-shadow:0 0 24px rgba(0,255,136,.4);
+}
+.rotate-icon::before{
+  content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:24px;height:3px;background:#00ff88;border-radius:2px;
+}
+.rotate-icon::after{
+  content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border:2px solid #00ff88;border-radius:50%;
+}
+@keyframes rotate-spin{
+  0%,40%{transform:rotate(0deg)}
+  60%,100%{transform:rotate(90deg)}
+}
+.rotate-title{
+  margin-top:36px;
+  font-size:13px;letter-spacing:.15em;
+  color:#00ff88;
+}
+.rotate-sub{
+  margin-top:14px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:14px;font-weight:500;
+  color:rgba(255,255,255,.85);
+  letter-spacing:.05em;
+}
+.rotate-sub2{
+  margin-top:6px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:11px;
+  color:rgba(255,255,255,.45);
+  letter-spacing:.04em;
+}

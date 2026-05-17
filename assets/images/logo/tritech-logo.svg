@@ -1,0 +1,37 @@
+<svg viewBox="0 0 531 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- オレンジグループ -->
+  <g id="logo-orange">
+    <polygon points="50,10 90,50 50,90 10,50" fill="#C8521A"/>
+    <polygon points="50,10 90,50 50,50" fill="#E07830"/>
+    <polygon points="10,50 50,90 50,50" fill="#E07830"/>
+    <circle cx="50" cy="50" r="3" fill="white" opacity="0.6"/>
+    <polygon points="131,10 171,50 131,90 91,50" fill="#C8521A"/>
+    <polygon points="131,10 171,50 131,50" fill="#E07830"/>
+    <polygon points="91,50 131,90 131,50" fill="#E07830"/>
+    <circle cx="131" cy="50" r="3" fill="white" opacity="0.6"/>
+  </g>
+  <line x1="171" y1="50" x2="185" y2="50" stroke="#A8B8C8" stroke-width="1"/>
+  <!-- 水色グループ -->
+  <g id="logo-blue">
+    <polygon points="225,10 265,50 225,90 185,50" fill="#2888B8"/>
+    <polygon points="225,10 265,50 225,50" fill="#44AADB"/>
+    <polygon points="185,50 225,90 225,50" fill="#44AADB"/>
+    <circle cx="225" cy="50" r="3" fill="white" opacity="0.6"/>
+    <polygon points="306,10 346,50 306,90 266,50" fill="#2888B8"/>
+    <polygon points="306,10 346,50 306,50" fill="#44AADB"/>
+    <polygon points="266,50 306,90 306,50" fill="#44AADB"/>
+    <circle cx="306" cy="50" r="3" fill="white" opacity="0.6"/>
+  </g>
+  <line x1="346" y1="50" x2="360" y2="50" stroke="#A8B8C8" stroke-width="1"/>
+  <!-- 紺グループ -->
+  <g id="logo-navy">
+    <polygon points="400,10 440,50 400,90 360,50" fill="#1A3A6A"/>
+    <polygon points="400,10 440,50 400,50" fill="#2A5A9A"/>
+    <polygon points="360,50 400,90 400,50" fill="#2A5A9A"/>
+    <circle cx="400" cy="50" r="3" fill="white" opacity="0.6"/>
+    <polygon points="481,10 521,50 481,90 441,50" fill="#1A3A6A"/>
+    <polygon points="481,10 521,50 481,50" fill="#2A5A9A"/>
+    <polygon points="441,50 481,90 481,50" fill="#2A5A9A"/>
+    <circle cx="481" cy="50" r="3" fill="white" opacity="0.6"/>
+  </g>
+</svg>
