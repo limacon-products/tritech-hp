@@ -105,7 +105,7 @@ body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:tr
 /* ── VOICES CARDS（カルーセル） ── */
 .recruit-section #sec-voices{overflow:visible}
 .recruit-section .data-sub{font-size:.93rem;color:var(--rc-text);margin-top:.4rem;margin-bottom:0;line-height:1.85}
-.recruit-section .voice-carousel{margin:3rem -5vw 0;overflow:hidden}
+.recruit-section .voice-carousel{margin:3rem -5vw 0;overflow-x:hidden;overflow-y:visible;padding:12px 0}
 .recruit-section .voice-track{display:flex;width:max-content;animation:rcVoiceScroll 35s linear infinite}
 .recruit-section .voice-carousel:hover .voice-track{animation-play-state:paused}
 @keyframes rcVoiceScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
