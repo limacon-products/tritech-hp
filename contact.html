@@ -222,9 +222,11 @@
 .cf-result-icon{
   display:inline-flex;align-items:center;justify-content:center;
   width:22px;height:22px;border-radius:50%;
-  background:currentColor;color:#0e0e1a;
-  font-size:.7rem;font-weight:900;
+  font-size:.8rem;font-weight:900;
+  flex-shrink:0;
 }
+.cf-result.success .cf-result-icon{background:#22c08a;color:#fff}
+.cf-result.error .cf-result-icon{background:#ff5544;color:#fff}
 
 @media(max-width:760px){
   .contact-hero{padding:120px 5vw 60px}
