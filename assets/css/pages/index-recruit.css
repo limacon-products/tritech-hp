@@ -128,8 +128,9 @@ body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:tr
 .voice-modal.open{display:flex;opacity:1}
 .voice-modal-body{background:#0a0a0a;border:1px solid #00ffcc;border-radius:8px;box-shadow:0 0 40px rgba(0,255,204,.2);padding:3rem 2.5rem;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;position:relative;transform:scale(.95);transition:transform .3s ease;margin:auto;font-family:'Courier New',monospace}
 .voice-modal.open .voice-modal-body{transform:scale(1)}
-.voice-modal-close{position:absolute;top:1rem;right:1rem;width:40px;height:40px;border:none;background:transparent;font-size:1.8rem;cursor:pointer;color:#00ffcc;transition:color .2s,text-shadow .2s;line-height:1}
-.voice-modal-close:hover{color:#7affff;text-shadow:0 0 12px rgba(0,255,204,.6)}
+/* ×ボタン: sticky でモーダル内スクロールに追従 */
+.voice-modal-close{position:sticky;top:0;float:right;margin:-2rem -1rem 0 0;width:42px;height:42px;border:none;background:rgba(10,10,10,.85);backdrop-filter:blur(4px);border-radius:50%;font-size:1.8rem;cursor:pointer;color:#00ffcc;transition:color .2s,text-shadow .2s,background .2s;line-height:1;z-index:5;display:flex;align-items:center;justify-content:center}
+.voice-modal-close:hover{color:#7affff;text-shadow:0 0 12px rgba(0,255,204,.6);background:rgba(0,255,204,.12)}
 .voice-modal-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(0,255,204,.3)}
 .voice-modal-header .voice-svg{width:120px;height:120px;margin:0 auto 1.25rem;display:block}
 .voice-modal-header .voice-svg svg{width:100%;height:100%;display:block}
@@ -170,4 +171,7 @@ body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:tr
   .recruit-section .story-block{padding:28px 24px}
   .recruit-section .benefits-grid{grid-template-columns:1fr}
   .recruit-section .benefit-col{padding:28px 24px}
+  /* スマホでセクションタイトルの見切れを防止 */
+  .recruit-section .s-title{font-size:clamp(1.3rem,5.5vw,1.8rem);line-height:1.4}
+  .recruit-section .s-sub{font-size:.85rem;line-height:1.8}
 }

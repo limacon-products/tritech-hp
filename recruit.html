@@ -710,13 +710,16 @@ section{padding:110px 6vw;position:relative;z-index:1}
   overflow-y:auto;overscroll-behavior:contain;
 }
 .proj-modal-close{
-  position:absolute;top:14px;right:18px;
-  background:transparent;border:none;color:var(--text2);
+  position:sticky;top:0;float:right;
+  margin:-26px -22px 0 0;
+  background:rgba(20,20,32,.85);backdrop-filter:blur(4px);
+  border:none;color:var(--text2);
   font-size:1.6rem;line-height:1;cursor:pointer;
-  width:34px;height:34px;border-radius:50%;
+  width:38px;height:38px;border-radius:50%;
   transition:color .2s,background .2s;
+  z-index:5;display:flex;align-items:center;justify-content:center;
 }
-.proj-modal-close:hover{color:var(--cyan);background:rgba(0,245,200,.08)}
+.proj-modal-close:hover{color:var(--cyan);background:rgba(0,245,200,.18)}
 .proj-modal-tags{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1rem}
 .proj-modal-tags .pc-tag{margin-bottom:0}
 .proj-modal-title{
@@ -897,13 +900,16 @@ section{padding:110px 6vw;position:relative;z-index:1}
   overflow-y:auto;overscroll-behavior:contain;
 }
 .voice-modal-rc-close{
-  position:absolute;top:14px;right:18px;
-  background:transparent;border:none;color:var(--text2);
+  position:sticky;top:0;float:right;
+  margin:-22px -20px 0 0;
+  background:rgba(20,20,32,.85);backdrop-filter:blur(4px);
+  border:none;color:var(--text2);
   font-size:1.6rem;line-height:1;cursor:pointer;
-  width:34px;height:34px;border-radius:50%;
+  width:38px;height:38px;border-radius:50%;
   transition:color .2s,background .2s;
+  z-index:5;display:flex;align-items:center;justify-content:center;
 }
-.voice-modal-rc-close:hover{color:var(--cyan);background:rgba(0,245,200,.08)}
+.voice-modal-rc-close:hover{color:var(--cyan);background:rgba(0,245,200,.18)}
 .voice-modal-rc-header{display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
 .voice-modal-rc-svg{
   width:84px;height:84px;border-radius:50%;
@@ -1296,8 +1302,8 @@ footer{
 <!-- REASONS (内容は index.html #sec-reason から JS fetch で取得・recruit デザインを維持) -->
 <section class="reasons" id="reasons">
   <p class="s-label">// why_tritech</p>
-  <h2 class="s-title reveal" style="white-space:nowrap">株式会社トライテックが選ばれる理由</h2>
-  <p class="s-sub reveal" style="max-width:none;white-space:nowrap">エンジニアファーストのSES企業として、働きやすさとキャリア成長を両立しています。</p>
+  <h2 class="s-title reveal" style="word-break:keep-all">株式会社トライテックが選ばれる理由</h2>
+  <p class="s-sub reveal" style="max-width:none;word-break:keep-all">エンジニアファーストのSES企業として、働きやすさとキャリア成長を両立しています。</p>
 
   <div class="reasons-grid" id="reasons-grid" style="margin-top:4rem">
     <div class="reason-card reveal" data-reason-idx="0">
@@ -1398,8 +1404,8 @@ footer{
 <!-- DAY FLOW (エンジニアの1日の流れ) -->
 <section class="day-sec" id="day-flow">
   <p class="s-label">// a_day_in_the_life</p>
-  <h2 class="s-title reveal" style="white-space:nowrap">エンジニアの1日の流れ</h2>
-  <p class="s-sub reveal" style="max-width:none;white-space:nowrap">役割やフェーズによって働き方はさまざま。代表的な5つのスタイルをご紹介します。</p>
+  <h2 class="s-title reveal" style="word-break:keep-all">エンジニアの1日の流れ</h2>
+  <p class="s-sub reveal" style="max-width:none;word-break:keep-all">役割やフェーズによって働き方はさまざま。代表的な5つのスタイルをご紹介します。</p>
   <div class="tab-nav reveal">
     <button class="tab-btn active" data-tab="tab1">中堅エンジニア</button>
     <button class="tab-btn" data-tab="tab2">若手テスト</button>
@@ -1530,7 +1536,7 @@ footer{
   <div style="position:relative;z-index:1">
     <p class="s-label" style="display:inline-block">// get_started</p>
     <h2 class="s-title reveal">まずは、気軽に<br>ご相談ください。</h2>
-    <p class="s-sub reveal" style="margin:0 auto 3rem;max-width:none;white-space:nowrap">登録・相談は完全無料。あなたのペースで、次のキャリアを一緒に考えましょう。</p>
+    <p class="s-sub reveal" style="margin:0 auto 3rem;max-width:none;word-break:keep-all">登録・相談は完全無料。あなたのペースで、次のキャリアを一緒に考えましょう。</p>
     <div class="cta-btns">
       <a href="contact.html" class="btn-glow">エントリーする →</a>
       <a href="index.html" class="btn-outline">まず会社を知る</a>

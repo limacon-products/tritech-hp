@@ -161,4 +161,7 @@
 }
 @media(max-width:600px){
   .sd-stats{grid-template-columns:1fr}
+  .sd-hero{padding:120px 5vw 60px;min-height:auto}
+  .sd-hero h1{font-size:clamp(1.45rem,5.5vw,1.9rem);line-height:1.4;word-break:auto-phrase;overflow-wrap:anywhere}
+  .sd-hero-lead{font-size:.92rem;line-height:1.85}
 }
