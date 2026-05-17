@@ -246,4 +246,7 @@ footer{background:#0e0e1a;padding:70px 5vw 40px;border-top:1px solid rgba(255,25
   section{padding:80px 5vw}
   .ft-menu{grid-template-columns:1fr;gap:.5rem}
   .ft-bottom{flex-direction:column;gap:.5rem;text-align:center}
+  /* スマホで s-title/s-sub が見切れないように縮小 */
+  .s-title{font-size:clamp(1.3rem,5.2vw,1.8rem);line-height:1.35;word-break:auto-phrase;overflow-wrap:anywhere}
+  .s-sub{font-size:.85rem;line-height:1.8;word-break:auto-phrase;overflow-wrap:anywhere}
 }

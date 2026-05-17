@@ -1178,6 +1178,13 @@ footer{
   .data-grid-rc{grid-template-columns:1fr}
   .donut-layout-rc{grid-template-columns:1fr;justify-items:center;text-align:center}
   .proj-grid{grid-template-columns:1fr}
+  /* スマホでセクションタイトルが見切れないように縮小 */
+  .s-title{font-size:clamp(1.25rem,5.2vw,1.7rem);line-height:1.4;word-break:auto-phrase;overflow-wrap:anywhere}
+  .s-sub{font-size:.85rem;line-height:1.75;word-break:auto-phrase;overflow-wrap:anywhere}
+  /* 案件モーダルのメタ情報: 2列 → 1列 */
+  .proj-modal-meta{grid-template-columns:1fr;gap:.6rem}
+  .proj-modal-meta dl{padding:.7rem .9rem}
+  .proj-modal-meta dt{flex:0 0 84px}
 }
 </style>
 <link rel="stylesheet" href="assets/css/game.css">
