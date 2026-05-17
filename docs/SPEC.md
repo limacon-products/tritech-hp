@@ -2,11 +2,11 @@
 
 |  項目  |  内容  |
 | --- | --- |
-| バージョン | 1.0.0 |
-| 最終更新 | 2026-05-17 |
+| バージョン | 1.0.1 |
+| 最終更新 | 2026-05-18 |
 | 本番URL | https://tritechinc.jp |
-| リポジトリ | https://github.com/limacon-products/tritech-hp |
-| ライセンス | 株式会社トライテック 所有 (Internal) |
+| リポジトリ | https://github.com/limacon-products/tritech-hp (Public) |
+| ライセンス | 株式会社トライテック 所有 (All Rights Reserved、`LICENSE` 参照) |
 
 ---
 
@@ -400,14 +400,21 @@ font-family: 'JetBrains Mono', monospace;
 
 | 項目 | 内容 |
 |---|---|
-| リポジトリ | `limacon-products/tritech-hp` |
+| リポジトリ | `limacon-products/tritech-hp` (Public) |
 | ブランチ | `main` |
 | ビルド | なし（静的HTMLそのまま配信） |
 | デプロイ | `git push` で自動 |
-| SSL | Let's Encrypt 自動発行 |
+| SSL | Let's Encrypt 自動発行・HTTPS強制ON |
 | カスタムドメイン | `tritechinc.jp` (CNAMEファイル配置済み) |
+| Jekyll | 無効化 (`.nojekyll` ファイル配置済み) |
+
+`.nojekyll` ファイルを配置することで GitHub Pages が Jekyll 処理を
+バイパスし、`_partials/` 等のアンダースコア始まりのディレクトリも
+そのまま配信される。
 
 ### 10.2 DNS設定 (お名前.com)
+
+DNS管理はお名前.com で継続。Cloudflare 等への移管は実施していない。
 
 ```
 # A レコード (GitHub Pages のIP - 4つ全て登録)
@@ -419,13 +426,19 @@ font-family: 'JetBrains Mono', monospace;
 # CNAME (www サブドメイン)
 www  CNAME  limacon-products.github.io.
 
+# autodiscover (Outlook 自動構成)
+autodiscover  CNAME  autodiscover.outlook.com
+
 # MX (メール受信 - Microsoft 365)
-@  MX  10  tritechinc-jp.mail.protection.outlook.com
+@  MX  0  tritechinc-jp.mail.protection.outlook.com
+
+# Microsoft 365 ドメイン認証
+@  TXT  MS=ms36229899
 
 # SPF (メール送信元認証)
 @  TXT  v=spf1 include:spf.protection.outlook.com include:_spf.google.com ~all
 
-# DMARC (なりすまし対策・推奨追加)
+# DMARC (なりすまし対策)
 _dmarc  TXT  v=DMARC1; p=none; rua=mailto:info@tritechinc.jp; ruf=mailto:info@tritechinc.jp; fo=1
 ```
 
