@@ -219,7 +219,7 @@ function applyDefaults(){
     name:'清水 幸秀',
     role:'代表取締役 CEO',
     tagline:'「エンジニアの未来を、共に描く」',
-    photoSrc:'assets/images/photos/ceo.jpg',
+    photoSrc:'/assets/images/photos/ceo.jpg',
     msg1:'トライテックは「エンジニアファースト」を掲げ、技術者一人ひとりが理想のキャリアを築ける環境を本気で追求しています。',
     msg2:'私自身、現役エンジニアとして10年以上現場に立ち続けてきた経験をもとに、エンジニアの気持ちや課題を誰よりも理解していると自負しています。',
     msg3:'エンジニアが主役の未来を、ここから一緒に創っていきましょう。',
@@ -1369,7 +1369,7 @@ function revOf(z){return 1-z.hp/z.mhp}
 /* ══ LOGO ══ */
 function loadLogo(cb){
   if(logoOK){cb();return}
-  logoImg=new Image();logoImg.onload=()=>{logoOK=true;cb()};logoImg.onerror=()=>{logoOK=true;cb()};logoImg.src='assets/images/logo/tritech-logo.png';
+  logoImg=new Image();logoImg.onload=()=>{logoOK=true;cb()};logoImg.onerror=()=>{logoOK=true;cb()};logoImg.src='/assets/images/logo/tritech-logo.png';
 }
 
 /* ══ OPEN ══ */
