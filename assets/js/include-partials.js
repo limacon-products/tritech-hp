@@ -13,26 +13,34 @@
   const cache = {};
   function fetchPartial(name){
     if (cache[name]) return cache[name];
-    cache[name] = fetch('_partials/' + name + '.html', { cache: 'no-store' })
+    cache[name] = fetch('/_partials/' + name + '.html', { cache: 'no-store' })
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
       .catch(e => { console.warn('[partials] fetch failed:', name, e); return ''; });
     return cache[name];
   }
 
   /* カレントページに該当する nav リンクに class="cur" を自動付与
-     - 同じページを指すリンクが複数ある場合（例: index.html と
-       index.html#transition-zone）は「ハッシュ無し」のリンクだけを
-       初期 .cur 対象にする（ハッシュ付きはページ内アンカー扱い）
-     - ハッシュ付きリンクは index.js のスクロール監視で動的に .cur 付与 */
+     - クリーンURL対応: /about-detail/ のようなディレクトリ URL も
+       /about-detail と正規化して比較
+     - ハッシュ付きリンクは初期 .cur 対象外 (ページ内アンカー扱い) */
+  function normalize(path){
+    // index.html の有無、末尾スラッシュの有無を吸収して比較キーに揃える
+    let p = path.split('?')[0].split('#')[0];
+    p = p.replace(/index\.html$/, '');           // /about-detail/index.html → /about-detail/
+    p = p.replace(/\.html$/, '');                 // /about-detail.html       → /about-detail (旧URL互換)
+    p = p.replace(/\/$/, '');                     // /about-detail/           → /about-detail
+    if (p === '') p = '/';
+    return p;
+  }
   function markCurrent(root){
-    const here = location.pathname.split('/').pop() || 'index.html';
+    const here = normalize(location.pathname);
     root.querySelectorAll('a[href]').forEach(a => {
       const href = a.getAttribute('href');
       if (!href) return;
       const [file, hash] = href.split('#');
-      const linkFile = (file || '').split('/').pop();
-      if (!linkFile) return;
-      if (linkFile !== here) return;
+      if (file === undefined || file === null) return;
+      const linkPath = normalize(file);
+      if (linkPath !== here) return;
       // CTA ボタン（採用情報）は色を維持
       if (a.classList.contains('nav-recruit') || a.classList.contains('mob-recruit')) return;
       // ハッシュ付き（ページ内アンカー）は初期 .cur 対象外
