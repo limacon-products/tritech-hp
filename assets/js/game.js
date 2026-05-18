@@ -103,7 +103,7 @@ let retryBtns=[];
      STAGE 2 (Values)   ← about-detail.html #sec-mvv
      STAGE 3 (Reasons)  ← index.html        #sec-reason (5つの理由)
      STAGE 4 (Data)     ← index.html        #data (数字で見るトライテック)
-     STAGE 5 (Reward)   ← index.html        #sec-reward (年収が決まる仕組み)
+     STAGE 5 (Reward)   ← index.html        #sec-reward (報酬が決まる仕組み)
      BOSS    (CEO)      ← about-detail.html #sec-ceo
    ※ recruit-detail.html は index.html に統合済み（.recruit-section）
    ※ ゲームはどのページからでも起動可能なため、必要な
@@ -182,11 +182,11 @@ function applyDefaults(){
     chip:'WHY TRITECH',
     title:'トライテックを選ぶ5つの理由',
     rows:[
-      {label:'POINT 01',val:'エンジニアファーストの報酬設計',body:'売上の高い割合をエンジニアへ還元する仕組みを採用。市場価値を正しく反映した給与水準を実現し、スキルアップや案件単価の向上が直接収入に繋がります。'},
-      {label:'POINT 02',val:'自分で選べる案件・技術スタック',body:'「やりたいことがある」「この技術を伸ばしたい」という希望を最優先に案件をマッチング。希望と合わない案件は断ることができます。'},
-      {label:'POINT 03',val:'成長を止めないラーニング環境',body:'Udemy Business の全コース利用、社内勉強会、AWS・情報処理技術者などの資格取得支援(費用全額補助)を提供します。'},
-      {label:'POINT 04',val:'現役エンジニア出身の経営陣',body:'代表を含む経営陣は全員エンジニア出身。「現場のリアル」を知っているからこそ、スキルと成果に基づいた正当な評価が実現できます。'},
-      {label:'POINT 05',val:'充実した福利厚生・働き方の柔軟性',body:'リモートワーク対応案件多数・フレックスタイム制・社会保険完備・交通費全額支給・慶弔見舞金など、安心して長く働くための制度を整備しています。'}
+      {label:'POINT 01',val:'エンジニア社長の考える、エンジニアファーストの報酬設計',body:'売上の高い割合をエンジニアへ還元する仕組みを採用。市場価値を正しく反映した給与水準を実現し、スキルアップや案件単価の向上が直接収入に繋がります。昇給制度も完備しており、頑張りが見える化される文化です。'},
+      {label:'POINT 02',val:'自分で選べる案件・技術スタック',body:'「やりたいことがある」「この技術を伸ばしたい」という希望を最優先に案件をマッチング。金融・製造・EC・SaaS など多様な業界の上流〜運用フェーズまで、キャリアプランに合わせて選択できます。希望と合わない案件は断ることができます。'},
+      {label:'POINT 03',val:'成長を止めないラーニング環境',body:'社内勉強会、資格取得支援(費用全額補助)を提供。また現役エンジニアがあなたのメンターとなり定例1on1を開催し、あなたのキャリアプランを全面的に支援します。'},
+      {label:'POINT 04',val:'エンジニアを不安にさせない透明性',body:'参画案件の単価はもちろん、あなたの報酬の算出根拠も開示します。現場で活躍するエンジニアが不安にならないように、常に透明性を意識した会社運営をしています。'},
+      {label:'POINT 05',val:'充実した福利厚生・働き方の柔軟性',body:'リモートワーク対応案件多数・フレックスタイム制・社会保険完備・交通費支給(上限3万円)など、安心して長く働くための制度を整備。「エンジニアとして、人として」尊重される職場環境を追求しています。'}
     ]
   };
   // STAGE 4 (index.html #data「数字で見るトライテック」— フォールバック)
@@ -202,17 +202,17 @@ function applyDefaults(){
       {year:'06',title:'100', unit:'%',      text:'育休復帰率'}
     ]
   };
-  // STAGE 5 (index.html #sec-reward "年収が決まる仕組み")
+  // STAGE 5 (index.html #sec-reward "報酬が決まる仕組み")
   gc.r={
     chip:'REWARD STRUCTURE',
-    title:'年収が決まる仕組み、すべてお見せします。',
+    title:'報酬が決まる仕組み、すべてお見せします。',
     steps:[
-      {num:'STEP 01', label:'案件単価'},
+      {num:'STEP 01', label:'市場単価'},
       {num:'STEP 02', label:'会社利益率 30%'},
       {num:'STEP 03', label:'各種税・保険料'},
       {num:'RESULT',  label:'あなたの報酬', isFinal:true}
     ],
-    note:'案件単価をオープンにし、あなたの収入にどう還元されるかを明示。給与の不透明感に悩むことは、もうありません。前職給与の保証＋年10%以上の昇給を毎年目標にしています。'
+    note:'あなたのスキル・経験に応じて市場単価を設定し、そこからあなたの報酬が決まるまでのロジックを明示します。給与の不透明感に悩むことは、もうありません。前職給与の保証＋年10%以上の昇給を毎年目標にしています。'
   };
   // BOSS (about-detail.html #sec-ceo)
   gc.ceo={
@@ -389,7 +389,7 @@ function extractContent(){
       }
     }
 
-    // ── STAGE 5: #sec-reward (年収が決まる仕組み) ──
+    // ── STAGE 5: #sec-reward (報酬が決まる仕組み) ──
     const rewardSec=doc.querySelector('#sec-reward');
     if(rewardSec){
       // chip
@@ -1110,7 +1110,7 @@ const STAGES=[
  }
 },
 
-/* ─── STAGE 5: REWARD (index.html #sec-reward / 年収が決まる仕組み) ─── */
+/* ─── STAGE 5: REWARD (index.html #sec-reward / 報酬が決まる仕組み) ─── */
 /* 4ステップフロー（STEP01→STEP02→STEP03→RESULT）と締め文 */
 {idx:4,name:'STAGE 5',sub:'REWARD',col:'#d95f1a',isBoss:false,hF:.90,spd:1.14,
  mkZ(bw,bh){return[
@@ -1143,7 +1143,7 @@ const STAGES=[
        c.fillText((r.chip||'REWARD STRUCTURE').toUpperCase(),cx+ch*1.0,cy+ch*.55);
      });
 
-   // ── title "年収が決まる仕組み、すべてお見せします。" ──
+   // ── title "報酬が決まる仕組み、すべてお見せします。" ──
    withRev(zr.title,
      ()=>greyBox(bx+bw*.04,by+bh*.09,bw*.92,bh*.10,[[.75],[.6]]),
      ()=>{
@@ -1151,7 +1151,7 @@ const STAGES=[
        const tfs=Math.min(bh*.048,bw*.034);
        const tfont=`800 ${tfs}px "Syne","Noto Sans JP",sans-serif`;
        c.font=tfont;c.fillStyle='#fff';c.textAlign='left';c.textBaseline='top';
-       const tlines=fitLines(r.title||'年収が決まる仕組み、すべてお見せします。',tfont,bw*.90).slice(0,2);
+       const tlines=fitLines(r.title||'報酬が決まる仕組み、すべてお見せします。',tfont,bw*.90).slice(0,2);
        tlines.forEach((l,li)=>c.fillText(l,bx+bw*.04,by+bh*.10+li*tfs*1.25));
        // アンダーバー
        c.fillStyle='#d95f1a';c.fillRect(bx+bw*.04,by+bh*.10+tlines.length*tfs*1.25+bh*.005,bw*.08,3);
