@@ -65,7 +65,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:68px;display:flex;ali
 /* SECTION BASE */
 section{padding:100px 5vw;position:relative}
 .s-chip{display:inline-flex;align-items:center;gap:7px;background:var(--orange-light);color:var(--orange);border-radius:100px;padding:5px 14px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.25rem}
-.s-chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-chip-dot{display:none}
 .s-chip.teal{background:var(--teal-light);color:var(--teal)}
 .s-chip.navy{background:var(--navy-light);color:var(--navy)}
 .s-title{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,3vw,2.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:1rem;color:var(--ink)}
