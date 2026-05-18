@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>会社紹介 | 株式会社トライテック</title>
-<link rel="icon" type="image/svg+xml" href="assets/images/logo/tritech-logo.svg">
-<link rel="icon" type="image/png" href="assets/images/logo/tritech-logo.png">
-<link rel="apple-touch-icon" href="assets/images/logo/tritech-logo.png">
+<link rel="icon" type="image/svg+xml" href="/assets/images/logo/tritech-logo.svg">
+<link rel="icon" type="image/png" href="/assets/images/logo/tritech-logo.png">
+<link rel="apple-touch-icon" href="/assets/images/logo/tritech-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/common.css">
-<link rel="stylesheet" href="assets/css/pages/index.css">
-<link rel="stylesheet" href="assets/css/pages/index-recruit.css">
-<link rel="stylesheet" href="assets/css/game.css">
+<link rel="stylesheet" href="/assets/css/common.css">
+<link rel="stylesheet" href="/assets/css/pages/index.css">
+<link rel="stylesheet" href="/assets/css/pages/index-recruit.css">
+<link rel="stylesheet" href="/assets/css/game.css">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
     </div>
     <div class="hero-visual reveal-right" style="transition-delay:.2s">
       <div class="hero-logo-wrap">
-        <img src="assets/images/logo/tritech-logo.png" alt="トライテック" class="hero-logo-main">
+        <img src="/assets/images/logo/tritech-logo.png" alt="トライテック" class="hero-logo-main">
       </div>
     </div>
   </div>
@@ -92,7 +92,7 @@
 
         <!-- クリア演出（Phase 2-4） -->
         <div class="tp-clear-tritech" id="tp-clear-tritech">TRITECH</div>
-        <img class="tp-clear-logo" id="tp-clear-logo" src="assets/images/logo/tritech-logo-jp.png" alt="">
+        <img class="tp-clear-logo" id="tp-clear-logo" src="/assets/images/logo/tritech-logo-jp.png" alt="">
         <div class="tp-clear-msg" id="tp-clear-msg">
           <h2>Puzzle Cleared!</h2>
           <button id="tp-clear-replay" class="tp-clear-replay">もう一度遊ぶ</button>
@@ -101,7 +101,7 @@
     </div>
   </div>
   <div class="section-btn-wrap reveal" style="transition-delay:.3s">
-    <a href="about-detail.html" class="section-btn">私たちについて詳しく見る →</a>
+    <a href="/about-detail/" class="section-btn">私たちについて詳しく見る →</a>
   </div>
 </section>
 
@@ -111,19 +111,19 @@
   <h2 class="s-title reveal">事業内容</h2>
   <p class="s-sub reveal">3つの事業領域で、企業とエンジニアの可能性を広げます。</p>
   <div class="service-cards">
-    <a href="service-ses.html" class="sc sc-1 reveal">
+    <a href="/service-ses/" class="sc sc-1 reveal">
       <div class="sc-img" style="background-image:url('/assets/images/photos/ses-laptop.jpg')"></div>
       <div class="sc-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <h3>SES事業</h3>
       <p>お客様の開発現場にエンジニアを派遣し、プロジェクト成功を技術力で支えます。</p>
     </a>
-    <a href="service-quality.html" class="sc sc-2 reveal" style="transition-delay:.1s">
+    <a href="/service-quality/" class="sc sc-2 reveal" style="transition-delay:.1s">
       <div class="sc-img" style="background-image:url('/assets/images/photos/security-lock.jpg')"></div>
       <div class="sc-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
       <h3>品質保証</h3>
       <p>テスト設計・自動化・QA体制構築で、プロダクトの品質を最前線で守ります。</p>
     </a>
-    <a href="service-dx.html" class="sc sc-3 reveal" style="transition-delay:.2s">
+    <a href="/service-dx/" class="sc sc-3 reveal" style="transition-delay:.2s">
       <div class="sc-img" style="background-image:url('/assets/images/photos/dx-tablet.jpg')"></div>
       <div class="sc-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
       <h3>DX支援</h3>
@@ -189,8 +189,8 @@
 </section>
 
 <!-- COMPANY OVERVIEW + ACCESS（about-detail.html から fetch+inject、ダブルメンテ回避） -->
-<section class="ci-mirror" id="overview-mirror" data-source="about-detail.html#sec-overview"></section>
-<section class="ci-mirror" id="access-mirror" data-source="about-detail.html#sec-access"></section>
+<section class="ci-mirror" id="overview-mirror" data-source="/about-detail/#sec-overview"></section>
+<section class="ci-mirror" id="access-mirror" data-source="/about-detail/#sec-access"></section>
 
 <!-- ════════════════════════════════════════════
      ★ トランジションゾーン（index → recruit-detail への切替演出）
@@ -418,19 +418,19 @@
   <h2 class="s-title reveal" style="margin:0 auto 1rem;word-break:keep-all">一緒に、未来をつくりませんか？</h2>
   <p class="s-sub reveal" style="margin:0 auto 3rem">エンジニアとして成長したい方、私たちのミッションに共感していただける方、ぜひお話しましょう。</p>
   <div class="cta-btns reveal" style="transition-delay:.15s">
-    <a href="contact.html" class="btn-ghost">お問い合わせ</a>
+    <a href="/contact/" class="btn-ghost">お問い合わせ</a>
   </div>
   <div class="next-stage-wrap reveal" style="transition-delay:.25s">
-    <a href="recruit.html" class="btn-next-stage">採用情報を見る →</a>
+    <a href="/recruit/" class="btn-next-stage">採用情報を見る →</a>
   </div>
 </section>
 
 <!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
 <div data-include="footer"></div>
 
-<script src="assets/js/include-partials.js"></script>
-<script src="assets/js/common.js" defer></script>
-<script src="assets/js/pages/index.js" defer></script>
+<script src="/assets/js/include-partials.js"></script>
+<script src="/assets/js/common.js" defer></script>
+<script src="/assets/js/pages/index.js" defer></script>
 
 <div id="game-overlay">
   <canvas id="game-canvas"></canvas>
@@ -443,12 +443,12 @@
   <div id="gesc">[ ESC ] 終了</div>
 </div>
 
-<script src="assets/js/game.js" defer></script>
+<script src="/assets/js/game.js" defer></script>
 
 <!-- ════════════════════════════════════════════
      TRITECH BLOCK PUZZLE (クリック選択式)
      ════════════════════════════════════════════ -->
-<script src="assets/js/pages/tritech-puzzle.js" defer></script>
+<script src="/assets/js/pages/tritech-puzzle.js" defer></script>
 
 
 </body>

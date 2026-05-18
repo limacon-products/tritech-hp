@@ -249,8 +249,8 @@ function extractContent(){
 
   // ─ 非同期: 正典ソースを fetch して上書き ─
   // 旧 recruit-detail.html は index.html に統合済み（.recruit-section）
-  fetchPageDoc('index.html').then(doc=>{if(doc)applyFromDoc(doc)});
-  fetchPageDoc('about-detail.html').then(doc=>{if(doc)applyFromDoc(doc)});
+  fetchPageDoc('/').then(doc=>{if(doc)applyFromDoc(doc)});
+  fetchPageDoc('/about-detail/').then(doc=>{if(doc)applyFromDoc(doc)});
 
   function applyFromDoc(doc){
     // ── STAGE 1: index.html #about (私たちについて) ──
@@ -2103,7 +2103,7 @@ function drawPortalExit(){
   }
 
   if(t>=TOTAL){
-    if(portalDest==='recruit')window.location.href='recruit.html';
+    if(portalDest==='recruit')window.location.href='/recruit/';
     else{
       // 'home' → 現在のページをリロードして、ゲーム起動前の状態に戻す
       // (ESCキーや「ホームに戻る」ボタンの共通動作)
