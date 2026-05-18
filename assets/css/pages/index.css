@@ -120,7 +120,7 @@ section{padding:100px 5vw;position:relative}
 .hero-bg-stream .stream-row{position:absolute;width:200%;height:80px;display:flex;gap:60px;align-items:center}
 .hero-bg-stream .stream-row svg{flex-shrink:0}
 .hero-bg-stream .stream-row.r1{top:18%;animation:heroStreamMove1 30s linear infinite}
-.hero-bg-stream .stream-row.r2{top:50%;animation:heroStreamMove2 38s linear infinite}
+.hero-bg-stream .stream-row.r2{top:42%;animation:heroStreamMove2 38s linear infinite}
 .hero-bg-stream .stream-row.r3{top:80%;animation:heroStreamMove1 34s linear infinite reverse}
 @keyframes heroStreamMove1{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes heroStreamMove2{from{transform:translateX(-50%)}to{transform:translateX(0)}}
