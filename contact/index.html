@@ -32,6 +32,8 @@
 <link rel="apple-touch-icon" href="/assets/images/logo/tritech-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- reCAPTCHA v3 (スパム対策。ユーザーには見えないバックグラウンド検証) -->
+<script src="https://www.google.com/recaptcha/api.js?render=6LctevEsAAAAAPKF5jLZuEr7_2DS4Wg3_sVNRHyy"></script>
 <link rel="stylesheet" href="/assets/css/common.css">
 <link rel="stylesheet" href="/assets/css/pages/index.css">
 <link rel="stylesheet" href="/assets/css/game.css">
@@ -338,6 +340,14 @@
         <button type="submit" class="cf-submit" id="cf-submit">送信する →</button>
 
         <div class="cf-result" id="cf-result" role="alert" aria-live="polite"></div>
+
+        <p class="cf-recaptcha-notice" style="margin-top:1.5rem;font-size:.72rem;color:rgba(255,255,255,.45);line-height:1.6">
+          このサイトは reCAPTCHA によって保護されており、Google の
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--teal)">プライバシーポリシー</a>
+          と
+          <a href="https://policies.google.com/terms" target="_blank" rel="noopener" style="color:var(--teal)">利用規約</a>
+          が適用されます。
+        </p>
       </form>
     </div>
 
@@ -403,19 +413,36 @@ const GAS_ENDPOINT='https://script.google.com/macros/s/AKfycbwm_rnA0B-Ghq-vrMFxr
     submit.disabled=true;
     submit.innerHTML='<span class="cf-spinner"></span> 送信中...';
 
-    /* フォームデータをJSON化 */
-    const payload={
-      type:form['お問い合わせ種別'].value,
-      name:form['お名前'].value,
-      company:form['会社名'].value,
-      email:form['メールアドレス'].value,
-      tel:form['電話番号'].value,
-      message:form['お問い合わせ内容'].value,
-      sentAt:new Date().toISOString(),
-      userAgent:navigator.userAgent,
-    };
-
     try{
+      /* reCAPTCHA v3: 送信ボタン押下時にトークン取得
+         action は GAS 側のログ分析用のラベル */
+      let recaptchaToken='';
+      try{
+        if(typeof grecaptcha!=='undefined'&&grecaptcha.ready){
+          await new Promise(res=>grecaptcha.ready(res));
+          recaptchaToken=await grecaptcha.execute(
+            '6LctevEsAAAAAPKF5jLZuEr7_2DS4Wg3_sVNRHyy',
+            {action:'contact_submit'}
+          );
+        }
+      }catch(e){
+        console.warn('[contact] reCAPTCHA token fetch failed:',e);
+        // トークン取得失敗時も送信は試みる (GAS 側で判定)
+      }
+
+      /* フォームデータをJSON化 */
+      const payload={
+        type:form['お問い合わせ種別'].value,
+        name:form['お名前'].value,
+        company:form['会社名'].value,
+        email:form['メールアドレス'].value,
+        tel:form['電話番号'].value,
+        message:form['お問い合わせ内容'].value,
+        sentAt:new Date().toISOString(),
+        userAgent:navigator.userAgent,
+        recaptchaToken:recaptchaToken,
+      };
+
       /* GAS の doPost は CORS プリフライトを嫌うので
          text/plain で送信して GAS 側で JSON.parse する */
       const res=await fetch(GAS_ENDPOINT,{

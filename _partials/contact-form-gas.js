@@ -21,11 +21,13 @@
  *   2.「新しいプロジェクト」をクリック
  *   3. このファイルの中身を全てコピーして、コード.gs に貼り付ける
  *   4. プロジェクト設定 (左メニュー歯車) → 「スクリプト プロパティ」
- *      以下3つを追加:
- *        - TENANT_ID     : (Microsoft_Graph_API_セットアップ手順.txt の
- *                            ディレクトリ(テナント) ID)
- *        - CLIENT_ID     : (アプリケーション(クライアント) ID)
- *        - CLIENT_SECRET : (クライアント シークレットの値)
+ *      以下を追加:
+ *        - TENANT_ID         : (Microsoft_Graph_API_セットアップ手順.txt の
+ *                                ディレクトリ(テナント) ID)
+ *        - CLIENT_ID         : (アプリケーション(クライアント) ID)
+ *        - CLIENT_SECRET     : (クライアント シークレットの値)
+ *        - RECAPTCHA_SECRET  : (Google reCAPTCHA v3 のシークレットキー)
+ *          ※ ENABLE_RECAPTCHA = false にすればこの設定はスキップ可能
  *   5. 上部の「保存」(💾)、プロジェクト名は「トライテック お問い合わせ」など
  *   6. 「デプロイ」→「新しいデプロイ」をクリック
  *   7. 種類の選択(歯車) → 「ウェブアプリ」
@@ -44,6 +46,9 @@
  *   - サンキューメール本文を変えたい: buildThankYouBody() を編集
  *   - サンキューメールを止めたい: ENABLE_THANKYOU = false
  *   - クライアントシークレットは24か月で期限切れ → 2028年4月頃に更新
+ *   - reCAPTCHA を無効化したい: ENABLE_RECAPTCHA = false
+ *   - reCAPTCHA の判定厳しさを調整: RECAPTCHA_MIN_SCORE (0.0〜1.0)
+ *     大きいほど厳格 (= 人間でも弾かれやすい)、小さいほど緩い
  */
 
 /* ====== 設定 ======
@@ -63,6 +68,8 @@ const SUPPORT_HOURS = '平日 10:00 〜 18:00（土日祝・年末年始除く�
 const REPLY_DEADLINE = '1週間以内';
 const ENABLE_SHEET_LOG = false;                               // スプレッドシート保存ON/OFF
 const SHEET_ID = '';                                          // 保存する場合のシートID
+const ENABLE_RECAPTCHA = true;                                // reCAPTCHA v3 検証 ON/OFF
+const RECAPTCHA_MIN_SCORE = 0.5;                              // 0.0(bot)〜1.0(人間)、未満は拒否
 /* =================== */
 
 function doPost(e) {
@@ -82,6 +89,15 @@ function doPost(e) {
     const urlCount = (String(data.message).match(/https?:\/\//g) || []).length;
     if (urlCount >= 3) {
       return jsonResponse({ ok: false, error: 'too many URLs' });
+    }
+
+    // reCAPTCHA v3 検証 (スコア閾値未満は拒否)
+    if (ENABLE_RECAPTCHA) {
+      const verifyResult = verifyRecaptcha(data.recaptchaToken);
+      if (!verifyResult.ok) {
+        console.warn('[recaptcha] rejected:', verifyResult);
+        return jsonResponse({ ok: false, error: 'recaptcha failed: ' + verifyResult.reason });
+      }
     }
 
     // アクセストークン取得 (キャッシュ利用)
@@ -119,6 +135,49 @@ function doPost(e) {
   } catch (err) {
     console.error('[doPost]', err);
     return jsonResponse({ ok: false, error: String(err) });
+  }
+}
+
+/* ════════════════════════════════════════════
+ *  reCAPTCHA v3 トークン検証
+ *  Google の siteverify API にトークンを送信してスコアを取得
+ *    - スコアが RECAPTCHA_MIN_SCORE 未満なら拒否
+ *    - action 名が一致しない場合も拒否
+ *    - シークレットキーは Script Properties (RECAPTCHA_SECRET) に格納
+ *  返り値: { ok: true } または { ok: false, reason: '...' }
+ * ════════════════════════════════════════════ */
+function verifyRecaptcha(token) {
+  if (!token) {
+    return { ok: false, reason: 'no token' };
+  }
+  const secret = PropertiesService.getScriptProperties().getProperty('RECAPTCHA_SECRET');
+  if (!secret) {
+    console.warn('[recaptcha] RECAPTCHA_SECRET not set in Script Properties');
+    return { ok: false, reason: 'server config missing' };
+  }
+  try {
+    const res = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'post',
+      payload: { secret: secret, response: token },
+      muteHttpExceptions: true,
+    });
+    if (res.getResponseCode() !== 200) {
+      return { ok: false, reason: 'siteverify HTTP ' + res.getResponseCode() };
+    }
+    const json = JSON.parse(res.getContentText());
+    if (!json.success) {
+      return { ok: false, reason: 'success=false ' + JSON.stringify(json['error-codes'] || []) };
+    }
+    if (json.action !== 'contact_submit') {
+      return { ok: false, reason: 'action mismatch: ' + json.action };
+    }
+    if (typeof json.score !== 'number' || json.score < RECAPTCHA_MIN_SCORE) {
+      return { ok: false, reason: 'low score: ' + json.score };
+    }
+    console.log('[recaptcha] passed (score=' + json.score + ')');
+    return { ok: true, score: json.score };
+  } catch (e) {
+    return { ok: false, reason: 'exception: ' + e };
   }
 }
 
