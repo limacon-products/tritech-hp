@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# クロール対象外
+Disallow: /_partials/
+
+# サイトマップ
+Sitemap: https://tritechinc.jp/sitemap.xml
