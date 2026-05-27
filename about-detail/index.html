@@ -67,7 +67,7 @@ section{padding:100px 5vw 80px;position:relative}
 /* INTRO */
 .intro-body p{font-size:.95rem;color:var(--muted);line-height:2;margin-bottom:1.3rem}
 /* テキストブロック：可読性を保ちつつ右側余白を抑える。section 左端に揃える */
-.about-detail{max-width:1100px;margin:0;padding:2rem 0}
+.about-detail{margin:0;padding:2rem 0}
 .about-detail-lead{font-size:1.02rem;line-height:2;margin-bottom:1.5em;color:var(--text)}
 .about-mission-heading{font-size:clamp(1.3rem,2.5vw,1.6rem);font-weight:700;color:var(--text);margin:2.5rem 0 1.5rem;padding-left:1rem;border-left:4px solid #E07830;line-height:1.4}
 .about-mission-list{list-style:none;padding-left:0;margin:0 0 1rem}
@@ -79,7 +79,7 @@ section{padding:100px 5vw 80px;position:relative}
    MVV - 案E（番号大表示・縦並び・透かし文字背景）
    コンテナは 1400px に制限し section 左端に揃える
    ════════════════════════════════════════ */
-.mvv-list{display:flex;flex-direction:column;margin-top:2.5rem;max-width:1400px}
+.mvv-list{display:flex;flex-direction:column;margin-top:2.5rem}
 .mvv-row{position:relative;padding:64px 0;border-top:1px solid var(--border);overflow:hidden}
 .mvv-row:last-child{border-bottom:1px solid var(--border)}
 .mvv-watermark{position:absolute;top:50%;right:3%;transform:translateY(-50%);font-family:'Syne',sans-serif;font-size:300px;font-weight:800;color:#111;opacity:0.03;line-height:.85;letter-spacing:-.05em;pointer-events:none;user-select:none;z-index:0}
@@ -102,7 +102,7 @@ section{padding:100px 5vw 80px;position:relative}
 .val-desc{display:block;font-size:.85rem;color:var(--muted);line-height:1.85;padding-left:1.2rem}
 
 /* CEO */
-.ceo-wrap{border:1px solid var(--border);border-left:3px solid var(--orange);background:var(--card);padding:40px 44px;max-width:1300px;margin-top:2.5rem;box-shadow:0 4px 24px rgba(0,0,0,.04)}
+.ceo-wrap{border:1px solid var(--border);border-left:3px solid var(--orange);background:var(--card);padding:40px 44px;margin-top:2.5rem;box-shadow:0 4px 24px rgba(0,0,0,.04)}
 .ceo-ttl{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:1.75rem;line-height:1.4;color:var(--text)}
 .ceo-body p{font-size:.92rem;color:var(--muted);line-height:2;margin-bottom:1.2rem}
 .ceo-sign{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);text-align:right;letter-spacing:.06em}
@@ -304,11 +304,11 @@ section{padding:100px 5vw 80px;position:relative}
     #sec-overview .sec-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(224,120,48,.10);color:#E07830;border:1px solid rgba(224,120,48,.25);border-radius:100px;padding:5px 16px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.2rem}
     #sec-overview .sec-title{font-family:'Syne','Noto Sans JP',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:1.5rem;letter-spacing:-.02em;line-height:1.2;color:#111}
     /* 会社概要：左にテーブル、右にロゴの 2 列レイアウト */
-    #sec-overview .ci-overview-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:3rem;align-items:start;max-width:1100px;margin-top:1.5rem}
+    #sec-overview .ci-overview-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:3rem;align-items:start;margin-top:1.5rem}
     #sec-overview .ci-tbl{width:100%;border-collapse:collapse}
     #sec-overview .ci-tbl tr{border-bottom:1px solid rgba(0,0,0,.08)}
-    #sec-overview .ci-tbl th{font-size:.78rem;color:#7a7a90;font-weight:700;letter-spacing:.06em;text-align:left;padding:1.15rem 0;width:140px;vertical-align:top;white-space:nowrap}
-    #sec-overview .ci-tbl td{font-size:.95rem;color:#111;padding:1.15rem 0;vertical-align:top;line-height:1.85}
+    #sec-overview .ci-tbl th{font-size:1rem;color:#7a7a90;font-weight:700;letter-spacing:.06em;text-align:left;padding:1.4rem 0;width:180px;vertical-align:top;white-space:nowrap}
+    #sec-overview .ci-tbl td{font-size:1.15rem;color:#111;padding:1.4rem 0;vertical-align:top;line-height:1.9}
     #sec-overview .ci-logo-wrap{display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,rgba(224,120,48,.04) 0%,rgba(68,170,219,.04) 100%);border-radius:16px;min-height:280px}
     #sec-overview .ci-logo-img{max-width:100%;width:240px;height:auto;display:block;filter:drop-shadow(0 4px 18px rgba(0,0,0,.08))}
     @media(max-width:760px){
@@ -317,8 +317,8 @@ section{padding:100px 5vw 80px;position:relative}
       #sec-overview .ci-logo-img{width:180px}
     }
     @media(max-width:600px){
-      #sec-overview .ci-tbl th{width:100px;font-size:.72rem;padding:.9rem 0}
-      #sec-overview .ci-tbl td{font-size:.88rem;padding:.9rem 0}
+      #sec-overview .ci-tbl th{width:110px;font-size:.85rem;padding:1.1rem 0}
+      #sec-overview .ci-tbl td{font-size:1rem;padding:1.1rem 0}
     }
   </style>
   <p class="s-chip reveal">// COMPANY OVERVIEW</p>
@@ -355,12 +355,12 @@ section{padding:100px 5vw 80px;position:relative}
     #sec-access{padding:80px 5vw;position:relative}
     #sec-access .sec-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(224,120,48,.10);color:#E07830;border:1px solid rgba(224,120,48,.25);border-radius:100px;padding:5px 16px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.2rem}
     #sec-access .sec-title{font-family:'Syne','Noto Sans JP',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:1.5rem;letter-spacing:-.02em;line-height:1.2;color:#111}
-    #sec-access .ci-access-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:2.25rem;margin-top:2rem;align-items:stretch;max-width:1400px}
+    #sec-access .ci-access-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:2.25rem;margin-top:2rem;align-items:stretch}
     #sec-access .ci-map{position:relative;width:100%;min-height:340px;border-radius:12px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.06)}
     #sec-access .ci-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
     #sec-access .ci-info{display:flex;flex-direction:column;justify-content:center;padding:1rem 0}
     #sec-access .ci-name{font-family:'Noto Sans JP',sans-serif;font-size:1.05rem;font-weight:800;color:#111;letter-spacing:.02em;margin-bottom:.85rem}
-    #sec-access .ci-zip{font-size:.85rem;color:#7a7a90;letter-spacing:.05em;margin-bottom:.4rem}
+    #sec-access .ci-zip{font-size:1.1rem;font-weight:700;color:#111;letter-spacing:.02em;line-height:1.7;margin-bottom:.4rem}
     #sec-access .ci-addr{font-size:1.1rem;font-weight:700;color:#111;line-height:1.7;margin-bottom:1.25rem}
     #sec-access .ci-station{font-size:.85rem;color:#555;line-height:1.85;padding-top:1rem;border-top:1px dashed rgba(0,0,0,.12)}
     #sec-access .ci-station strong{color:#E07830;font-weight:700}

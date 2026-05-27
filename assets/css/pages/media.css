@@ -44,26 +44,27 @@
   font-family:'Syne',sans-serif;
   font-size:clamp(1.6rem,2.8vw,2.2rem);
   font-weight:800;letter-spacing:-.01em;
-  color:#111;margin:0 0 .6rem;text-align:center;
+  color:#111;margin:0 0 .8rem;
 }
 .media-sec-sub{
   font-size:.95rem;color:#555;
-  text-align:center;margin:0 0 3rem;
+  margin:0 0 3rem;
   line-height:1.8;
 }
 
 /* ── SNS CARDS SECTION ── */
 .media-cards-sec{
   background:#f7f7f5;
-  padding:100px 5vw 140px;
+  padding:80px 5vw;
 }
 .media-cards-wrap{
-  max-width:1200px;margin:0 auto;
 }
+.media-cards-sec .s-chip{display:inline-flex;margin-bottom:1.2rem}
 .media-cards{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:1.6rem;
+  margin-top:3rem;
 }
 .media-card{
   display:flex;gap:1.4rem;align-items:flex-start;
@@ -108,14 +109,17 @@
 
 .media-card-body{flex:1;min-width:0}
 .media-card-tag{
-  display:inline-block;
+  display:inline-flex;align-items:center;gap:6px;
   font-family:'Syne',sans-serif;
-  font-size:.62rem;letter-spacing:.18em;
+  font-size:.66rem;letter-spacing:.14em;
   text-transform:uppercase;font-weight:700;
-  padding:3px 10px;
+  padding:4px 12px;
   background:rgba(217,95,26,.10);color:#D9601A;
   border-radius:100px;
   margin-bottom:.7rem;
+}
+.media-card-tag-mark{
+  font-weight:800;letter-spacing:0;opacity:.85;
 }
 .media-card-name{
   font-size:1.25rem;font-weight:800;
