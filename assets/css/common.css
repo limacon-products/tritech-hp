@@ -236,6 +236,48 @@ footer{background:#0e0e1a;padding:70px 5vw 40px;border-top:1px solid rgba(255,25
 }
 .ft-recruit-btn:hover .ft-recruit-arrow{transform:translateX(4px)}
 
+/* ── フッター内 SNS リンク ── */
+.ft-sns{margin-top:1.8rem}
+.ft-sns-label{
+  font-family:'Syne',sans-serif;font-size:.62rem;letter-spacing:.22em;
+  color:rgba(255,255,255,.45);margin-bottom:.7rem;
+}
+.ft-sns-list{display:flex;gap:.7rem;align-items:center}
+.ft-sns-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:8px;
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);
+  text-decoration:none;transition:background .25s,color .25s,transform .25s;
+}
+.ft-sns-link svg{width:18px;height:18px;display:block}
+.ft-sns-link:hover{transform:translateY(-2px);background:rgba(255,255,255,.1)}
+.ft-sns-link.is-x:hover{color:#fff;background:#000}
+.ft-sns-link.is-linkedin:hover{color:#fff;background:#0A66C2}
+.ft-sns-link.is-note:hover{color:#fff;background:#41C9B4}
+/* SNSアイコン用ツールチップ */
+.ft-sns-link[data-tip]{position:relative}
+.ft-sns-link[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);
+  background:rgba(0,0,0,.85);color:#fff;
+  padding:5px 10px;border-radius:6px;
+  font-size:.7rem;font-weight:600;white-space:nowrap;
+  letter-spacing:.04em;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;
+}
+.ft-sns-link[data-tip]::before{
+  content:'';position:absolute;bottom:calc(100% + 2px);left:50%;
+  transform:translateX(-50%) translateY(4px);
+  border:5px solid transparent;border-top-color:rgba(0,0,0,.85);
+  opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;
+}
+.ft-sns-link[data-tip]:hover::after,
+.ft-sns-link[data-tip]:hover::before{
+  opacity:1;transform:translateX(-50%) translateY(0);
+}
+
 /* ── COMMON RESPONSIVE ── */
 @media(max-width:960px){
   .nav-links{display:none}
