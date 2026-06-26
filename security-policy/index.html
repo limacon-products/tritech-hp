@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WQRCJC9H8X"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WQRCJC9H8X');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>情報セキュリティ基本方針 | 株式会社トライテック</title>
+<meta name="description" content="株式会社トライテックの情報セキュリティ基本方針。お客様および当社の情報資産を保護するための取り組みをご案内します。">
+<link rel="canonical" href="https://tritechinc.jp/security-policy/">
+<!-- OGP -->
+<meta property="og:title" content="情報セキュリティ基本方針 | 株式会社トライテック">
+<meta property="og:description" content="株式会社トライテックの情報セキュリティ基本方針。お客様および当社の情報資産を保護するための取り組みをご案内します。">
+<meta property="og:url" content="https://tritechinc.jp/security-policy/">
+<meta property="og:image" content="https://tritechinc.jp/assets/images/logo/tritech-logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="株式会社トライテック">
+<meta property="og:locale" content="ja_JP">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="情報セキュリティ基本方針 | 株式会社トライテック">
+<meta name="twitter:description" content="株式会社トライテックの情報セキュリティ基本方針。お客様および当社の情報資産を保護するための取り組みをご案内します。">
+<meta name="twitter:image" content="https://tritechinc.jp/assets/images/logo/tritech-logo.png">
+<link rel="icon" type="image/svg+xml" href="/assets/images/logo/tritech-logo.svg">
+<link rel="icon" type="image/png" href="/assets/images/logo/tritech-logo.png">
+<link rel="apple-touch-icon" href="/assets/images/logo/tritech-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/common.css">
+<link rel="stylesheet" href="/assets/css/pages/index.css">
+<link rel="stylesheet" href="/assets/css/game.css">
+<style>
+/* ── 情報セキュリティ基本方針ページ（privacy-policy と同構造） ── */
+.pp-hero{
+  background:var(--ink);
+  padding:140px 5vw 70px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.pp-hero::before{
+  content:'';position:absolute;
+  top:-200px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(30,143,160,.1) 0%,transparent 55%);
+  pointer-events:none;
+}
+.pp-hero-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
+.pp-hero .s-chip{margin:0 auto 1.4rem;display:inline-flex}
+.pp-hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2rem,3.5vw,3rem);font-weight:800;
+  letter-spacing:-.02em;color:#fff;margin-bottom:1rem;
+}
+.pp-hero .lead{
+  font-size:.95rem;color:rgba(255,255,255,.6);line-height:1.9;
+  max-width:680px;margin:0 auto;
+}
+
+.pp-section{background:#fafafa;padding:80px 5vw 120px}
+.pp-wrap{
+  max-width:880px;margin:0 auto;
+  background:#fff;border-radius:14px;
+  padding:60px 56px;
+  box-shadow:0 8px 36px rgba(15,18,36,.06);
+}
+.pp-intro{
+  font-size:.92rem;color:var(--muted);
+  line-height:1.95;margin-bottom:2.5rem;
+  padding-bottom:2rem;border-bottom:1px solid #eee;
+}
+
+.pp-toc{
+  background:rgba(217,95,26,.04);
+  border:1px solid rgba(217,95,26,.12);
+  border-radius:10px;
+  padding:24px 28px;margin-bottom:3rem;
+}
+.pp-toc-title{
+  font-family:'Syne',sans-serif;font-size:.78rem;
+  letter-spacing:.14em;color:var(--orange);
+  font-weight:700;margin-bottom:1rem;
+}
+.pp-toc ol{
+  list-style:none;padding:0;margin:0;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:.55rem 1.6rem;
+  counter-reset:toc;
+}
+.pp-toc li{
+  counter-increment:toc;
+  font-size:.85rem;
+}
+.pp-toc li::before{
+  content:counter(toc,decimal-leading-zero) ".";
+  color:var(--orange);font-weight:700;
+  margin-right:.55rem;font-family:'Syne',sans-serif;
+}
+.pp-toc a{
+  color:var(--ink);text-decoration:none;
+  transition:color .15s;
+}
+.pp-toc a:hover{color:var(--orange)}
+
+.pp-article{counter-reset:section}
+.pp-h2{
+  counter-increment:section;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:1.15rem;font-weight:700;
+  color:var(--ink);
+  padding:1.5rem 0 .8rem;
+  margin-top:2.5rem;
+  border-bottom:2px solid var(--orange);
+  display:flex;align-items:baseline;gap:.7rem;
+  scroll-margin-top:90px;
+}
+.pp-h2::before{
+  content:counter(section,decimal-leading-zero);
+  font-family:'Syne',sans-serif;font-size:.85rem;
+  color:var(--orange);letter-spacing:.06em;
+  padding:3px 8px;background:rgba(217,95,26,.08);
+  border-radius:4px;flex-shrink:0;
+}
+.pp-h3{
+  font-size:.95rem;font-weight:700;color:var(--ink);
+  margin:1.5rem 0 .6rem;
+}
+.pp-article p{
+  font-size:.88rem;color:var(--ink);
+  line-height:1.95;margin-bottom:1rem;
+}
+.pp-article ul,
+.pp-article ol{
+  margin:.5rem 0 1.2rem 1.5rem;
+  font-size:.88rem;color:var(--ink);
+  line-height:1.85;
+}
+.pp-article li{margin-bottom:.4rem}
+.pp-article ul li::marker{color:var(--orange)}
+.pp-article ol li::marker{color:var(--teal);font-weight:700}
+
+.pp-contact-box{
+  background:#0e0e1a;color:#fff;
+  border-radius:12px;padding:24px 28px;
+  margin-top:1rem;
+}
+.pp-contact-box dt{
+  font-family:'Syne',sans-serif;font-size:.7rem;
+  letter-spacing:.14em;color:rgba(255,255,255,.5);
+  margin-bottom:.3rem;
+}
+.pp-contact-box dd{
+  font-size:.9rem;margin:0 0 1rem;line-height:1.6;
+}
+.pp-contact-box dd:last-child{margin-bottom:0}
+.pp-contact-box a{color:#ff9466;text-decoration:none}
+.pp-contact-box a:hover{text-decoration:underline}
+
+.pp-footer-meta{
+  margin-top:3rem;padding-top:1.5rem;
+  border-top:1px solid #eee;
+  display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:.5rem;
+  font-size:.78rem;color:var(--muted);
+}
+
+@media(max-width:760px){
+  .pp-hero{padding:110px 5vw 50px}
+  .pp-wrap{padding:36px 24px}
+  .pp-toc ol{grid-template-columns:1fr}
+  .pp-h2{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
+<div data-include="header"></div>
+
+<!-- HERO -->
+<section class="pp-hero">
+  <div class="pp-hero-inner">
+    <p class="s-chip teal reveal"><span class="s-chip-dot"></span>// Security Policy</p>
+    <h1 class="reveal" style="transition-delay:.1s">情報セキュリティ基本方針</h1>
+    <p class="lead reveal" style="transition-delay:.2s">株式会社トライテック（以下「当社」といいます）は、お客様・取引先・登録エンジニアからお預かりする情報資産を、あらゆる脅威から保護することが社会的責務であると認識し、本方針を定めて遵守します。</p>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<section class="pp-section">
+  <div class="pp-wrap">
+
+    <p class="pp-intro">
+      当社は、SES（システムエンジニアリングサービス）事業、ソフトウェアの品質保証サービス、DX推進支援事業を通じて、お客様および取引先の機密情報・個人情報、ならびに当社の保有する情報資産を多数取り扱っています。当社は、これらの情報資産が事業活動の根幹を支えるものであることを認識し、機密性・完全性・可用性を維持するための情報セキュリティ管理体制を構築・運用するとともに、継続的な改善に努めます。
+    </p>
+
+    <!-- 目次 -->
+    <div class="pp-toc">
+      <div class="pp-toc-title">// CONTENTS</div>
+      <ol>
+        <li><a href="#sp-1">目的</a></li>
+        <li><a href="#sp-2">適用範囲</a></li>
+        <li><a href="#sp-3">情報セキュリティの定義</a></li>
+        <li><a href="#sp-4">管理体制の整備</a></li>
+        <li><a href="#sp-5">情報セキュリティ対策</a></li>
+        <li><a href="#sp-6">法令・契約事項の遵守</a></li>
+        <li><a href="#sp-7">教育・啓発活動</a></li>
+        <li><a href="#sp-8">インシデント対応</a></li>
+        <li><a href="#sp-9">継続的改善</a></li>
+        <li><a href="#sp-10">違反時の対応</a></li>
+        <li><a href="#sp-11">お問い合わせ窓口</a></li>
+      </ol>
+    </div>
+
+    <article class="pp-article">
+
+      <h2 id="sp-1" class="pp-h2">目的</h2>
+      <p>本方針は、当社が事業活動を通じて取り扱う情報資産を、漏えい・改ざん・破壊・滅失・不正アクセス等のあらゆる脅威から保護し、お客様・取引先・登録エンジニアおよび当社の信頼と利益を守ることを目的とします。</p>
+      <p>また、SES事業においてお客様先に常駐するエンジニアが、お客様の情報資産を適切に取り扱う体制を整備することも、本方針の重要な目的の一つとして位置付けます。</p>
+
+      <h2 id="sp-2" class="pp-h2">適用範囲</h2>
+      <p>本方針は、以下の対象に適用されます。</p>
+      <ul>
+        <li>当社の役員および全従業員（正社員・契約社員・派遣社員・アルバイトを含む）</li>
+        <li>当社が業務委託する協力会社の社員および登録エンジニア</li>
+        <li>当社が保有・管理する全ての情報資産（電子データ・書面・記録媒体等）</li>
+        <li>当社が業務上利用する全ての情報システム・ネットワーク・クラウドサービス</li>
+      </ul>
+
+      <h2 id="sp-3" class="pp-h2">情報セキュリティの定義</h2>
+      <p>当社は、情報セキュリティを以下の3要素を維持することと定義します。</p>
+      <ul>
+        <li><strong>機密性（Confidentiality）：</strong>認可された者だけが情報にアクセスできる状態を確保する</li>
+        <li><strong>完全性（Integrity）：</strong>情報および処理方法が正確であり、改ざん・破壊から保護されている状態を確保する</li>
+        <li><strong>可用性（Availability）：</strong>認可された利用者が必要なときに情報および関連資産にアクセスできる状態を確保する</li>
+      </ul>
+
+      <h2 id="sp-4" class="pp-h2">管理体制の整備</h2>
+      <p>当社は、情報セキュリティを効果的に推進するため、以下の管理体制を整備します。</p>
+      <ul>
+        <li>代表取締役を最高責任者とする情報セキュリティ管理体制を構築する</li>
+        <li>情報セキュリティ管理責任者を任命し、本方針の運用・監督を行わせる</li>
+        <li>情報セキュリティに関する社内規程を整備し、全従業員に周知する</li>
+        <li>定期的な内部監査を実施し、運用状況の評価と是正を行う</li>
+      </ul>
+
+      <h2 id="sp-5" class="pp-h2">情報セキュリティ対策</h2>
+      <p>当社は、情報資産を保護するため、以下の安全管理措置を講じます。</p>
+
+      <h3 class="pp-h3">(1) 組織的安全管理措置</h3>
+      <ul>
+        <li>情報セキュリティに関する組織体制および責任権限の明確化</li>
+        <li>情報資産の分類および取扱規程の整備</li>
+        <li>定期的なリスクアセスメントの実施と対策の見直し</li>
+      </ul>
+
+      <h3 class="pp-h3">(2) 人的安全管理措置</h3>
+      <ul>
+        <li>従業員および協力会社との秘密保持契約の締結</li>
+        <li>情報セキュリティに関する教育・訓練の継続的な実施</li>
+        <li>SES参画エンジニアに対するお客様先での遵守事項の徹底</li>
+      </ul>
+
+      <h3 class="pp-h3">(3) 物理的安全管理措置</h3>
+      <ul>
+        <li>事務所・サーバー設置区域への入退室管理</li>
+        <li>記録媒体・書類の施錠保管および廃棄時の適切な処理</li>
+        <li>業務用端末の盗難・紛失防止対策</li>
+      </ul>
+
+      <h3 class="pp-h3">(4) 技術的安全管理措置</h3>
+      <ul>
+        <li>アクセス権限の最小化と適切な認証方式の採用</li>
+        <li>通信およびデータ保存時の暗号化</li>
+        <li>マルウェア対策ソフトの導入とセキュリティパッチの適時適用</li>
+        <li>アクセスログの取得・監視および不正アクセスの検知</li>
+        <li>外部委託先・クラウドサービスのセキュリティ要件の評価</li>
+      </ul>
+
+      <h2 id="sp-6" class="pp-h2">法令・契約事項の遵守</h2>
+      <p>当社は、情報セキュリティに関する法令、国が定めるガイドライン、その他の規範を遵守します。また、お客様との契約（業務委託基本契約・秘密保持契約・個別契約等）において定められたセキュリティ要件を遵守し、信頼関係の維持に努めます。</p>
+
+      <h2 id="sp-7" class="pp-h2">教育・啓発活動</h2>
+      <p>当社は、全従業員および協力会社の登録エンジニアに対し、情報セキュリティに関する教育・啓発活動を継続的に実施します。これにより、情報セキュリティの重要性に対する意識を高め、本方針および関連規程の確実な遵守を図ります。</p>
+      <p>特に、お客様先に常駐するSESエンジニアに対しては、参画時のセキュリティ研修および定期的なフォローアップを通じて、お客様のセキュリティポリシーへの適合を徹底します。</p>
+
+      <h2 id="sp-8" class="pp-h2">インシデント対応</h2>
+      <p>当社は、情報セキュリティに関するインシデント（事故・事件・予兆を含む）が発生した場合、または発生のおそれが認められた場合、速やかに事実関係を調査し、影響範囲の特定・被害の最小化・原因の究明・再発防止策の策定を実施します。</p>
+      <p>お客様や関係者に影響が及ぶ可能性がある場合は、迅速かつ誠実に報告・連絡を行い、被害拡大の防止に努めます。</p>
+
+      <h2 id="sp-9" class="pp-h2">継続的改善</h2>
+      <p>当社は、情報セキュリティを取り巻く環境の変化、脅威の動向、技術の進展、法令の改正、事業内容の変更等に対応するため、本方針および関連規程・対策について定期的に見直しを行い、継続的な改善に取り組みます。</p>
+
+      <h2 id="sp-10" class="pp-h2">違反時の対応</h2>
+      <p>本方針および関連規程に違反した者に対しては、就業規則その他の関連規程に基づき、厳正に対処します。協力会社の社員および登録エンジニアによる違反については、契約に基づき適切な措置を講じます。</p>
+
+      <h2 id="sp-11" class="pp-h2">お問い合わせ窓口</h2>
+      <p>本方針に関するお問い合わせは、以下の窓口までご連絡ください。</p>
+      <dl class="pp-contact-box">
+        <dt>事業者名</dt>
+        <dd>株式会社トライテック</dd>
+        <dt>所在地</dt>
+        <dd>東京都台東区台東 2-30-10 THE GATE 御徒町 4F</dd>
+        <dt>担当窓口</dt>
+        <dd>情報セキュリティ管理責任者</dd>
+        <dt>メールアドレス</dt>
+        <dd><a href="mailto:info@tritechinc.jp">info@tritechinc.jp</a></dd>
+        <dt>受付時間</dt>
+        <dd>平日 10:00 〜 18:00（土日祝・年末年始除く）</dd>
+      </dl>
+
+      <div class="pp-footer-meta">
+        <span>制定日：2025年4月1日</span>
+        <span>最終改定日：2026年6月4日</span>
+      </div>
+
+      <p style="margin-top:2rem;text-align:right;font-size:.88rem;color:var(--ink);font-weight:700;">
+        株式会社トライテック<br>
+        代表取締役 清水 幸秀
+      </p>
+
+    </article>
+
+  </div>
+</section>
+
+<!-- フッター（共通部品 _partials/footer.html を JS で注入） -->
+<div data-include="footer"></div>
+
+<script src="/assets/js/include-partials.js"></script>
+<script src="/assets/js/common.js" defer></script>
+
+<!-- 隠し要素: ロゴクリックで起動するゲーム (他ページと同構成) -->
+<div id="game-overlay">
+  <canvas id="game-canvas"></canvas>
+  <div id="ghud">
+    <span>SCORE <span id="gs">000000</span></span>
+    <span class="gst" id="gstg">STAGE 1</span>
+    <span class="ghi">HI <span id="gh">999999</span></span>
+    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
+  </div>
+  <div id="gesc">[ ESC ] 終了</div>
+</div>
+<script src="/assets/js/game.js" defer></script>
+
+</body>
+</html>
