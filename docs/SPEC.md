@@ -2,8 +2,8 @@
 
 |  項目  |  内容  |
 | --- | --- |
-| バージョン | 1.0.1 |
-| 最終更新 | 2026-05-18 |
+| バージョン | 1.1.0 |
+| 最終更新 | 2026-07-11 |
 | 本番URL | https://tritechinc.jp |
 | リポジトリ | https://github.com/limacon-products/tritech-hp (Public) |
 | ライセンス | 株式会社トライテック 所有 (All Rights Reserved、`LICENSE` 参照) |
@@ -21,7 +21,7 @@
 7. [JavaScript アーキテクチャ](#7-javascript-アーキテクチャ)
 8. [ダブルメンテ防止設計](#8-ダブルメンテ防止設計)
 9. [お問い合わせフォーム仕様](#9-お問い合わせフォーム仕様)
-10. [ホスティング・DNS](#10-ホスティングdns)
+10. [ホスティング・DNS・計測](#10-ホスティングdns計測)
 11. [ローカル開発](#11-ローカル開発)
 12. [デプロイフロー](#12-デプロイフロー)
 13. [保守メモ](#13-保守メモ)
@@ -38,6 +38,7 @@
 - 3事業（SES・品質保証・DX支援）の明確化
 - お問い合わせ獲得（リードジェネレーション）
 - ブランディング統一
+- 公式SNS（X・LinkedIn・note）への導線集約
 
 ### 1.2 ターゲット
 
@@ -53,7 +54,7 @@
 | 対応ブラウザ | Chrome / Safari / Edge / Firefox 最新2バージョン |
 | レスポンシブ | 960px以下でモバイル最適化、600px以下で完全モバイル |
 | アクセシビリティ | WCAG 2.1 AA 準拠を目指す |
-| SEO | meta description / OGP / 構造化データ対応推奨 |
+| SEO | クリーンURL / canonical / meta description / OGP / Twitter Card / sitemap.xml / robots.txt 対応済み |
 
 ---
 
@@ -67,7 +68,9 @@
 | スタイル | CSS3 (Vanilla) | フレームワーク不使用、保守性重視 |
 | スクリプト | Vanilla JavaScript (ES2020+) | 依存ゼロ、長期保守 |
 | ホスティング | GitHub Pages | 無料・自動デプロイ・SSL自動 |
-| メール送信 | Google Apps Script | サーバーレス・無料・Gmail/SPF連携 |
+| メール送信 | Google Apps Script + **Microsoft Graph API** | `info@tritechinc.jp` を真の送信元にし DMARC pass（迷惑メール回避） |
+| スパム対策 | Google reCAPTCHA v3 | フォーム悪用対策（スコア判定） |
+| アクセス解析 | Google Analytics 4 (gtag.js) | 測定ID `G-WQRCJC9H8X`・全ページ設置 |
 | バージョン管理 | Git + GitHub | 業界標準 |
 | DNS | お名前.com | 既存運用継続 |
 
@@ -83,52 +86,82 @@
 ### 2.3 外部依存
 
 - **Google Fonts**: Syne / Noto Sans JP / JetBrains Mono
-- **Google Apps Script**: お問い合わせフォーム送信エンドポイント
+- **Google Apps Script**: お問い合わせフォーム送信エンドポイント（内部で Microsoft Graph API を呼び出し）
+- **Google reCAPTCHA v3**: `contact/` ページで読み込み
+- **Google Analytics 4 (gtag.js)**: 全公開ページで読み込み
 
 ---
 
 ## 3. ディレクトリ構造
 
+**クリーンURL構成**: ルート直下の HTML は `index.html`（トップ）のみ。他ページはすべて
+`ページ名/index.html` の形で配置し、URL から `.html` を排除している
+（例: `https://tritechinc.jp/about-detail/`）。
+
 ```
 tritech-hp/
-├── *.html                      # 各公開ページ (9ファイル)
-├── CNAME                       # GitHub Pages カスタムドメイン
+├── index.html                  # トップページ (ルート直下はこの1枚のみ)
+├── about-detail/index.html     # 会社情報
+├── service-list/index.html     # 事業一覧
+├── service-ses/index.html      # SES事業
+├── service-quality/index.html  # 品質保証事業
+├── service-dx/index.html       # DX支援事業
+├── recruit/index.html          # 採用情報 (暗テーマ・約2800行)
+├── media/index.html            # メディア (公式SNS一覧)
+├── contact/index.html          # お問い合わせフォーム
+├── privacy-policy/index.html   # プライバシーポリシー
+├── security-policy/index.html  # 情報セキュリティ基本方針
+│
+├── CNAME                       # GitHub Pages カスタムドメイン (tritechinc.jp)
+├── .nojekyll                   # Jekyll 無効化 (_partials/ 配信のため)
+├── robots.txt                  # /_partials/ を Disallow、sitemap 参照
+├── sitemap.xml                 # 全11 URL を登録
+├── .dev-server.js              # ローカル開発用 静的サーバ (Node.js・依存なし)
+├── wrangler.jsonc              # Cloudflare wrangler 設定 (ローカル検証用。本番ホスティングには未使用)
 ├── README.md                   # リポジトリ概要
-├── .gitignore                  # Git除外設定
+├── LICENSE                     # All Rights Reserved
+├── .gitignore
 │
 ├── _partials/                  # 共通HTML部品
 │   ├── header.html             # 共通ヘッダ
 │   ├── footer.html             # 共通フッタ
-│   └── contact-form-gas.js     # GAS側コード (デプロイ用)
+│   └── contact-form-gas.js     # GAS側コード (Graph API版・デプロイ用)
 │
-├── docs/                       # ドキュメント
+├── docs/
 │   └── SPEC.md                 # 本仕様書
+│
+├── dummy-hero/                 # ヒーロー案デモ3種 (作業用・サイト内リンクなし)
+├── archive/                    # 旧版HTML (作業用・サイト内リンクなし)
 │
 └── assets/
     ├── css/
     │   ├── common.css          # 全ページ共通スタイル
     │   ├── game.css            # ゲーム機能専用
     │   └── pages/
-    │       ├── index.css       # トップページ専用
-    │       ├── index-recruit.css # 採用セクション専用
+    │       ├── index.css        # トップページ専用 (service系ページも読込)
+    │       ├── index-recruit.css # トップ内 採用セクション専用
+    │       ├── media.css        # メディアページ専用
     │       ├── service-page.css # service-* 共通
     │       ├── service-list.css # 事業一覧専用
-    │       ├── service-ses.css  # SES専用
-    │       └── service-detail.css # service-detail 専用
+    │       └── service-ses.css  # SES専用
     ├── js/
     │   ├── common.js           # 共通スクリプト (cursor, nav, hamburger)
     │   ├── include-partials.js # 共通部品注入エンジン
     │   ├── contact-embed.js    # contactセクション動的注入
     │   ├── coverage-tabs.js    # service ページ Coverage タブ切替
-    │   ├── game.js             # ゲーム本体 (約2500行)
+    │   ├── game.js             # 隠しシューティングゲーム (約2750行)
     │   └── pages/
-    │       ├── index.js        # トップページ専用
-    │       ├── service-detail.js # service-detail専用
-    │       └── tritech-puzzle.js # パズルゲーム
+    │       ├── index.js        # トップページ専用 (VOICE_DATA 等を内包)
+    │       └── tritech-puzzle.js # トップ About セクション内ブロックパズル
     └── images/
-        ├── logo/               # ロゴ各種
-        └── photos/             # 写真素材
+        ├── logo/               # ロゴ各種 (png/svg)
+        ├── photos/             # 写真素材
+        └── sns/                # SNSアイコン (x/linkedin/note)
 ```
+
+※ 社内ドキュメント (`*_セットアップ手順.txt`、`リリース手順.txt`、`プロジェクト経緯まとめ.txt`、
+姉妹サイト構築引継ぎ資料、案件抽出CSV) はローカル作業フォルダにのみ置き、公開リポジトリの
+管理対象と区別する（詳細は [13.4 関連ドキュメント](#134-関連ドキュメント)）。
 
 ---
 
@@ -139,39 +172,48 @@ tritech-hp/
 | URL | ファイル | タイトル | 用途 |
 |---|---|---|---|
 | `/` | `index.html` | ホーム | 会社全体の入り口 |
-| `/about-detail.html` | `about-detail.html` | 会社情報 | 会社概要・代表メッセージ・アクセス |
-| `/service-list.html` | `service-list.html` | 事業内容 | 3事業の一覧 |
-| `/service-ses.html` | `service-ses.html` | SES事業 | SES詳細 + 実績数字 |
-| `/service-quality.html` | `service-quality.html` | 品質保証事業 | QA詳細 |
-| `/service-dx.html` | `service-dx.html` | DX支援事業 | DX詳細 |
-| `/recruit.html` | `recruit.html` | 採用情報 | エンジニア向け採用ページ |
-| `/contact.html` | `contact.html` | お問い合わせ | 入力フォーム |
-| `/privacy-policy.html` | `privacy-policy.html` | プライバシーポリシー | 個人情報保護方針 |
+| `/about-detail/` | `about-detail/index.html` | 会社情報 | 会社概要・代表メッセージ・アクセス |
+| `/service-list/` | `service-list/index.html` | 事業内容 | 3事業の一覧 |
+| `/service-ses/` | `service-ses/index.html` | SES事業 | SES詳細 + 実績数字 |
+| `/service-quality/` | `service-quality/index.html` | 品質保証事業 | QA詳細 |
+| `/service-dx/` | `service-dx/index.html` | DX支援事業 | DX詳細 |
+| `/recruit/` | `recruit/index.html` | 採用情報 | エンジニア向け採用ページ |
+| `/media/` | `media/index.html` | メディア | 公式SNS (X×2・LinkedIn・note) の紹介 |
+| `/contact/` | `contact/index.html` | お問い合わせ | 入力フォーム (reCAPTCHA v3) |
+| `/privacy-policy/` | `privacy-policy/index.html` | プライバシーポリシー | 個人情報保護方針 |
+| `/security-policy/` | `security-policy/index.html` | 情報セキュリティ基本方針 | セキュリティへの取り組み |
+
+全ページ共通で canonical / OGP / Twitter Card / GA4 タグを `<head>` に設置。
 
 ### 4.2 各ページの主要セクション
 
 #### `index.html`
 - Hero (Geometric Motion 背景アニメ)
-- About (会社紹介の入口)
+- About (会社紹介の入口・ブロックパズル `tritech-puzzle.js` 内蔵)
 - Service (3事業の入口)
 - Data (数字で見るトライテック + 棒グラフ + ドーナツチャート)
-- Company Overview / Access (about-detail.html からfetch)
-- Recruit Section (採用情報セクション・選ばれる理由・社員の声・福利厚生など)
-- Contact
+- **ci-mirror セクション×3**: `data-source` 属性で他ページから fetch+inject
+  - `#overview-mirror` ← `/about-detail/#sec-overview` (会社概要)
+  - `#access-mirror` ← `/about-detail/#sec-access` (アクセス)
+  - `#sns-mirror` ← `/media/#sec-sns` (SNSカード)
+- Transition Zone (`#transition-zone`・エンジニア向け導入)
+- Recruit Section (`#sec-slogan` `#sec-reason` `#sec-reward` `#sec-choice` `#sec-team` `#sec-benefits` `#sec-voices`)
+- Contact (`#contact`・service ページへの注入元)
 
-#### `recruit.html` (独自テーマの黒背景デザイン)
+#### `recruit/index.html` (独自テーマの黒背景デザイン)
 - Hero (タイピングコード・カスタムカーソル)
-- 株式会社トライテックが選ばれる理由 (5 cards, 1+4レイアウト)
-- 数字で見るトライテック (6 数字 + チャート2つ)
-- 案件イメージ (9案件カルーセル・クリックでモーダル)
-- 社員の声 (5人カルーセル・クリックでモーダル)
+- 株式会社トライテックが選ばれる理由 (index.html `#sec-reason` から fetch・recruitデザインで再描画)
+- 数字で見るトライテック (index.html `#data` から fetch・チャート再描画)
+- 案件イメージ (9案件カルーセル・クリックでモーダル・`PROJECT_DATA` 一元管理)
+- 注目の案件 (ターミナル演出・`PROJECT_DATA` からランダム最大3件)
+- 社員の声 (5人カルーセル・`index.js` の `VOICE_DATA` から動的取得)
 - エンジニアの1日の流れ (5タブ切替)
 - 募集要項
-- 待遇/休暇 (index.htmlからfetch)
+- 待遇/休暇 (index.html `#sec-benefits` から fetch)
 - 入社までの流れ
 - Contact
 
-#### `service-{ses,quality,dx}.html`
+#### `service-{ses,quality,dx}/index.html`
 - Hero (h1 メッセージ・改行調整済み)
 - Overview
 - Strengths (3つの強み)
@@ -179,7 +221,16 @@ tritech-hp/
 - Stats (SES のみ・上段2列下段4列)
 - Service Flow (SES のみ)
 - Support
-- Contact
+- Contact (`data-embed="contact"` で index.html から注入)
+
+#### `media/index.html`
+- Hero
+- SNS CARDS (`#sec-sns`): X 営業 / X 人事 / LinkedIn / note の4カード
+  - **自己完結インラインスタイル**: `#sec-sns` にスコープを限定した `<style>` をセクション内に持ち、
+    index.html へ fetch+inject された際もデザインが追従する設計
+
+#### `security-policy/index.html`
+- privacy-policy と同構造のポリシー文書ページ（ページ内 `<style>` 完結）
 
 ---
 
@@ -188,14 +239,16 @@ tritech-hp/
 ### 5.1 共通ヘッダ (`_partials/header.html`)
 
 全ページに `<div data-include="header"></div>` を配置すると注入される。
+リンクはすべて **ルート絶対パス**（`/about-detail/` 等）で記述し、どの階層のページからも解決できる。
 
 #### メニュー構成
-1. ホーム → `index.html`
-2. エンジニアの方へ → `index.html#transition-zone`
-3. 会社情報 → `about-detail.html`
-4. 事業内容 → `service-list.html`
-5. お問い合わせ → `contact.html`
-6. **採用情報** (CTAボタン) → `recruit.html`
+1. ホーム → `/`
+2. エンジニアの方へ → `/#transition-zone`
+3. 会社情報 → `/about-detail/`
+4. 事業内容 → `/service-list/`
+5. メディア → `/media/`
+6. お問い合わせ → `/contact/`
+7. **採用情報** (CTAボタン) → `/recruit/`
 
 #### 追加機能
 - カスタムカーソル (3つの菱形 オレンジ→水色→紺 が遅延付きで追従)
@@ -207,21 +260,36 @@ tritech-hp/
 全ページに `<div data-include="footer"></div>` を配置すると注入される。
 
 #### 構成
-- 左カラム: ロゴ + 説明 + RECRUITボタン
-- 右カラム: 6リンク (2列×3行グリッド)
-  - ホーム / エンジニアの方へ / 会社情報 / 事業内容 / お問い合わせ / プライバシーポリシー
+- 左カラム: ロゴ + 説明 + RECRUITボタン + **SNSリンク (FOLLOW US)**
+  - X 営業アカウント (`@tritech_ses`)
+  - X 人事アカウント (`@toku_tritech`)
+  - LinkedIn (`tritech-jinji`)
+  - note (`tokunaga_tritech`)
+- 右カラム: 8リンク
+  - ホーム / エンジニアの方へ / 会社情報 / 事業内容 / メディア / お問い合わせ / プライバシーポリシー / 情報セキュリティ基本方針
 - 下部: コピーライト「© 2026 株式会社トライテック」
 
 ### 5.3 注入エンジン (`assets/js/include-partials.js`)
 
 ```js
-// data-include 属性を持つ要素を探し、_partials/{name}.html を fetch
+// data-include 属性を持つ要素を探し、/_partials/{name}.html を fetch
 // 取得したHTMLで slot を置き換え
 // 完了後 partials:loaded イベントを発火
 ```
 
 依存スクリプトは `partials:loaded` イベントで動作開始することで、
 注入完了後に DOM操作を行う。
+
+### 5.4 ci-mirror (セクションミラー機構)
+
+`index.html` 側に `data-source="/about-detail/#sec-overview"` のような属性を持つ
+空セクションを置くと、`pages/index.js` の `mirrorCompanyInfoSections()` が
+参照先ページを fetch して該当セクションを丸ごと注入する。
+「唯一の真実」を持つページを1箇所編集すれば index.html にも自動反映される
+（[8. ダブルメンテ防止設計](#8-ダブルメンテ防止設計) 参照）。
+
+ミラー注入後にハッシュ位置がずれるため、`rescrollToHash()` で
+アンカースクロールを復元する。
 
 ---
 
@@ -245,7 +313,7 @@ tritech-hp/
 --surface:      #FFFFFF   /* カード背景 */
 --border:       rgba(15,18,36,.1)
 
-/* recruit.html (暗テーマ) */
+/* recruit/ (暗テーマ) */
 --bg:           #0B0E1A
 --bg2:          #06080F
 --surface:      #14182A
@@ -292,15 +360,19 @@ font-family: 'JetBrains Mono', monospace;
 
 ## 7. JavaScript アーキテクチャ
 
-### 7.1 スクリプトの読み込み順序
+### 7.1 スクリプトの読み込み
+
+すべて **ルート絶対パス** (`/assets/js/...`) で参照する
+（クリーンURL構成のため、相対パスだとサブディレクトリページで解決できない）。
 
 ```html
-<script src="assets/js/include-partials.js"></script>     <!-- 共通部品注入 -->
-<script src="assets/js/common.js" defer></script>          <!-- 共通機能 -->
-<script src="assets/js/contact-embed.js" defer></script>  <!-- Contact注入 -->
-<script src="assets/js/coverage-tabs.js" defer></script>  <!-- (service系のみ) -->
-<script src="assets/js/pages/index.js" defer></script>    <!-- (index.htmlのみ) -->
-<script src="assets/js/game.js" defer></script>           <!-- ゲーム -->
+<script src="/assets/js/include-partials.js"></script>          <!-- 全ページ -->
+<script src="/assets/js/common.js" defer></script>               <!-- 全ページ -->
+<script src="/assets/js/contact-embed.js" defer></script>        <!-- service-* のみ -->
+<script src="/assets/js/coverage-tabs.js" defer></script>        <!-- service-{ses,quality,dx} のみ -->
+<script src="/assets/js/pages/index.js" defer></script>          <!-- index.html のみ -->
+<script src="/assets/js/pages/tritech-puzzle.js" defer></script> <!-- index.html のみ -->
+<script src="/assets/js/game.js" defer></script>                 <!-- 全ページ (隠しゲーム) -->
 ```
 
 ### 7.2 各スクリプトの役割
@@ -309,10 +381,11 @@ font-family: 'JetBrains Mono', monospace;
 |---|---|
 | `include-partials.js` | `data-include="..."` 要素を `_partials/*.html` で置換 |
 | `common.js` | カスタムカーソル / ハンバーガーメニュー / スクロールプログレス |
-| `contact-embed.js` | `data-embed="contact"` を index.html#contact で置換 |
-| `coverage-tabs.js` | service ページの Coverage タグをホバー/タップで切替 |
-| `pages/index.js` | データチャート / カウントアップ / 会社情報 fetch |
-| `game.js` | 隠しシューティングゲーム本体 |
+| `contact-embed.js` | `data-embed="contact"` を `/` (index.html) の `#contact` で置換 |
+| `coverage-tabs.js` | service ページの Coverage タブをホバー/タップで切替 |
+| `pages/index.js` | ci-mirror 注入 / データチャート / カウントアップ / `VOICE_DATA` 保持 |
+| `pages/tritech-puzzle.js` | About セクション内ブロックパズル |
+| `game.js` | 隠しシューティングゲーム本体 (約2750行・5ステージ) |
 
 ### 7.3 IIFE パターン
 
@@ -338,13 +411,14 @@ font-family: 'JetBrains Mono', monospace;
 | データ | 唯一の真実 | 反映先 | 仕組み |
 |---|---|---|---|
 | ヘッダ・フッタ | `_partials/*.html` | 全ページ | `data-include` |
-| 会社概要・アクセス | `about-detail.html` の各セクション | `index.html` | fetch + DOM置換 |
-| 社員の声 (VOICE_DATA) | `assets/js/pages/index.js` | `recruit.html` | fetch + 正規表現 + eval |
-| 案件データ (PROJECT_DATA) | `recruit.html` 内 IIFE (`window.PROJECT_DATA` 公開) | recruit.html内3箇所 (カード/モーダル/ターミナル) | window参照 |
-| Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}.html | fetch + DOM抽出 |
-| 待遇・休暇 (li) | `index.html` の `#sec-benefits` | `recruit.html` | fetch + li抽出 |
-| 数字データ (.dc) | `index.html` の `#data` | `recruit.html` | fetch + チャート再描画 |
-| 選ばれる理由 (.reason-card) | `index.html` の `#sec-reason` | `recruit.html` | fetch + title/body抽出 |
+| 会社概要・アクセス | `about-detail/index.html` の `#sec-overview` `#sec-access` | `index.html` | ci-mirror (`data-source`) |
+| SNSカード | `media/index.html` の `#sec-sns` | `index.html` | ci-mirror (`data-source`)・スタイルはセクション内に自己完結 |
+| 社員の声 (VOICE_DATA) | `assets/js/pages/index.js` | `recruit/` | fetch + 正規表現抽出 + `new Function` 評価 |
+| 案件データ (PROJECT_DATA) | `recruit/index.html` 内 IIFE (`window.PROJECT_DATA` 公開) | recruit内4箇所 (カード/モーダル/ターミナル/注目案件3件) | window参照 |
+| Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}/ | fetch('/') + DOM抽出 (`data-embed="contact"`) |
+| 待遇・休暇 (li) | `index.html` の `#sec-benefits` | `recruit/` | fetch('/') + li抽出 |
+| 数字データ (.dc) | `index.html` の `#data` | `recruit/` | fetch('/') + チャート再描画 |
+| 選ばれる理由 (.reason-card) | `index.html` の `#sec-reason` | `recruit/` | fetch('/') + title/body抽出 |
 
 ### 8.2 設計判断の理由
 
@@ -356,16 +430,24 @@ font-family: 'JetBrains Mono', monospace;
 
 ## 9. お問い合わせフォーム仕様
 
-### 9.1 構成
+### 9.1 構成 (Microsoft Graph API 版・2026-05 移行済み)
 
 ```
-[ユーザー: contact.html]
-    ↓ POST (JSON, text/plain)
-[Google Apps Script Web App]
-    ↓ MailApp.sendEmail × 2
+[ユーザー: /contact/]
+    ↓ reCAPTCHA v3 トークン取得 → POST (JSON, text/plain)
+[Google Apps Script Web App (doPost)]
+    ↓ reCAPTCHA スコア検証 (RECAPTCHA_MIN_SCORE)
+    ↓ Microsoft Graph API (OAuth2 Client Credentials)
+[Exchange Online — info@tritechinc.jp として送信]
+    ↓ DKIM / SPF / DMARC すべて pass
 [① info@tritechinc.jp (Microsoft 365) ... 社内通知]
 [② ユーザーのメールアドレス ... サンキューメール (自動返信)]
 ```
+
+**移行の経緯**: 旧構成 (GAS `MailApp.sendEmail`) は Google のバウンスドメインから
+送信されるため DMARC fail となり迷惑メール判定される問題があった。
+Microsoft 365 の Graph API 経由で `info@tritechinc.jp` を真の送信元とすることで解消
+（詳細は社内資料 `Microsoft_Graph_API_セットアップ手順.txt`）。
 
 ### 9.2 入力項目
 
@@ -379,22 +461,27 @@ font-family: 'JetBrains Mono', monospace;
 | お問い合わせ内容 | ✅ | textarea |
 | プライバシーポリシー同意 | ✅ | checkbox |
 
-### 9.3 GAS エンドポイント
+### 9.3 GAS エンドポイント・認証情報
 
-- ファイル: `_partials/contact-form-gas.js`
-- ⚠️ 機密性のため URL は本仕様書には記載せず、`contact.html` 内の `GAS_ENDPOINT` 定数で管理
-- 設定詳細・運用は社内資料 `GAS_セットアップ手順.txt` 参照
+- GAS側コード: `_partials/contact-form-gas.js`（Graph API 版）
+- ⚠️ エンドポイントURLは本仕様書には記載せず、`contact/index.html` 内の `GAS_ENDPOINT` 定数で管理
+- GAS スクリプトプロパティで管理する秘密情報:
+  - `TENANT_ID` / `CLIENT_ID` / `CLIENT_SECRET` (Microsoft Entra ID アプリ登録)
+  - `RECAPTCHA_SECRET` (reCAPTCHA v3 シークレットキー)
+- ⚠️ **クライアントシークレットは24か月で期限切れ → 2028年4月頃に更新が必要**
 
-### 9.4 セキュリティ
+### 9.4 セキュリティ・スパム対策
 
 - HTML5 標準バリデーション + JS による必須チェック
-- スパム対策: メッセージにURL 3つ以上で送信拒否
+- **Google reCAPTCHA v3**: フロントでトークン取得 → GAS側でスコア検証
+  （`ENABLE_RECAPTCHA` / `RECAPTCHA_MIN_SCORE` で調整可）
+- メッセージにURL 3つ以上で送信拒否
 - プライバシーポリシー同意必須
 - HTTPS でのみ送信（GitHub Pages SSL）
 
 ---
 
-## 10. ホスティング・DNS
+## 10. ホスティング・DNS・計測
 
 ### 10.1 GitHub Pages
 
@@ -411,6 +498,9 @@ font-family: 'JetBrains Mono', monospace;
 `.nojekyll` ファイルを配置することで GitHub Pages が Jekyll 処理を
 バイパスし、`_partials/` 等のアンダースコア始まりのディレクトリも
 そのまま配信される。
+
+※ `wrangler.jsonc` はローカル検証 (Cloudflare wrangler) 用の設定で、
+本番ホスティングには使用していない。
 
 ### 10.2 DNS設定 (お名前.com)
 
@@ -442,6 +532,16 @@ autodiscover  CNAME  autodiscover.outlook.com
 _dmarc  TXT  v=DMARC1; p=none; rua=mailto:info@tritechinc.jp; ruf=mailto:info@tritechinc.jp; fo=1
 ```
 
+### 10.3 SEO・計測
+
+| 項目 | 内容 |
+|---|---|
+| Google Analytics 4 | 測定ID `G-WQRCJC9H8X`・全公開ページの `<head>` に gtag.js 設置 |
+| sitemap.xml | 全11 URL（クリーンURL形式）を登録・`robots.txt` から参照 |
+| robots.txt | 全許可 + `/_partials/` のみ Disallow |
+| canonical | 各ページに `https://tritechinc.jp/{page}/` 形式で設置 |
+| OGP / Twitter Card | 全ページ設置（og:image はロゴPNG） |
+
 ---
 
 ## 11. ローカル開発
@@ -451,14 +551,16 @@ _dmarc  TXT  v=DMARC1; p=none; rua=mailto:info@tritechinc.jp; ruf=mailto:info@tr
 特別なツール不要。HTTPサーバが起動できればOK。
 
 ```bash
-# Python 3 で起動 (推奨)
+# 同梱の開発サーバ (推奨・Node.js のみで動作、キャッシュ無効化済み)
+node .dev-server.js        # → http://localhost:8000/
+node .dev-server.js 3000   # ポート指定
+
+# または Python 3
 python -m http.server 8000
-
-# Node.js なら
-npx http-server -p 8000
-
-# ブラウザで http://localhost:8000/ を開く
 ```
+
+`.dev-server.js` はディレクトリアクセス時に `index.html` を自動解決するため、
+本番 (GitHub Pages) と同じクリーンURL（`/about-detail/` 等）で確認できる。
 
 ⚠️ `fetch()` を使う共通部品注入機能があるため、必ず HTTP サーバ経由で開くこと。
 `file://` プロトコルでは CORS エラーで共通部品が表示されません。
@@ -473,7 +575,7 @@ cd tritech-hp
 # 2. 編集
 
 # 3. ローカル確認
-python -m http.server 8000
+node .dev-server.js
 
 # 4. コミット & push
 git add .
@@ -533,29 +635,36 @@ git push -f origin main
 | タスク | 編集箇所 |
 |---|---|
 | ヘッダメニュー追加 | `_partials/header.html` (PCとモバイル両方) |
-| フッタリンク変更 | `_partials/footer.html` |
-| 会社情報変更 | `about-detail.html` (index.htmlにも自動反映) |
+| フッタリンク・SNSリンク変更 | `_partials/footer.html` |
+| SNSカード（メディアページ）変更 | `media/index.html` の `#sec-sns` (index.htmlにも自動反映) |
+| 会社情報変更 | `about-detail/index.html` (index.htmlにも自動反映) |
 | 社員の声追加 | `assets/js/pages/index.js` の `VOICE_DATA` |
-| 案件追加・更新 | `recruit.html` 内の `PROJECT_DATA` |
+| 案件追加・更新 | `recruit/index.html` 内の `PROJECT_DATA` |
 | メインカラー変更 | `assets/css/common.css` の CSS変数 |
-| お問い合わせフォーム項目追加 | `contact.html` の form と `_partials/contact-form-gas.js` の両方 |
+| お問い合わせフォーム項目追加 | `contact/index.html` の form と `_partials/contact-form-gas.js` の両方 |
+| ページ追加 | `{page}/index.html` 作成 + `sitemap.xml` にURL追加 + 必要ならヘッダ/フッタにリンク |
 
 ### 13.2 トラブル対応
 
 | 症状 | 確認箇所 |
 |---|---|
-| 画像が表示されない | パスの大文字小文字 (GitHub Pagesは区別する) |
-| お問い合わせ送信失敗 | GAS の「アクセスできるユーザー」が「全員」か |
+| 画像が表示されない | パスの大文字小文字 (GitHub Pagesは区別する)・ルート絶対パスか |
+| お問い合わせ送信失敗 | GAS の「アクセスできるユーザー」が「全員」か / Graph API のシークレット期限 (2028年4月頃) |
+| 送信メールが迷惑メール扱い | GAS が Graph API 版コードか (`_partials/contact-form-gas.js`)・DMARC レポート確認 |
+| reCAPTCHA ではじかれる | GAS の `RECAPTCHA_MIN_SCORE` を下げる / `ENABLE_RECAPTCHA` 確認 |
 | サンキューメールが届かない | `ENABLE_THANKYOU = true` か |
 | ヘッダが表示されない | HTTP経由でアクセスしているか (file://は NG) |
 | 社員の声が出ない | index.js の `VOICE_DATA` の構文確認 |
+| index.html の会社概要/SNSが出ない | 参照先ページの `data-source` 対象セクション ID が変わっていないか |
 
-### 13.3 既知の制約
+### 13.3 既知の制約・問題
 
 - **JavaScript必須**: 共通部品注入に依存。JSオフのブラウザでは正常表示できない（許容）
 - **IE11非対応**: ES2020+ 機能を多用。サポートしない
 - **静的サイト**: 動的データ取得には別途バックエンド（GAS等）が必要
 - **GitHub Pages帯域制限**: 月100GB（通常範囲では問題なし）
+- **旧URL (`/xxx.html`) は 404**: クリーンURL化に伴いルート直下の各 `*.html` は撤去済み。
+  旧URLへの被リンクがある場合はリダイレクト手段がない点に注意
 
 ### 13.4 関連ドキュメント
 
@@ -563,10 +672,12 @@ git push -f origin main
 |---|---|---|
 | `README.md` | 公開 | リポジトリトップ |
 | `docs/SPEC.md` | 公開 | 本仕様書 |
-| `_partials/contact-form-gas.js` | 公開 | GASに貼るコード本体 |
-| `GAS_セットアップ手順.txt` | 社内のみ | GAS初期設定手順 |
-| `リリース手順.txt` | 社内のみ | リリース時の手順 |
+| `_partials/contact-form-gas.js` | 公開 | GASに貼るコード本体 (Graph API版) |
+| `Microsoft_Graph_API_セットアップ手順.txt` | 社内のみ | Graph API 移行・設定手順（**現行**） |
+| `GAS_セットアップ手順.txt` | 社内のみ | 旧 MailApp 版の設定手順（参考・移行済み） |
+| `リリース手順.txt` | 社内のみ | STUDIO → GitHub Pages 切替手順 |
 | `プロジェクト経緯まとめ.txt` | 社内のみ | 開発経緯・判断記録 |
+| `姉妹サイト構築_引継ぎメモ.txt` / `姉妹サイト構築_引継ぎプロンプト.txt` | 社内のみ | 姉妹サイト展開用の引継ぎ資料 |
 
 ---
 
@@ -575,6 +686,8 @@ git push -f origin main
 | 日付 | バージョン | 内容 |
 |---|---|---|
 | 2026-05-17 | 1.0.0 | 初版 |
+| 2026-05-18 | 1.0.1 | 軽微修正 |
+| 2026-07-11 | 1.1.0 | 現状反映: クリーンURL化 (`{page}/index.html` 構成) / `media`・`security-policy` ページ追加 / ヘッダ・フッタのメニュー更新 (メディア・SNSリンク・セキュリティ方針) / ci-mirror 機構 / お問い合わせを Microsoft Graph API 経由に移行 + reCAPTCHA v3 導入 / GA4・sitemap.xml・robots.txt 設置 / `.dev-server.js` 追加 / README.md も同時更新 / privacy-policy のゲームブロック重複を修正 |
 
 ---
 
