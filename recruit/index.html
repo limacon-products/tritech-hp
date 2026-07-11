@@ -2036,40 +2036,28 @@ setTimeout(renderTerminal,0);
 (async function(){
   const track=document.getElementById('voices-track');
   if(!track)return;
-  let VOICE_DATA={},AVATARS={};
+  /* 社員の声データは assets/data/voices.json が唯一の真実
+     (index ページと共有。人の追加は voices.json の編集だけで両ページに反映) */
+  let VOICE_DATA={},AVATARS={},CATCHES={};
+  const order=[];
   try{
-    const res=await fetch('/assets/js/pages/index.js');
-    const src=await res.text();
-    // VOICE_DATA と AVATARS の宣言部を抜き出して eval（モジュール外なので window 公開されないため）
-    const extract=name=>{
-      const i=src.indexOf('const '+name+'=');
-      if(i<0)return null;
-      // 対応するオブジェクトの最終 } の位置を、波括弧の深さで追跡して特定
-      let depth=0,start=src.indexOf('{',i),end=-1;
-      for(let p=start;p<src.length;p++){
-        const c=src[p];
-        if(c==='{')depth++;
-        else if(c==='}'){depth--;if(depth===0){end=p;break;}}
-      }
-      return end>0?src.slice(start,end+1):null;
-    };
-    const vdSrc=extract('VOICE_DATA'),avSrc=extract('AVATARS');
-    if(vdSrc)VOICE_DATA=new Function('return ('+vdSrc+')')();
-    if(avSrc)AVATARS=new Function('return ('+avSrc+')')();
+    const res=await fetch('/assets/data/voices.json');
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const j=await res.json();
+    (j.members||[]).forEach(m=>{
+      order.push(m.id);
+      VOICE_DATA[m.id]={name:m.name||'',initial:m.initial||'',role:m.role||'',chapters:m.chapters||[]};
+      AVATARS[m.id]=m.avatarSvg||'';
+      CATCHES[m.id]=m.catch||'';
+    });
   }catch(e){
-    console.warn('[voices] index.js の取得に失敗:',e);
+    console.warn('[voices] voices.json の取得に失敗:',e);
   }
 
-  const order=['kawasaki','kikuchi','masuda','nomura','takano'];
-  const avClass={kawasaki:'av-yk',kikuchi:'av-tk',masuda:'av-sm',nomura:'av-yn',takano:'av-st'};
-  // catch コピー: index.html 上の voice-catch とそろえる
-  const CATCHES={
-    kawasaki:'期待を上回るギャップでした',
-    kikuchi:'のびのびと働ける環境です',
-    masuda:'困った時はすぐに相談できる',
-    nomura:'想像を超えるアットホームさ',
-    takano:'スキルを活かせる環境',
-  };
+  /* アバター配色は配列を人数分ループ (人が増えても自動で配色される) */
+  const AV_CLASSES=['av-yk','av-tk','av-sm','av-yn','av-st'];
+  const avClass={};
+  order.forEach((k,i)=>avClass[k]=AV_CLASSES[i%AV_CLASSES.length]);
 
   track.innerHTML='';
   const buildCard=(key)=>{
@@ -2235,32 +2223,27 @@ setTimeout(renderTerminal,0);
     cIo.observe(dataGrid);
   }
 
-  /* ── チャート: index.js から barData / donutData を抽出 ── */
-  let barData=[],donutData=[];
+  /* ── チャート: assets/data/stats.json が唯一の真実 (index と共有) ── */
+  let barData=[],donutData=[],statsSkills=[];
   try{
-    const jsRes=await fetch('/assets/js/pages/index.js');
-    const src=await jsRes.text();
-    const mBar=src.match(/const\s+barData\s*=\s*(\[[\s\S]*?\])\s*;/);
-    if(mBar)barData=new Function('return '+mBar[1])();
-    // donut の data 配列を関数内から抽出: [{v:..,c:..},..]
-    const mDonut=src.match(/function\s+drawDonut[\s\S]*?const\s+data\s*=\s*(\[[\s\S]*?\])\s*;/);
-    if(mDonut)donutData=new Function('return '+mDonut[1])();
+    const jsRes=await fetch('/assets/data/stats.json');
+    if(!jsRes.ok)throw new Error('HTTP '+jsRes.status);
+    const stats=await jsRes.json();
+    barData=stats.employees||[];
+    donutData=(stats.skills||[]).map(s=>({v:s.value,c:s.color}));
+    statsSkills=stats.skills||[];
   }catch(e){
-    console.warn('[chart] index.js の取得に失敗:',e);
+    console.warn('[chart] stats.json の取得に失敗:',e);
   }
 
   /* ドーナツ凡例: index.html の凡例ラベルを取得 */
   const legendBox=document.getElementById('donut-legend-rc');
   if(legendBox){
-    const items=doc.querySelectorAll('#data .donut-legend .legend-item');
     legendBox.innerHTML='';
-    items.forEach((it,i)=>{
-      const label=it.querySelector('.legend-label')?.textContent.trim()||'';
-      const value=it.querySelector('.lnum')?.dataset.target||'0';
-      const color=donutData[i]?.c||'#888';
+    statsSkills.forEach(s=>{
       const row=document.createElement('div');
       row.className='legend-item-rc';
-      row.innerHTML=`<span class="legend-dot-rc" style="background:${color}"></span><span class="legend-label-rc">${label}</span><span class="legend-value-rc">${value}%</span>`;
+      row.innerHTML=`<span class="legend-dot-rc" style="background:${s.color}"></span><span class="legend-label-rc">${s.label}</span><span class="legend-value-rc">${s.value}%</span>`;
       legendBox.appendChild(row);
     });
   }

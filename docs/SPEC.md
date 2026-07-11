@@ -151,7 +151,7 @@ tritech-hp/
     │   ├── coverage-tabs.js    # service ページ Coverage タブ切替
     │   ├── game.js             # 隠しシューティングゲーム (約2750行)
     │   └── pages/
-    │       ├── index.js        # トップページ専用 (VOICE_DATA 等を内包)
+    │       ├── index.js        # トップページ専用
     │       └── tritech-puzzle.js # トップ About セクション内ブロックパズル
     └── images/
         ├── logo/               # ロゴ各種 (png/svg)
@@ -206,7 +206,7 @@ tritech-hp/
 - 数字で見るトライテック (index.html `#data` から fetch・チャート再描画)
 - 案件イメージ (9案件カルーセル・クリックでモーダル・`PROJECT_DATA` 一元管理)
 - 注目の案件 (ターミナル演出・`PROJECT_DATA` からランダム最大3件)
-- 社員の声 (5人カルーセル・`index.js` の `VOICE_DATA` から動的取得)
+- 社員の声 (カルーセル・`assets/data/voices.json` から動的取得)
 - エンジニアの1日の流れ (5タブ切替)
 - 募集要項
 - 待遇/休暇 (index.html `#sec-benefits` から fetch)
@@ -383,7 +383,7 @@ font-family: 'JetBrains Mono', monospace;
 | `common.js` | カスタムカーソル / ハンバーガーメニュー / スクロールプログレス |
 | `contact-embed.js` | `data-embed="contact"` を `/` (index.html) の `#contact` で置換 |
 | `coverage-tabs.js` | service ページの Coverage タブをホバー/タップで切替 |
-| `pages/index.js` | ci-mirror 注入 / データチャート / カウントアップ / `VOICE_DATA` 保持 |
+| `pages/index.js` | ci-mirror 注入 / データチャート / カウントアップ / 社員の声カード生成 (voices.json) |
 | `pages/tritech-puzzle.js` | About セクション内ブロックパズル |
 | `game.js` | 隠しシューティングゲーム本体 (約2750行・5ステージ) |
 
@@ -413,7 +413,8 @@ font-family: 'JetBrains Mono', monospace;
 | ヘッダ・フッタ | `_partials/*.html` | 全ページ | `data-include` |
 | 会社概要・アクセス | `about-detail/index.html` の `#sec-overview` `#sec-access` | `index.html` | ci-mirror (`data-source`) |
 | SNSカード | `media/index.html` の `#sec-sns` | `index.html` | ci-mirror (`data-source`)・スタイルはセクション内に自己完結 |
-| 社員の声 (VOICE_DATA) | `assets/js/pages/index.js` | `recruit/` | fetch + 正規表現抽出 + `new Function` 評価 |
+| 社員の声 | **`assets/data/voices.json`** | `index.html` + `recruit/` (カード・モーダルとも自動生成) | fetch + JSON (編集ガイド: `assets/data/README.md`) |
+| チャートデータ (棒/ドーナツ/凡例) | **`assets/data/stats.json`** | `index.html` + `recruit/` | fetch + JSON |
 | 案件データ (PROJECT_DATA) | `recruit/index.html` 内 IIFE (`window.PROJECT_DATA` 公開) | recruit内4箇所 (カード/モーダル/ターミナル/注目案件3件) | window参照 |
 | Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}/ | fetch('/') + DOM抽出 (`data-embed="contact"`) |
 | 待遇・休暇 (li) | `index.html` の `#sec-benefits` | `recruit/` | fetch('/') + li抽出 |
@@ -638,7 +639,8 @@ git push -f origin main
 | フッタリンク・SNSリンク変更 | `_partials/footer.html` |
 | SNSカード（メディアページ）変更 | `media/index.html` の `#sec-sns` (index.htmlにも自動反映) |
 | 会社情報変更 | `about-detail/index.html` (index.htmlにも自動反映) |
-| 社員の声追加 | `assets/js/pages/index.js` の `VOICE_DATA` |
+| 社員の声の追加・入れ替え | `assets/data/voices.json` のみ (手順: `assets/data/README.md`) |
+| チャートの数字更新 | `assets/data/stats.json` のみ |
 | 案件追加・更新 | `recruit/index.html` 内の `PROJECT_DATA` |
 | メインカラー変更 | `assets/css/common.css` の CSS変数 |
 | お問い合わせフォーム項目追加 | `contact/index.html` の form と `_partials/contact-form-gas.js` の両方 |
@@ -654,7 +656,7 @@ git push -f origin main
 | reCAPTCHA ではじかれる | GAS の `RECAPTCHA_MIN_SCORE` を下げる / `ENABLE_RECAPTCHA` 確認 |
 | サンキューメールが届かない | `ENABLE_THANKYOU = true` か |
 | ヘッダが表示されない | HTTP経由でアクセスしているか (file://は NG) |
-| 社員の声が出ない | index.js の `VOICE_DATA` の構文確認 |
+| 社員の声が出ない | `assets/data/voices.json` の JSON 構文確認 (jsonlint 等) |
 | index.html の会社概要/SNSが出ない | 参照先ページの `data-source` 対象セクション ID が変わっていないか |
 
 ### 13.3 既知の制約・問題

@@ -73,7 +73,8 @@
 | 共通ヘッダ・フッタ | `_partials/*.html` | 全ページ (`data-include`) |
 | 会社概要・アクセス | `about-detail/index.html` の各セクション | `index.html` (ci-mirror: `data-source`) |
 | SNSカード | `media/index.html` の `#sec-sns` | `index.html` (ci-mirror: `data-source`) |
-| 社員の声 (`VOICE_DATA`) | `assets/js/pages/index.js` | `recruit/` (fetch+eval) |
+| 社員の声 | `assets/data/voices.json` | `index.html` + `recruit/` (カード自動生成) |
+| チャートデータ | `assets/data/stats.json` | `index.html` + `recruit/` |
 | 案件データ (`PROJECT_DATA`) | `recruit/index.html` 内 IIFE | `recruit/` 内のターミナル/カード/モーダル/注目案件 |
 | Contact セクション | `index.html` の `#contact` | `service-*/` (fetch+inject) |
 | 待遇/休暇 (`#sec-benefits`) | `index.html` | `recruit/` (fetch+li抽出) |
