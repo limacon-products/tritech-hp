@@ -154,7 +154,7 @@ body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:tr
 .recruit-section .cta-btns{display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap}
 .recruit-section .pg-btn{display:inline-block;border:2px solid var(--rc-a);color:var(--rc-a);background:transparent;padding:14px 44px;font-size:.9rem;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:.1em;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s,transform .15s}
 .recruit-section .pg-btn:hover{background:var(--rc-a);color:#000;box-shadow:0 0 28px rgba(0,255,204,.4);transform:translateY(-2px)}
-.recruit-section .pg-btn-ghost{display:inline-block;border:2px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);background:transparent;padding:14px 44px;font-size:.9rem;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:.1em;text-decoration:none;transition:border-color .2s,color .2s,transform .15s}
+.recruit-section .pg-btn-ghost{display:inline-block;border:2px solid rgba(255,255,255,.4);color:rgba(255,255,255,.7);background:transparent;padding:14px 44px;font-size:.9rem;font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:.1em;text-decoration:none;transition:border-color .2s,color .2s,transform .15s}
 .recruit-section .pg-btn-ghost:hover{border-color:#fff;color:#fff;transform:translateY(-2px)}
 .recruit-section .cta-note{margin-top:.9rem;font-size:.75rem;color:var(--rc-muted)}
 
