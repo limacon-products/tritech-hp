@@ -420,15 +420,20 @@ VOICES_READY.then(members=>{
   const track=document.querySelector('.recruit-section .voice-track');
   if(track&&members.length){
     track.innerHTML=members.map(m=>
-      '<div class="voice-card" data-member="'+m.id+'">'
+      '<div class="voice-card" data-member="'+m.id+'" role="button" tabindex="0" aria-haspopup="dialog" aria-label="社員の声を読む'+(m.role?'（'+m.role+'）':'')+'">'
       /* アバターは avatarImage (写真/イラスト) が最優先、なければ avatarSvg */
       +'<div class="voice-svg">'+(m.avatarImage?'<img src="'+m.avatarImage+'" alt="" loading="lazy">':(m.avatarSvg||''))+'</div>'
       +'<div class="voice-avatar">'+(m.initial||'')+'</div>'
       +'<div class="voice-role">'+(m.role||'')+'</div>'
       +'<div class="voice-catch">'+(m.catch||'')+'</div>'
       +'</div>').join('');
-    /* 無限ループ用：カードを複製して2周分にする */
-    [...track.children].forEach(c=>track.appendChild(c.cloneNode(true)));
+    /* 無限ループ用：カードを複製して2周分にする (複製はタブ移動・読み上げ対象外) */
+    [...track.children].forEach(c=>{
+      const clone=c.cloneNode(true);
+      clone.setAttribute('tabindex','-1');
+      clone.setAttribute('aria-hidden','true');
+      track.appendChild(clone);
+    });
   }
   const cards=document.querySelectorAll('.recruit-section .voice-card[data-member]');
   const modal=document.getElementById('voice-modal');
@@ -439,12 +444,14 @@ VOICES_READY.then(members=>{
   const modalRole=document.getElementById('voice-modal-role');
   const modalChapters=document.getElementById('voice-modal-chapters');
   const closeBtn=document.getElementById('voice-modal-close');
+  let lastFocus=null; /* モーダルを開いた元要素 (閉じた時にフォーカスを戻す) */
 
   function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
   function openVoiceModal(member){
     const d=VOICE_DATA[member];
     if(!d)return;
+    lastFocus=document.activeElement;
     modalAvatar.textContent=d.initial;
     if(modalSvg)modalSvg.innerHTML=d.avatarImage?'<img src="'+d.avatarImage+'" alt="">':(AVATARS[d.avatar||member]||'');
     modalName.textContent=d.name;
@@ -466,13 +473,23 @@ VOICES_READY.then(members=>{
     modal.scrollTop=0;
     const mBody=modal.querySelector('.voice-modal-body');
     if(mBody)mBody.scrollTop=0;
+    /* display切替直後は focus が効かないため1フレーム待つ */
+    if(closeBtn)requestAnimationFrame(()=>closeBtn.focus());
   }
   function closeVoiceModal(){
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden','true');
     document.body.style.overflow='';
+    /* 開いた元へフォーカス復帰 (非表示化の後に1フレーム待つ) */
+    if(lastFocus&&lastFocus.focus){const el=lastFocus;requestAnimationFrame(()=>el.focus());}
   }
-  cards.forEach(c=>c.addEventListener('click',()=>openVoiceModal(c.dataset.member)));
+  cards.forEach(c=>{
+    c.addEventListener('click',()=>openVoiceModal(c.dataset.member));
+    /* キーボード: Enter / Space で開く */
+    c.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();openVoiceModal(c.dataset.member)}
+    });
+  });
   closeBtn.addEventListener('click',closeVoiceModal);
   modal.addEventListener('click',e=>{if(e.target===modal)closeVoiceModal()});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closeVoiceModal()});

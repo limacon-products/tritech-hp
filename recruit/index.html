@@ -959,6 +959,9 @@ section{padding:110px 6vw;position:relative;z-index:1}
 /* 顔写真/イラスト画像対応 (voices.json の avatarImage 指定時) */
 .voice-card .vc-svg img,
 .voice-modal-rc-svg img{width:100%;height:100%;object-fit:cover;display:block}
+/* キーボード操作: フォーカスリング */
+.voice-card:focus-visible,.proj-card:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.tab-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .voice-modal-rc-avatar{display:none}
 .voice-modal-rc-head-row{display:flex;align-items:center;gap:18px}
 .voice-modal-rc-initial{
@@ -2069,6 +2072,10 @@ setTimeout(renderTerminal,0);
     const card=document.createElement('div');
     card.className='voice-card';
     card.dataset.member=key;
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-haspopup','dialog');
+    card.setAttribute('aria-label','社員の声を読む'+(d.role?'（'+d.role+'）':''));
     const svg=AVATARS[key]||'';
     const catchTxt=CATCHES[key]||'';
     const intro=(d.chapters&&d.chapters[0]&&d.chapters[0].body||'').split('\n')[0].slice(0,90)+'…';
@@ -2087,6 +2094,9 @@ setTimeout(renderTerminal,0);
       </div>
       <div class="vc-readmore">READ MORE →</div>`;
     card.addEventListener('click',()=>openVoiceModal(key));
+    card.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();openVoiceModal(key)}
+    });
     return card;
   };
   // 5枚生成
@@ -2095,6 +2105,8 @@ setTimeout(renderTerminal,0);
   [...track.children].forEach(c=>{
     const clone=c.cloneNode(true);
     const key=clone.dataset.member;
+    clone.setAttribute('tabindex','-1');
+    clone.setAttribute('aria-hidden','true');
     clone.addEventListener('click',()=>openVoiceModal(key));
     track.appendChild(clone);
   });
@@ -2107,8 +2119,10 @@ setTimeout(renderTerminal,0);
   const mRole=document.getElementById('voice-modal-rc-role');
   const mCh=document.getElementById('voice-modal-rc-chapters');
   const mClose=document.getElementById('voice-modal-rc-close');
+  let lastVoiceFocus=null;
   function openVoiceModal(key){
     const d=VOICE_DATA[key];if(!d||!modal)return;
+    lastVoiceFocus=document.activeElement;
     if(mSvg)mSvg.innerHTML=IMAGES[key]?`<img src="${IMAGES[key]}" alt="">`:(AVATARS[key]||'');
     if(mInitial)mInitial.textContent=d.initial||'';
     if(mName)mName.textContent=d.name||'';
@@ -2125,12 +2139,14 @@ setTimeout(renderTerminal,0);
     modal.scrollTop=0;
     const body=modal.querySelector('.voice-modal-rc-body');
     if(body)body.scrollTop=0;
+    if(mClose)requestAnimationFrame(()=>mClose.focus());
   }
   function closeVoiceModal(){
     if(!modal)return;
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden','true');
     document.body.style.overflow='';
+    if(lastVoiceFocus&&lastVoiceFocus.focus){const el=lastVoiceFocus;requestAnimationFrame(()=>el.focus());}
   }
   if(mClose)mClose.addEventListener('click',closeVoiceModal);
   if(modal)modal.addEventListener('click',e=>{if(e.target===modal)closeVoiceModal();});
@@ -2655,6 +2671,10 @@ setTimeout(renderTerminal,0);
     const card=document.createElement('div');
     card.className='proj-card';
     card.dataset.idx=idx;
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-haspopup','dialog');
+    card.setAttribute('aria-label','案件の詳細を見る: '+p.title);
     card.innerHTML=`
       <span class="proj-arrow">↗</span>
       <h3>${p.title}</h3>
@@ -2667,6 +2687,9 @@ setTimeout(renderTerminal,0);
       </div>
       <div class="proj-detail-btn">DETAIL →</div>`;
     card.addEventListener('click',()=>openProjModal(idx));
+    card.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();openProjModal(idx)}
+    });
     return card;
   }
 
@@ -2677,6 +2700,8 @@ setTimeout(renderTerminal,0);
   [...track.children].forEach(c=>{
     const clone=c.cloneNode(true);
     const idx=parseInt(clone.dataset.idx,10);
+    clone.setAttribute('tabindex','-1');
+    clone.setAttribute('aria-hidden','true');
     clone.addEventListener('click',()=>openProjModal(idx));
     track.appendChild(clone);
   });
@@ -2686,9 +2711,11 @@ setTimeout(renderTerminal,0);
        スクリプト実行時点では document.getElementById が null になる。
        呼び出し時に都度取得して、確実に動作させる。 */
   function $(id){return document.getElementById(id);}
+  let lastProjFocus=null;
   function openProjModal(idx){
     const p=PROJECT_DATA[idx];if(!p)return;
     const modal=$('proj-modal');if(!modal)return;
+    lastProjFocus=document.activeElement;
     const mCat=$('proj-modal-cat');
     const mLevel=$('proj-modal-level');
     const mTitle=$('proj-modal-title');
@@ -2714,12 +2741,15 @@ setTimeout(renderTerminal,0);
     document.body.style.overflow='hidden';
     const body=modal.querySelector('.proj-modal-body');
     if(body)body.scrollTop=0;
+    const mc=$('proj-modal-close');
+    if(mc)requestAnimationFrame(()=>mc.focus());
   }
   function closeProjModal(){
     const modal=$('proj-modal');if(!modal)return;
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden','true');
     document.body.style.overflow='';
+    if(lastProjFocus&&lastProjFocus.focus){const el=lastProjFocus;requestAnimationFrame(()=>el.focus());}
   }
 
   /* モーダルDOMが揃ったタイミング(DOMContentLoaded)で閉じる系のイベントをバインド */
@@ -2737,18 +2767,32 @@ setTimeout(renderTerminal,0);
   }
 })();
 
-/* DAY FLOW: タブ切替 */
+/* DAY FLOW: タブ切替 (ARIA + 矢印キー対応) */
 (function(){
-  const tabs=document.querySelectorAll('.day-sec .tab-btn');
+  const tabs=[...document.querySelectorAll('.day-sec .tab-btn')];
   if(!tabs.length)return;
+  const list=tabs[0].parentElement;
+  if(list)list.setAttribute('role','tablist');
   tabs.forEach(b=>{
-    b.addEventListener('click',()=>{
-      const id=b.dataset.tab;
-      document.querySelectorAll('.day-sec .tab-btn').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.day-sec .tab-panel').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      const panel=document.getElementById(id);
-      if(panel)panel.classList.add('active');
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',b.classList.contains('active')?'true':'false');
+  });
+  function activate(b){
+    const id=b.dataset.tab;
+    tabs.forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false');});
+    document.querySelectorAll('.day-sec .tab-panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    b.setAttribute('aria-selected','true');
+    const panel=document.getElementById(id);
+    if(panel)panel.classList.add('active');
+  }
+  tabs.forEach((b,i)=>{
+    b.addEventListener('click',()=>activate(b));
+    b.addEventListener('keydown',e=>{
+      let to=null;
+      if(e.key==='ArrowRight')to=(i+1)%tabs.length;
+      else if(e.key==='ArrowLeft')to=(i-1+tabs.length)%tabs.length;
+      if(to!==null){e.preventDefault();activate(tabs[to]);tabs[to].focus();}
     });
   });
 })();

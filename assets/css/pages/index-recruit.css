@@ -178,3 +178,6 @@ body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:tr
   .recruit-section .s-title{font-size:clamp(1.3rem,5.5vw,1.8rem);line-height:1.4}
   .recruit-section .s-sub{font-size:.85rem;line-height:1.8}
 }
+
+/* キーボード操作: 社員の声カードのフォーカスリング */
+.recruit-section .voice-card:focus-visible{outline:2px solid #00ffcc;outline-offset:3px}
