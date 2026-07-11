@@ -401,7 +401,7 @@ const VOICES_READY=fetch('/assets/data/voices.json')
   .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
   .then(j=>{
     (j.members||[]).forEach(m=>{
-      VOICE_DATA[m.id]={name:m.name||'',initial:m.initial||'',avatar:m.id,role:m.role||'',chapters:m.chapters||[]};
+      VOICE_DATA[m.id]={name:m.name||'',initial:m.initial||'',avatar:m.id,role:m.role||'',avatarImage:m.avatarImage||'',chapters:m.chapters||[]};
       AVATARS[m.id]=m.avatarSvg||'';
     });
     return j.members||[];
@@ -421,7 +421,8 @@ VOICES_READY.then(members=>{
   if(track&&members.length){
     track.innerHTML=members.map(m=>
       '<div class="voice-card" data-member="'+m.id+'">'
-      +'<div class="voice-svg">'+(m.avatarSvg||'')+'</div>'
+      /* アバターは avatarImage (写真/イラスト) が最優先、なければ avatarSvg */
+      +'<div class="voice-svg">'+(m.avatarImage?'<img src="'+m.avatarImage+'" alt="" loading="lazy">':(m.avatarSvg||''))+'</div>'
       +'<div class="voice-avatar">'+(m.initial||'')+'</div>'
       +'<div class="voice-role">'+(m.role||'')+'</div>'
       +'<div class="voice-catch">'+(m.catch||'')+'</div>'
@@ -445,7 +446,7 @@ VOICES_READY.then(members=>{
     const d=VOICE_DATA[member];
     if(!d)return;
     modalAvatar.textContent=d.initial;
-    if(modalSvg)modalSvg.innerHTML=AVATARS[d.avatar||member]||'';
+    if(modalSvg)modalSvg.innerHTML=d.avatarImage?'<img src="'+d.avatarImage+'" alt="">':(AVATARS[d.avatar||member]||'');
     modalName.textContent=d.name;
     modalRole.textContent=d.role;
     modalChapters.innerHTML=d.chapters.map((ch,i)=>{

@@ -956,6 +956,9 @@ section{padding:110px 6vw;position:relative;z-index:1}
   display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
 .voice-modal-rc-svg svg{width:100%;height:100%;display:block}
+/* 顔写真/イラスト画像対応 (voices.json の avatarImage 指定時) */
+.voice-card .vc-svg img,
+.voice-modal-rc-svg img{width:100%;height:100%;object-fit:cover;display:block}
 .voice-modal-rc-avatar{display:none}
 .voice-modal-rc-head-row{display:flex;align-items:center;gap:18px}
 .voice-modal-rc-initial{
@@ -2038,7 +2041,7 @@ setTimeout(renderTerminal,0);
   if(!track)return;
   /* 社員の声データは assets/data/voices.json が唯一の真実
      (index ページと共有。人の追加は voices.json の編集だけで両ページに反映) */
-  let VOICE_DATA={},AVATARS={},CATCHES={};
+  let VOICE_DATA={},AVATARS={},CATCHES={},IMAGES={};
   const order=[];
   try{
     const res=await fetch('/assets/data/voices.json');
@@ -2048,6 +2051,7 @@ setTimeout(renderTerminal,0);
       order.push(m.id);
       VOICE_DATA[m.id]={name:m.name||'',initial:m.initial||'',role:m.role||'',chapters:m.chapters||[]};
       AVATARS[m.id]=m.avatarSvg||'';
+      IMAGES[m.id]=m.avatarImage||'';
       CATCHES[m.id]=m.catch||'';
     });
   }catch(e){
@@ -2070,7 +2074,7 @@ setTimeout(renderTerminal,0);
     const intro=(d.chapters&&d.chapters[0]&&d.chapters[0].body||'').split('\n')[0].slice(0,90)+'…';
     card.innerHTML=`
       <div class="vc-head">
-        <div class="vc-svg ${avClass[key]||''}">${svg||`<span style="font-family:'Space Grotesk';font-weight:700;color:#fff;font-size:1rem">${d.initial||''}</span>`}</div>
+        <div class="vc-svg ${avClass[key]||''}">${IMAGES[key]?`<img src="${IMAGES[key]}" alt="" loading="lazy">`:(svg||`<span style="font-family:'Space Grotesk';font-weight:700;color:#fff;font-size:1rem">${d.initial||''}</span>`)}</div>
         <div class="vc-initial">${d.initial||''}</div>
       </div>
       <p class="vc-catch">${catchTxt}</p>
@@ -2105,7 +2109,7 @@ setTimeout(renderTerminal,0);
   const mClose=document.getElementById('voice-modal-rc-close');
   function openVoiceModal(key){
     const d=VOICE_DATA[key];if(!d||!modal)return;
-    if(mSvg)mSvg.innerHTML=AVATARS[key]||'';
+    if(mSvg)mSvg.innerHTML=IMAGES[key]?`<img src="${IMAGES[key]}" alt="">`:(AVATARS[key]||'');
     if(mInitial)mInitial.textContent=d.initial||'';
     if(mName)mName.textContent=d.name||'';
     if(mRole)mRole.textContent=d.role||'';

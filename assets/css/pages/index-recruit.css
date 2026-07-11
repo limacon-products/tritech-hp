@@ -134,6 +134,9 @@ body.rm-hero-show .recruit-section #sec-slogan .hero-body{opacity:1;transform:tr
 .voice-modal-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(0,255,204,.3)}
 .voice-modal-header .voice-svg{width:120px;height:120px;margin:0 auto 1.25rem;display:block}
 .voice-modal-header .voice-svg svg{width:100%;height:100%;display:block}
+/* 顔写真/イラスト画像対応: voices.json の avatarImage 指定時は img で表示 (円形トリミング) */
+.recruit-section .voice-svg img,
+.voice-modal-header .voice-svg img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;border:1px solid rgba(0,255,204,.4)}
 .voice-modal-header .voice-avatar{display:inline-block;width:auto;min-width:220px;padding:1.2rem 3rem;font-size:4rem;letter-spacing:.1em;margin:0 0 1.25rem;background:transparent;color:#00ffcc;font-family:'Courier New',monospace;font-weight:700;border-top:1px solid #00ffcc;border-bottom:1px solid #00ffcc;line-height:1}
 .voice-modal-header h3{font-family:'Courier New',monospace;font-size:1.8rem;font-weight:700;color:#ffffff;margin-bottom:.4rem;letter-spacing:.02em}
 .voice-modal-header h3:empty{display:none;margin:0}
