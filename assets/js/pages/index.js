@@ -21,7 +21,7 @@ function mirrorCompanyInfoSections(){
   const cache={};
   function fetchDoc(url){
     if(cache[url])return cache[url];
-    cache[url]=fetch(url,{cache:'no-store'})
+    cache[url]=fetch(url)
       .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text()})
       .then(html=>new DOMParser().parseFromString(html,'text/html'))
       .catch(e=>{console.warn('[mirror] fetch failed:',url,e);return null});

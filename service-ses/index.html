@@ -35,7 +35,6 @@
 <link rel="stylesheet" href="/assets/css/common.css">
 <link rel="stylesheet" href="/assets/css/pages/service-page.css">
 <link rel="stylesheet" href="/assets/css/pages/service-ses.css">
-<link rel="stylesheet" href="/assets/css/game.css">
 </head>
 <body>
 <!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
@@ -102,11 +101,11 @@
   <!-- ② 2カラム: 画像 + 詳細説明 (タブで切替) -->
   <div class="sd-coverage-panels reveal" style="transition-delay:.2s">
     <div class="sd-coverage-imgwrap">
-      <img class="sd-cov-img is-active" data-tab="ses1" src="/assets/images/photos/ses-1-web.jpg" alt="WEB開発">
-      <img class="sd-cov-img" data-tab="ses2" src="/assets/images/photos/ses-2-infra.jpg" alt="インフラ・サーバーサポート">
-      <img class="sd-cov-img" data-tab="ses3" src="/assets/images/photos/ses-3-maintain.jpg" alt="保守・監督">
-      <img class="sd-cov-img" data-tab="ses4" src="/assets/images/photos/ses-4-quality.jpg" alt="品質管理">
-      <img class="sd-cov-img" data-tab="ses5" src="/assets/images/photos/ses-5-pm.jpg" alt="PM・PMO">
+      <img class="sd-cov-img is-active" data-tab="ses1" src="/assets/images/photos/ses-1-web.jpg" width="1200" height="800" loading="lazy" alt="WEB開発">
+      <img class="sd-cov-img" data-tab="ses2" src="/assets/images/photos/ses-2-infra.jpg" width="1200" height="673" loading="lazy" alt="インフラ・サーバーサポート">
+      <img class="sd-cov-img" data-tab="ses3" src="/assets/images/photos/ses-3-maintain.jpg" width="1200" height="801" loading="lazy" alt="保守・監督">
+      <img class="sd-cov-img" data-tab="ses4" src="/assets/images/photos/ses-4-quality.jpg" width="1200" height="800" loading="lazy" alt="品質管理">
+      <img class="sd-cov-img" data-tab="ses5" src="/assets/images/photos/ses-5-pm.jpg" width="1200" height="802" loading="lazy" alt="PM・PMO">
     </div>
     <div class="sd-coverage-descwrap">
       <div class="sd-coverage-desc is-active" data-tab="ses1">
@@ -273,16 +272,6 @@
 <script src="/assets/js/common.js" defer></script>
 <script src="/assets/js/contact-embed.js" defer></script>
 <script src="/assets/js/coverage-tabs.js" defer></script>
-<div id="game-overlay">
-  <canvas id="game-canvas"></canvas>
-  <div id="ghud">
-    <span>SCORE <span id="gs">000000</span></span>
-    <span class="gst" id="gstg">STAGE 1</span>
-    <span class="ghi">HI <span id="gh">999999</span></span>
-    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
-  </div>
-  <div id="gesc">[ ESC ] 終了</div>
-</div>
-<script src="/assets/js/game.js" defer></script>
+<script src="/assets/js/game-loader.js" defer></script>
 </body>
 </html>

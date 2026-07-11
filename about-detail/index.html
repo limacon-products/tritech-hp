@@ -166,7 +166,6 @@ section{padding:100px 5vw 80px;position:relative}
   .data-canvas-wrap.bar{height:240px}
 }
 </style>
-<link rel="stylesheet" href="/assets/css/game.css">
 </head>
 <body>
 <!-- ヘッダー（共通部品 _partials/header.html を JS で注入） -->
@@ -271,7 +270,7 @@ section{padding:100px 5vw 80px;position:relative}
   <div class="ceo-wrap reveal">
     <div class="ceo-layout">
       <div class="ceo-photo">
-        <img src="/assets/images/photos/ceo.jpg" alt="代表取締役 清水 幸秀">
+        <img src="/assets/images/photos/ceo.jpg" width="1200" height="1800" loading="lazy" alt="代表取締役 清水 幸秀">
         <div class="ceo-photo-cap">CEO<small>代表取締役 清水 幸秀</small></div>
       </div>
       <div class="ceo-text">
@@ -342,7 +341,7 @@ section{padding:100px 5vw 80px;position:relative}
       <tr><th>事業内容</th><td>・ソフトウェアの品質保証サービス<br>・システムエンジニアリングサービス（SES）</td></tr>
     </table>
     <div class="ci-logo-wrap">
-      <img class="ci-logo-img" src="/assets/images/logo/tritech-logo.png" alt="株式会社トライテック">
+      <img class="ci-logo-img" src="/assets/images/logo/tritech-logo.png" alt="株式会社トライテック" width="2855" height="1063" loading="lazy">
     </div>
   </div>
 </section>
@@ -711,18 +710,8 @@ document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
   });
 })();
 </script>
-<div id="game-overlay">
-  <canvas id="game-canvas"></canvas>
-  <div id="ghud">
-    <span>SCORE <span id="gs">000000</span></span>
-    <span class="gst" id="gstg">STAGE 1</span>
-    <span class="ghi">HI <span id="gh">999999</span></span>
-    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
-  </div>
-  <div id="gesc">[ ESC ] 終了</div>
-</div>
 <script src="/assets/js/include-partials.js"></script>
 <script src="/assets/js/common.js" defer></script>
-<script src="/assets/js/game.js" defer></script>
+<script src="/assets/js/game-loader.js" defer></script>
 </body>
 </html>

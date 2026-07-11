@@ -15,7 +15,7 @@
   const slots = document.querySelectorAll('[data-embed="contact"]');
   if(!slots.length) return;
 
-  fetch('/',{cache:'no-store'})
+  fetch('/')
     .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text();})
     .then(html=>{
       const doc=new DOMParser().parseFromString(html,'text/html');

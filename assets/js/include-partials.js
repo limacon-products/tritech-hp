@@ -13,7 +13,7 @@
   const cache = {};
   function fetchPartial(name){
     if (cache[name]) return cache[name];
-    cache[name] = fetch('/_partials/' + name + '.html', { cache: 'no-store' })
+    cache[name] = fetch('/_partials/' + name + '.html')
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
       .catch(e => { console.warn('[partials] fetch failed:', name, e); return ''; });
     return cache[name];

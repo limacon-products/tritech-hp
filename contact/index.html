@@ -36,7 +36,6 @@
 <script src="https://www.google.com/recaptcha/api.js?render=6LctevEsAAAAAPKF5jLZuEr7_2DS4Wg3_sVNRHyy"></script>
 <link rel="stylesheet" href="/assets/css/common.css">
 <link rel="stylesheet" href="/assets/css/pages/index.css">
-<link rel="stylesheet" href="/assets/css/game.css">
 <style>
 /* ── お問い合わせページ専用スタイル ── */
 .contact-hero{
@@ -478,18 +477,7 @@ const GAS_ENDPOINT='https://script.google.com/macros/s/AKfycbwWkIA7TSAaR-_476Sk3
 })();
 </script>
 
-<!-- 隠し要素: ロゴクリックで起動するゲーム (他ページと同構成) -->
-<div id="game-overlay">
-  <canvas id="game-canvas"></canvas>
-  <div id="ghud">
-    <span>SCORE <span id="gs">000000</span></span>
-    <span class="gst" id="gstg">STAGE 1</span>
-    <span class="ghi">HI <span id="gh">999999</span></span>
-    <span>SHIP <span id="gl">♦ ♦ ♦</span></span>
-  </div>
-  <div id="gesc">[ ESC ] 終了</div>
-</div>
-<script src="/assets/js/game.js" defer></script>
+<script src="/assets/js/game-loader.js" defer></script>
 
 </body>
 </html>

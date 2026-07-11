@@ -2755,4 +2755,10 @@ function loop(){
 }
 
 window.addEventListener('resize',()=>{resize();gridDirty=true});
+
+/* 遅延ロード (game-loader.js) 経由で読み込まれた場合、ロード完了と同時に起動する */
+if(window._gameAutoOpen){
+  window._gameAutoOpen=false;
+  try{openGame()}catch(e){console.error('[game] auto-open failed',e)}
+}
 })();
