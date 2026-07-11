@@ -1614,6 +1614,18 @@ footer{
 
 <script>
 /* ─────────────────────────────────────────────
+   案件データローダー: assets/data/projects.json が唯一の真実
+   (編集ガイド: assets/data/README.md)
+   ターミナル演出・案件カード生成は PROJECTS_READY を待って動く
+   ───────────────────────────────────────────── */
+window.PROJECTS_READY=fetch('/assets/data/projects.json')
+  .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+  .then(j=>{window.PROJECT_DATA=(j&&j.projects)||[];return window.PROJECT_DATA;})
+  .catch(e=>{console.warn('[projects] projects.json の取得に失敗:',e);window.PROJECT_DATA=[];return [];});
+</script>
+
+<script>
+/* ─────────────────────────────────────────────
    スクロール位置の記憶 & 復元
    - リロード/離脱時のスクロール位置を sessionStorage に保存
    - 次回ロード時、DOM高さが揃ったら復元
@@ -2031,8 +2043,8 @@ function runNo(){
 
 function focusTermInput(){if(termDone&&inputEl)inputEl.focus({preventScroll:true});}
 
-/* PROJECT_DATA (下のIIFEで window 公開) を待ってからターミナル開始 */
-setTimeout(renderTerminal,0);
+/* 案件データ (projects.json) の読み込みを待ってからターミナル開始 */
+window.PROJECTS_READY.then(()=>renderTerminal());
 
 /* ─────────────────────────────────────────────
    VOICES: index.html の VOICE_DATA / AVATARS を
@@ -2423,248 +2435,9 @@ setTimeout(renderTerminal,0);
     'PMO':'tag-purple',
   };
 
-  /* 案件データ (assets/data/案件抽出_カテゴリ別最高単価_v4.csv より) */
-  const PROJECT_DATA=[
-    {
-      cat:'開発',level:'初級',
-      title:'車載Androidアプリ テストエンジニア',
-      short:'車載アプリQA',
-      summary:'タクシー車内で動く車載Androidアプリの品質向上をリード。アプリ単体テストに留まらず、ハードウェア・ソフトウェアが連携する車載システム全体の品質作り込みを担っていただきます。',
-      pay:'〜80万/月',payVal:80,
-      location:'六本木一丁目（フルリモート可）',
-      term:'4月〜長期',years:'5年以上',
-      interview:'1回',foreign:'N1必須・在日5年以上',
-      tasks:[
-        '車載Androidアプリのテスト計画・実行・自動化',
-        'ハード/ソフト連携の品質作り込み',
-        'CI/CD（GitHub Actions / Bitrise）の運用改善',
-        '不具合検出と再発防止策の提案',
-      ],
-      must:[
-        'WebアプリまたはモバイルアプリのKotlin開発実務経験（目安3年以上）',
-        '自動テストの実装経験',
-        'Gitの利用経験',
-      ],
-      want:[
-        'AndroidアプリのE2Eテスト経験（Appium等）',
-        'GitHub ActionsでのCI/CD構築経験',
-        'パブリッククラウドの運用経験',
-      ],
-      skills:['Kotlin','Android','Appium'],
-    },
-    {
-      cat:'開発',level:'中級',
-      title:'Wallet系 サーバーサイド機能拡張',
-      short:'Walletサーバ拡張',
-      summary:'交通系ICカードと連携するWalletアプリのサーバーサイド機能拡張。BtoCで大量アクセスを捌くJava/Spring環境で、決済・金融領域の堅牢なシステムを支えます。',
-      pay:'〜120万/月',payVal:120,
-      location:'横浜鶴見（出社前提）',
-      term:'即日〜2026/6/30（長期前提）',years:'3年以上',
-      interview:'2回（1回目弊社同席）',foreign:'外国籍不可',
-      tasks:[
-        'Walletアプリのサーバーサイドシステム開発',
-        '交通系ICカードの機能拡張',
-        'REST APIの設計・実装',
-        '大量アクセス環境向けのチューニング',
-      ],
-      must:[
-        'Java / Spring Framework / Spring Boot でのWeb開発経験（3年以上）',
-        'モバイルアクセスがあるサーバー開発経験',
-        '自動化テスト・REST API実装経験',
-        '基本情報技術者試験以上の資格保有',
-      ],
-      want:[
-        '決済・金融系システム開発経験',
-        'Dockerでのサーバーサイド開発経験',
-        'OAuth・OpenID 知見',
-      ],
-      skills:['Java','Spring','REST API'],
-    },
-    {
-      cat:'開発',level:'上級',
-      title:'AIエージェント推進プロジェクト PM',
-      short:'AIエージェント PM',
-      summary:'DX推進ロードマップ策定から導入・定着化まで一貫してリード。最先端のAI技術を活用した業務システム構築のプロジェクトマネジメントをお任せします。',
-      pay:'〜170万/月',payVal:170,
-      location:'西新宿（週2リモート / 週3出社）',
-      term:'5月〜長期',years:'5年以上',
-      interview:'1回',foreign:'外国籍不可',
-      tasks:[
-        'AX推進ロードマップの作成・優先順位付け',
-        'プロジェクト推進、導入・定着化',
-        '最先端AI技術を活用した業務システム構築',
-        '業務要件に基づく技術要件定義',
-      ],
-      must:[
-        'DX推進・基幹システム刷新プロジェクトのPM経験5年以上',
-        'AIプロダクト導入コンサル経験（ChatGPT/Copilot/生成AI SaaS等）',
-        'スタートアップ環境での就業経験',
-        '何らかの言語での開発経験（Python尚可）',
-      ],
-      want:[
-        'AIエージェント・LLM・RAG の知見',
-        'Salesforce / HubSpot / kintone / SFA の導入経験',
-      ],
-      skills:['PM','AI/LLM','Python'],
-    },
-    {
-      cat:'インフラ',level:'初級',
-      title:'公共系 ネットワークセキュリティ構築',
-      short:'公共系NWセキュリティ',
-      summary:'自治体向け情報セキュリティクラウドの設計構築。Cisco・FortiGate・プロキシ等の有識者として、公共インフラの心臓部を支えるネットワーク基盤を担います。',
-      pay:'〜80万/月',payVal:80,
-      location:'東新宿（テレワーク併用・半々程度）',
-      term:'6月〜',years:'3年以上',
-      interview:'1回',foreign:'外国籍不可',
-      tasks:[
-        '自治体向け情報セキュリティクラウドの設計・構築',
-        'Ciscoスイッチ・FortiGate構築',
-        'プロキシサーバー、メールリレー、DNS、WAF構築',
-        '運用フローの整備・改善',
-      ],
-      must:[
-        'インターネット接続含むネットワーク（Cisco）の設計構築経験3年以上',
-        'セキュリティ設計（FW、プロキシ、DNS等）の知識と経験',
-      ],
-      want:[
-        'FortiGate構築経験',
-        'WAF・CDN・メールリレー等の知識',
-        '公共系案件の経験',
-      ],
-      skills:['Cisco','FortiGate','Security'],
-    },
-    {
-      cat:'インフラ',level:'中級',
-      title:'某省庁向け M365クラウドサービス担当',
-      short:'省庁M365導入',
-      summary:'ユーザ数14,000名のOAシステムを、M365などクラウドサービス前提に刷新する大規模プロジェクト。Teams / SharePoint / Intune 等の詳細設計から構築・テストまでをご担当いただきます。',
-      pay:'〜120万/月',payVal:120,
-      location:'基本新川常駐（まれに市ヶ谷出社）',
-      term:'2026年4月〜9月（スライド検討あり）',years:'3年以上',
-      interview:'2回',foreign:'外国籍不可',
-      tasks:[
-        '某省OAシステムの提案活動支援、設計・構築支援',
-        'IaaS（クラウド）設計、ネットワーク・セキュリティ設計',
-        'サービス設計、端末設計',
-        'テスト・マニュアル作成',
-      ],
-      must:[
-        '下記M365サービスいずれか3つの詳細設計〜テスト、マニュアル作成経験3年以上',
-        'Teams / SharePoint Online / Data Loss Prevention',
-        'Purview Information Protection / Intune',
-      ],
-      want:[
-        '省庁・公共系プロジェクトの経験',
-        '大規模ユーザ向けクラウド導入経験',
-      ],
-      skills:['M365','Teams','SharePoint'],
-    },
-    {
-      cat:'インフラ',level:'上級',
-      title:'スマート農業実証事業 全体統括PM',
-      short:'スマート農業 統括PM',
-      summary:'スマート農業実証事業および共用施設運営の全体統括PM。実証に留まらず事業の自走化・横展開を見据えた運営モデル構築までリードいただける方を募集します。',
-      pay:'〜160万/月',payVal:160,
-      location:'ハイブリッド：横浜近郊',
-      term:'即日〜長期',years:'3年以上',
-      interview:'3回',foreign:'要相談',
-      tasks:[
-        '1億円以上規模プロジェクトのPMリード',
-        '15名以上のチームマネジメント',
-        '自治体・民間・現場事業者を巻き込んだ推進',
-        '工程・課題・リスク・品質・収支管理',
-      ],
-      must:[
-        '1億円以上規模のPM経験（3年以上）',
-        '15名以上のマネジメント経験（2年以上）',
-        '複数ステークホルダーを巻き込んだ推進経験',
-        'ネットワーク・サーバー・クラウドの構築経験',
-      ],
-      want:[
-        '実証事業（PoC）の企画・運営経験',
-        'スマート農業・アグリテック領域の知見',
-        'PMP または プロジェクトマネージャ資格',
-      ],
-      skills:['PM','PoC','Infra'],
-    },
-    {
-      cat:'PMO',level:'初級',
-      title:'航空・整備システム 顧客側PMO',
-      short:'航空システム PMO',
-      summary:'14システムを1つに統合する航空・整備系の次期システム開発案件。顧客情報子会社側のPMOとして、対向先・関連部署との調整を一人称で推進いただきます。',
-      pay:'〜80万/月',payVal:80,
-      location:'リモート中心／週1回 天空橋出社',
-      term:'5月or6月〜12月末（27年1月以降継続可能性あり）',years:'3年以上',
-      interview:'1〜2回',foreign:'外国籍不可',
-      tasks:[
-        '対向先システム・他チームとの仕様調整、各種調整',
-        'I/F開発作業の標準化（管理プロセス策定/運用）',
-        '技術支援（各種規約策定）',
-        'I/F開発の管理業務（計画/管理）',
-      ],
-      must:[
-        '設計開発経験3年以上（基本設計経験者尚可）',
-        'PM/PMOとしての各種管理・計画経験',
-        '自律的・能動的に動けること',
-      ],
-      want:[
-        '航空・整備系業務知識',
-        '大規模システム統合経験',
-      ],
-      skills:['PMO','基本設計','調整'],
-    },
-    {
-      cat:'PMO',level:'中級',
-      title:'AML 海外金融パッケージ導入 PMO',
-      short:'AML 海外PMO',
-      summary:'アンチマネーロンダリング（AML）海外パッケージの導入PMO。海外ベンダーとの調整を英語で実施し、グローバルな金融プロジェクトを推進します。',
-      pay:'〜120万/月',payVal:120,
-      location:'基本リモート予定',
-      term:'4月〜',years:'5年以上',
-      interview:'1回',foreign:'日本国籍が望ましい',
-      tasks:[
-        '海外ベンダーとの英語での調整・会議ファシリテーション',
-        'PMOとしての各種管理業務',
-        '海外SaaSパッケージ導入推進',
-        'ドキュメント整備・進捗管理',
-      ],
-      must:[
-        'AML・SWIFTなどの知見',
-        'PMO実務経験（5年以上）',
-        'ビジネスレベルの英語力（会議ファシリ、調整、ドキュメント読解）',
-      ],
-      want:[
-        '海外製SaaSパッケージの導入プロジェクト経験',
-      ],
-      skills:['PMO','AML','English'],
-    },
-    {
-      cat:'PMO',level:'上級',
-      title:'SAP S/4HANA 導入コンサル（製造業）',
-      short:'SAP S/4HANA コンサル',
-      summary:'製造業向け SAP S/4HANA 導入プロジェクトの実現化フェーズ（設計〜実装支援）。PM/PL・SD・FIなど複数ポジションで、製造業の業務プロセスを深く理解した上流推進をお任せします。',
-      pay:'〜130万/月',payVal:130,
-      location:'鶴見（週1〜3日出社・リモート併用）',
-      term:'4月〜',years:'5年以上',
-      interview:'2回（Web）',foreign:'日本語ビジネスレベル必須',
-      tasks:[
-        'SAP S/4HANA導入プロジェクトのPM/PL/PMO',
-        '販売管理（SD）、会計（FI）モジュール導入',
-        'プロジェクト管理・管理会計・在庫購買管理',
-        '品質管理・固定資産会計対応',
-      ],
-      must:[
-        'SAP導入経験5年以上（コンサルクラス）',
-        'S/4HANA環境での実務経験',
-        '製造業の業務プロセス理解',
-      ],
-      want:[
-        'SAPプロジェクトのPM経験',
-        '各モジュール（SD/FI/PS/CO/MM/QM）の導入経験',
-      ],
-      skills:['SAP','S/4HANA','製造業'],
-    },
-  ];
+  /* 案件データは assets/data/projects.json が唯一の真実
+     (元データ: 案件抽出_カテゴリ別最高単価_v4.csv / 編集ガイド: assets/data/README.md) */
+  let PROJECT_DATA=[];
 
   /* カード生成 */
   function buildCard(p,idx){
@@ -2693,17 +2466,20 @@ setTimeout(renderTerminal,0);
     return card;
   }
 
-  /* ターミナルなど他スクリプトから参照できるようグローバル公開 */
-  window.PROJECT_DATA=PROJECT_DATA;
-  PROJECT_DATA.forEach((p,i)=>track.appendChild(buildCard(p,i)));
-  /* 無限ループ用に複製 */
-  [...track.children].forEach(c=>{
-    const clone=c.cloneNode(true);
-    const idx=parseInt(clone.dataset.idx,10);
-    clone.setAttribute('tabindex','-1');
-    clone.setAttribute('aria-hidden','true');
-    clone.addEventListener('click',()=>openProjModal(idx));
-    track.appendChild(clone);
+  /* projects.json の読み込み後にカード生成
+     (window.PROJECT_DATA はローダーが公開済み) */
+  window.PROJECTS_READY.then(list=>{
+    PROJECT_DATA=list;
+    PROJECT_DATA.forEach((p,i)=>track.appendChild(buildCard(p,i)));
+    /* 無限ループ用に複製 */
+    [...track.children].forEach(c=>{
+      const clone=c.cloneNode(true);
+      const idx=parseInt(clone.dataset.idx,10);
+      clone.setAttribute('tabindex','-1');
+      clone.setAttribute('aria-hidden','true');
+      clone.addEventListener('click',()=>openProjModal(idx));
+      track.appendChild(clone);
+    });
   });
 
   /* モーダル制御

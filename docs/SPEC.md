@@ -420,7 +420,7 @@ font-family: 'JetBrains Mono', monospace;
 | SNSカード | `media/index.html` の `#sec-sns` | `index.html` | ci-mirror (`data-source`)・スタイルはセクション内に自己完結 |
 | 社員の声 | **`assets/data/voices.json`** | `index.html` + `recruit/` (カード・モーダルとも自動生成) | fetch + JSON (編集ガイド: `assets/data/README.md`) |
 | チャートデータ (棒/ドーナツ/凡例) | **`assets/data/stats.json`** | `index.html` + `recruit/` | fetch + JSON |
-| 案件データ (PROJECT_DATA) | `recruit/index.html` 内 IIFE (`window.PROJECT_DATA` 公開) | recruit内4箇所 (カード/モーダル/ターミナル/注目案件3件) | window参照 |
+| 案件データ | **`assets/data/projects.json`** | recruit内4箇所 (カード/モーダル/ターミナル/注目案件3件) | fetch + JSON (`window.PROJECTS_READY` で完了待ち) |
 | Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}/ | fetch('/') + DOM抽出 (`data-embed="contact"`) |
 | 待遇・休暇 (li) | `index.html` の `#sec-benefits` | `recruit/` | fetch('/') + li抽出 |
 | 数字データ (.dc) | `index.html` の `#data` | `recruit/` | fetch('/') + チャート再描画 |
@@ -646,7 +646,7 @@ git push -f origin main
 | 会社情報変更 | `about-detail/index.html` (index.htmlにも自動反映) |
 | 社員の声の追加・入れ替え | `assets/data/voices.json` のみ (手順: `assets/data/README.md`) |
 | チャートの数字更新 | `assets/data/stats.json` のみ |
-| 案件追加・更新 | `recruit/index.html` 内の `PROJECT_DATA` |
+| 案件追加・更新 | `assets/data/projects.json` のみ (手順: `assets/data/README.md`) |
 | メインカラー変更 | `assets/css/common.css` の CSS変数 |
 | お問い合わせフォーム項目追加 | `contact/index.html` の form と `_partials/contact-form-gas.js` の両方 |
 | ページ追加 | `{page}/index.html` 作成 + `sitemap.xml` にURL追加 + 必要ならヘッダ/フッタにリンク |

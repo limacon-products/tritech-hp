@@ -75,7 +75,7 @@
 | SNSカード | `media/index.html` の `#sec-sns` | `index.html` (ci-mirror: `data-source`) |
 | 社員の声 | `assets/data/voices.json` | `index.html` + `recruit/` (カード自動生成) |
 | チャートデータ | `assets/data/stats.json` | `index.html` + `recruit/` |
-| 案件データ (`PROJECT_DATA`) | `recruit/index.html` 内 IIFE | `recruit/` 内のターミナル/カード/モーダル/注目案件 |
+| 案件データ | `assets/data/projects.json` | `recruit/` 内のターミナル/カード/モーダル/注目案件 |
 | Contact セクション | `index.html` の `#contact` | `service-*/` (fetch+inject) |
 | 待遇/休暇 (`#sec-benefits`) | `index.html` | `recruit/` (fetch+li抽出) |
 | 数字データ (`#data`) | `index.html` | `recruit/` (fetch+チャート再描画) |
