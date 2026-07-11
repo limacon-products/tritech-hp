@@ -905,7 +905,7 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   opacity: 1;
   pointer-events: auto;
 }
-#tritech-puzzle .tp-clear-msg h2 {
+#tritech-puzzle .tp-clear-msg .tp-clear-title {
   margin: 0 0 14px;
   font-size: 22px;
   color: var(--tp-accent);
