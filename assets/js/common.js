@@ -50,9 +50,11 @@
     }
 
     /* Custom cursor: トライテックロゴ統一の3つ菱形 (オレンジ→水色→紺)
-       それぞれ異なる追従速度(イージング)で軌跡を作る */
+       それぞれ異なる追従速度(イージング)で軌跡を作る
+       ※タッチ専用端末では追従不可のため起動しない (CSS側で非表示) */
+    const touchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     const diamonds = document.querySelectorAll('.hp-diamond');
-    if (diamonds.length === 3) {
+    if (diamonds.length === 3 && !touchOnly) {
       const items = [];
       const mx = window.innerWidth / 2;
       const my = window.innerHeight / 2;
@@ -76,6 +78,27 @@
         requestAnimationFrame(tick);
       })();
     }
+
+    /* タップ菱形バースト: タッチ位置からブランドカラーの菱形3つが
+       弾けて消える (タッチ端末での追従カーソルの代替演出)。
+       スタイルは common.css の .hp-burst / hp-burst-fly を参照 */
+    document.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      if (!t) return;
+      const b = document.createElement('div');
+      b.className = 'hp-burst';
+      b.style.left = t.clientX + 'px';
+      b.style.top  = t.clientY + 'px';
+      /* 3方向 + 少しランダムに散らす */
+      [[-16,-24],[20,-14],[-2,22]].forEach(d => {
+        const s = document.createElement('span');
+        s.style.setProperty('--dx', (d[0] + (Math.random() * 10 - 5)) + 'px');
+        s.style.setProperty('--dy', (d[1] + (Math.random() * 10 - 5)) + 'px');
+        b.appendChild(s);
+      });
+      document.body.appendChild(b);
+      setTimeout(() => b.remove(), 700);
+    }, { passive: true });
 
     /* Hamburger menu
        スクロールロック時はスクロールバー幅を padding-right で補填する。
