@@ -1,5 +1,12 @@
 /* ==========================================================
    tritech-puzzle.js — ABOUTセクション内ブロックパズル
+   操作系:
+     - ドラッグ&ドロップ (Pointer Events: マウス/タッチ両対応)
+     - タップ選択→タップ配置 (旧方式・フォールバック兼キーボード補助)
+   演出:
+     - スタートゲート (PLAY ME! をタップで開始)
+     - クリア演出はウィジェット内 (#tritech-puzzle) に完結
+       (旧: position:fixed で画面基準 → スマホで他要素に被る問題があった)
    ========================================================== */
 (function(){
 const SILHOUETTE = [
@@ -26,8 +33,7 @@ const PIECES = [
   { id: 'H', shape: [[0,1],[1,0],[1,1],[2,0]],                     color: BRAND.orange },
 ];
 
-// 各ピースの基準点（クリック起点）= bbox中心に最も近い占有マス。
-// 同距離は row 昇順 → col 昇順でタイブレーク。これで全形状一貫した anchor を得る。
+// 各ピースの基準点 = bbox中心に最も近い占有マス（全形状で一貫した anchor）
 for (const p of PIECES) {
   let mr = 0, mc = 0;
   for (const [r, c] of p.shape) { if (r > mr) mr = r; if (c > mc) mc = c; }
@@ -51,10 +57,12 @@ const SOLUTION_1 = {
 const BOARD_SIZE = 8;
 
 const state = {
-  placements: {},           // pieceId → {row, col}
-  selected: null,           // 選択中の pieceId
+  placements: {},           // pieceId → {row, col} (anchor座標)
+  selected: null,           // タップ選択中の pieceId
+  started: false,           // スタートゲート通過済みか
   timer: { startMs: null, elapsedSec: 0, intervalId: null },
   clearing: false,
+  drag: null,               // ドラッグ中情報 {piece, offX, offY, lift, moved, fromPlacement, pointerId}
 };
 
 /* ===== ユーティリティ ===== */
@@ -71,7 +79,6 @@ function getCellSize() {
   const f = getBoardEl().children[0];
   return f ? f.getBoundingClientRect().width : 30;
 }
-// row, col は anchor マスが乗る盤面座標。各shapeセルの実セル = (row + dr - anchorR, col + dc - anchorC)
 function canPlace(piece, row, col, excludeId) {
   const [pr0, pc0] = piece.anchor;
   for (const [dr, dc] of piece.shape) {
@@ -143,10 +150,9 @@ function createPieceElement(piece) {
   wrap.appendChild(shape);
   wrap.appendChild(meta);
 
-  wrap.addEventListener('click', (e) => {
-    e.stopPropagation();
-    onPieceClick(piece);
-  });
+  /* ドラッグ&ドロップ (Pointer Events) — クリック相当はドラッグ距離で判定 */
+  wrap.addEventListener('pointerdown', (e) => onPiecePointerDown(piece, e));
+
   return wrap;
 }
 
@@ -157,7 +163,7 @@ function setPieceCellPx(piece, px) {
 function placeAtTray(piece) {
   const tray = document.getElementById('tp-tray-list');
   if (piece.el.parentNode !== tray) tray.appendChild(piece.el);
-  piece.el.classList.remove('is-placed');
+  piece.el.classList.remove('is-placed', 'is-dragging');
   piece.el.classList.add('is-tray');
   setPieceCellPx(piece, 18);
   piece.el.style.left = ''; piece.el.style.top = '';
@@ -166,10 +172,9 @@ function placeAtTray(piece) {
 function placeAtBoard(piece, row, col) {
   const layer = document.getElementById('tp-pieces-layer');
   if (piece.el.parentNode !== layer) layer.appendChild(piece.el);
-  piece.el.classList.remove('is-tray');
+  piece.el.classList.remove('is-tray', 'is-dragging');
   piece.el.classList.add('is-placed');
   setPieceCellPx(piece, getCellSize());
-  // row, col は anchor 座標。bbox 左上 = (row - anchorR, col - anchorC) のセルに合わせる。
   const [ar, ac] = piece.anchor;
   const cellRect = getCellEl(row - ar, col - ac).getBoundingClientRect();
   const layerRect = layer.getBoundingClientRect();
@@ -179,6 +184,7 @@ function placeAtBoard(piece, row, col) {
 
 function syncAllPieces() {
   for (const p of PIECES) {
+    if (state.drag && state.drag.piece === p) continue; /* ドラッグ中は触らない */
     if (state.placements[p.id]) {
       const { row, col } = state.placements[p.id];
       placeAtBoard(p, row, col);
@@ -195,7 +201,7 @@ function renderHUD() {
   document.getElementById('tp-total').textContent = PIECES.length;
 }
 
-/* ===== 選択・配置 ===== */
+/* ===== タップ選択方式 (フォールバック) ===== */
 function setSelected(pieceId) {
   state.selected = pieceId;
   const root = getRoot();
@@ -212,9 +218,7 @@ function clearPreview() {
   });
 }
 
-function showPreview(row, col) {
-  if (!state.selected) return;
-  const piece = pieceById(state.selected);
+function showPreview(piece, row, col) {
   const valid = canPlace(piece, row, col, null);
   const [ar, ac] = piece.anchor;
   for (const [dr, dc] of piece.shape) {
@@ -224,48 +228,170 @@ function showPreview(row, col) {
       if (cell) cell.classList.add(valid ? 'tp-preview-ok' : 'tp-preview-bad');
     }
   }
+  return valid;
 }
 
-/* ===== クリックハンドラ ===== */
-function onPieceClick(piece) {
-  if (state.clearing) return;
-  // 配置済み → トレイへ戻す
-  if (state.placements[piece.id]) {
-    delete state.placements[piece.id];
-    setSelected(null);
-    syncAllPieces();
-    renderHUD();
-    return;
-  }
-  // トレイ：選択を切替（同じピース再クリックで解除）
-  if (state.selected === piece.id) {
-    setSelected(null);
-  } else {
-    setSelected(piece.id);
-  }
-}
-
-function onCellClick(row, col) {
-  if (state.clearing) return;
-  if (!state.selected) return;
-  const piece = pieceById(state.selected);
-  if (!canPlace(piece, row, col, null)) return;
+function tryPlace(piece, row, col) {
+  if (!canPlace(piece, row, col, null)) return false;
   state.placements[piece.id] = { row, col };
-  setSelected(null);
   maybeStartTimer();
+  return true;
+}
+
+function afterMove() {
+  setSelected(null);
+  clearPreview();
   syncAllPieces();
   renderHUD();
   if (isCleared()) runClearSequence();
 }
 
-function onCellEnter(row, col) {
-  if (!state.selected) return;
-  clearPreview();
-  showPreview(row, col);
+function onPieceTap(piece) {
+  if (state.clearing || !state.started) return;
+  if (state.placements[piece.id]) {
+    /* 配置済みをタップ → トレイへ戻す */
+    delete state.placements[piece.id];
+    afterMove();
+    return;
+  }
+  /* トレイ: 選択トグル */
+  setSelected(state.selected === piece.id ? null : piece.id);
 }
-function onCellLeave(row, col) {
+
+function onCellClick(row, col) {
+  if (state.clearing || !state.started) return;
   if (!state.selected) return;
+  const piece = pieceById(state.selected);
+  if (!tryPlace(piece, row, col)) return;
+  afterMove();
+}
+
+function onCellEnter(row, col) {
+  if (!state.selected || state.drag) return;
   clearPreview();
+  showPreview(pieceById(state.selected), row, col);
+}
+function onCellLeave() {
+  if (!state.selected || state.drag) return;
+  clearPreview();
+}
+
+/* ===== ドラッグ&ドロップ ===== */
+const DRAG_THRESHOLD = 6;   /* px: これ未満はタップ扱い */
+const TOUCH_LIFT     = 34;  /* px: タッチ時は指で隠れないよう上に持ち上げる */
+
+function onPiecePointerDown(piece, e) {
+  if (state.clearing || !state.started || state.drag) return;
+  if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  const lift = e.pointerType === 'touch' ? TOUCH_LIFT : 0;
+  state.drag = {
+    piece,
+    pointerId: e.pointerId,
+    startX: e.clientX, startY: e.clientY,
+    lift,
+    moved: false,
+    fromPlacement: state.placements[piece.id] ? { ...state.placements[piece.id] } : null,
+  };
+  /* ドキュメント全体で追跡 (ピース外に出ても離しても確実に拾う) */
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragEnd);
+  document.addEventListener('pointercancel', onDragCancel);
+}
+
+function beginDragVisual(e) {
+  const d = state.drag;
+  const piece = d.piece;
+  /* 盤面から持ち上げる場合は配置を解除してから */
+  if (d.fromPlacement) {
+    delete state.placements[piece.id];
+    renderHUD();
+  }
+  setSelected(null);
+
+  const layer = document.getElementById('tp-drag-layer');
+  const cellPx = getCellSize();
+  setPieceCellPx(piece, cellPx);
+  piece.el.classList.remove('is-tray', 'is-placed');
+  piece.el.classList.add('is-dragging');
+  layer.appendChild(piece.el);
+
+  /* anchorマスの中心がポインタ直下 (タッチは少し上) に来るように */
+  const [ar, ac] = piece.anchor;
+  d.offX = (ac + 0.5) * (cellPx + 1);
+  d.offY = (ar + 0.5) * (cellPx + 1) + d.lift;
+  positionDragEl(e);
+}
+
+function positionDragEl(e) {
+  const d = state.drag;
+  d.piece.el.style.left = (e.clientX - d.offX) + 'px';
+  d.piece.el.style.top  = (e.clientY - d.offY) + 'px';
+}
+
+/* ポインタ位置 → 盤面マス (anchorマス中心で判定) */
+function cellFromPoint(x, y) {
+  const boardRect = getBoardEl().getBoundingClientRect();
+  if (x < boardRect.left || x >= boardRect.right || y < boardRect.top || y >= boardRect.bottom) return null;
+  const pitchX = boardRect.width  / BOARD_SIZE;
+  const pitchY = boardRect.height / BOARD_SIZE;
+  const col = Math.floor((x - boardRect.left) / pitchX);
+  const row = Math.floor((y - boardRect.top)  / pitchY);
+  if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) return null;
+  return { row, col };
+}
+
+function onDragMove(e) {
+  const d = state.drag;
+  if (!d || e.pointerId !== d.pointerId) return;
+  if (!d.moved) {
+    const dist = Math.hypot(e.clientX - d.startX, e.clientY - d.startY);
+    if (dist < DRAG_THRESHOLD) return;
+    d.moved = true;
+    beginDragVisual(e);
+  }
+  e.preventDefault();
+  positionDragEl(e);
+  clearPreview();
+  const hit = cellFromPoint(e.clientX, e.clientY - d.lift);
+  if (hit) showPreview(d.piece, hit.row, hit.col);
+}
+
+function onDragEnd(e) {
+  const d = state.drag;
+  if (!d || e.pointerId !== d.pointerId) return;
+  teardownDragListeners();
+  state.drag = null;
+
+  if (!d.moved) {
+    /* 動かしていない = タップ → 旧方式のトグル動作 */
+    onPieceTap(d.piece);
+    return;
+  }
+  const hit = cellFromPoint(e.clientX, e.clientY - d.lift);
+  if (hit) tryPlace(d.piece, hit.row, hit.col);
+  /* 置けなければトレイへ戻る (fromPlacement には戻さない = 掴んだ時点で外れる仕様) */
+  afterMove();
+}
+
+function onDragCancel(e) {
+  const d = state.drag;
+  if (!d || e.pointerId !== d.pointerId) return;
+  teardownDragListeners();
+  state.drag = null;
+  if (d.moved && d.fromPlacement) {
+    /* 中断時は元の位置に戻す */
+    state.placements[d.piece.id] = d.fromPlacement;
+  }
+  afterMove();
+}
+
+function teardownDragListeners() {
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragEnd);
+  document.removeEventListener('pointercancel', onDragCancel);
 }
 
 /* ===== タイマー ===== */
@@ -300,7 +426,6 @@ function preplacePieces() {
   const num = 3 + Math.floor(Math.random() * 2);
   for (let i = 0; i < num; i++) {
     const sol = SOLUTION_1[ids[i]];
-    // SOLUTION_1 は bbox 左上座標で記述されているので anchor 座標に変換して格納する。
     const [ar, ac] = pieceById(ids[i]).anchor;
     state.placements[ids[i]] = { row: sol.row + ar, col: sol.col + ac };
   }
@@ -316,7 +441,34 @@ function resetGame() {
   renderHUD();
 }
 
-/* ===== クリア判定＆演出 ===== */
+/* ===== スタートゲート (PLAY ME!) ===== */
+function buildStartOverlay() {
+  const root = getRoot();
+  const ov = document.createElement('div');
+  ov.className = 'tp-start-overlay';
+  ov.id = 'tp-start-overlay';
+  ov.setAttribute('role', 'button');
+  ov.setAttribute('tabindex', '0');
+  ov.setAttribute('aria-label', 'パズルを開始');
+  ov.innerHTML = `
+    <div class="tp-start-diamonds" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="tp-start-title">PLAY ME!</div>
+    <div class="tp-start-sub">ピースをドラッグして<br>トライテックのロゴを完成させよう</div>
+    <div class="tp-start-cta">▶ タップしてスタート</div>`;
+  function start() {
+    if (state.started) return;
+    state.started = true;
+    ov.classList.add('is-hidden');
+    setTimeout(() => ov.remove(), 450);
+  }
+  ov.addEventListener('click', start);
+  ov.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); start(); }
+  });
+  root.appendChild(ov);
+}
+
+/* ===== クリア判定＆演出 (すべてウィジェット内で完結) ===== */
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function isCleared() { return Object.keys(state.placements).length === PIECES.length; }
 
@@ -337,10 +489,13 @@ async function runClearSequence() {
   await sleep(500);
   flashEl.classList.remove('tp-flash-active');
 
+  /* 盤面をウィジェット中央へ縮小移動 (画面中央ではなく root 基準) */
   const rect = boardArea.getBoundingClientRect();
-  const scale = 300 / rect.width;
-  const cx = window.innerWidth  / 2 - (rect.left + rect.width  / 2);
-  const cy = window.innerHeight / 2 - (rect.top  + rect.height / 2);
+  const rootRect = root.getBoundingClientRect();
+  const targetW = Math.min(220, rootRect.width * 0.55);
+  const scale = targetW / rect.width;
+  const cx = (rootRect.left + rootRect.width  / 2) - (rect.left + rect.width  / 2);
+  const cy = (rootRect.top  + rootRect.height * 0.40) - (rect.top + rect.height / 2);
   boardArea.style.transition = 'transform 1.3s cubic-bezier(0.5, 0, 0.3, 1)';
   requestAnimationFrame(() => {
     boardArea.style.transform = `translate(${cx}px, ${cy}px) scale(${scale})`;
@@ -354,6 +509,8 @@ async function runClearSequence() {
   await sleep(1000);
 
   msg.classList.add('is-visible');
+  const replay = document.getElementById('tp-clear-replay');
+  if (replay) replay.focus();
 }
 
 function exitClearMode() {
@@ -370,10 +527,27 @@ function exitClearMode() {
   state.clearing = false;
 }
 
+/* クリア後ヒント: ヘッダーのロゴへ誘導 */
+function goFindHiddenGames() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const btn = document.getElementById('nav-logo-game-btn');
+  if (btn) {
+    btn.classList.add('logo-attention');
+    setTimeout(() => btn.classList.remove('logo-attention'), 4000);
+  }
+}
+
 /* ===== 初期化 ===== */
 function init() {
   const root = getRoot();
   if (!root) return;
+  /* ドラッグレイヤーは body 直下へ移動。
+     祖先 (.reveal-right) の transform が position:fixed の基準を
+     ズラしてしまうのを避け、viewport 座標で正しく追従させる */
+  const dragLayer = document.getElementById('tp-drag-layer');
+  if (dragLayer && dragLayer.parentNode !== document.body) {
+    document.body.appendChild(dragLayer);
+  }
   renderBoard();
   for (const p of PIECES) p.el = createPieceElement(p);
   const total = PIECES.reduce((s, p) => s + p.shape.length, 0);
@@ -381,22 +555,37 @@ function init() {
   preplacePieces();
   syncAllPieces();
   renderHUD();
+  buildStartOverlay();
 
   const resetBtn = document.getElementById('tp-reset');
   resetBtn.disabled = false;
   resetBtn.addEventListener('click', resetGame);
   document.getElementById('tp-clear-replay').addEventListener('click', resetGame);
+  const findBtn = document.getElementById('tp-clear-find');
+  if (findBtn) findBtn.addEventListener('click', goFindHiddenGames);
 
-  // パズル外クリックで選択解除
+  /* パズル外クリックで選択解除 */
   document.addEventListener('click', (e) => {
     if (state.selected && !root.contains(e.target)) setSelected(null);
   });
 
-  // リサイズ追従（配置済みピースの座標再計算）
+  /* リサイズ追従（配置済みピースの座標再計算） */
   const ro = new ResizeObserver(() => syncAllPieces());
   ro.observe(getBoardEl());
 }
 
 init();
-window.tp = { state, PIECES, SOLUTION_1, canPlace, syncAllPieces, resetGame };
+window.tp = { state, PIECES, SOLUTION_1, canPlace, syncAllPieces, resetGame,
+  /* 開発/検証用: 全ピースを正解位置に置いてクリア演出まで進める */
+  debugSolve(){
+    state.started = true;
+    const ov = document.getElementById('tp-start-overlay');
+    if (ov) ov.remove();
+    for (const id in SOLUTION_1) {
+      const [ar, ac] = pieceById(id).anchor;
+      state.placements[id] = { row: SOLUTION_1[id].row + ar, col: SOLUTION_1[id].col + ac };
+    }
+    syncAllPieces(); renderHUD(); runClearSequence();
+  }
+};
 })();

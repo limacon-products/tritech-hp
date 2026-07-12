@@ -326,3 +326,10 @@ footer{background:#0e0e1a;padding:70px 5vw 40px;border-top:1px solid rgba(255,25
 @media (prefers-reduced-motion: reduce){
   .reveal-auto,.reveal-auto-right{animation:none}
 }
+
+/* ── パズルクリア後の「隠しゲームを探す」誘導: ロゴを一時的に強調 ── */
+.nav-logo-img-btn.logo-attention{animation:logo-attention 1s ease-in-out 4}
+@keyframes logo-attention{
+  0%,100%{transform:scale(1);filter:none}
+  50%{transform:scale(1.18);filter:drop-shadow(0 0 14px rgba(217,95,26,.85))}
+}

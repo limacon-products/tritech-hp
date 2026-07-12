@@ -594,6 +594,7 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
    全スタイルを #tritech-puzzle スコープに閉じ込める
    ========================================================== */
 #tritech-puzzle {
+  position: relative; /* スタートゲート/クリア演出の absolute 基準 */
   --tp-bg:        transparent;
   --tp-cell-fill: #f5f5f5;
   --tp-frame:     #e0e0e0;
@@ -708,17 +709,21 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   pointer-events: auto;
 }
 
-#tritech-puzzle .tp-drag-layer {
+/* ドラッグレイヤーは JS が body 直下へ移動する (transform祖先対策) */
+#tp-drag-layer {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 1000;
 }
-#tritech-puzzle .tp-drag-layer .tp-piece {
+#tp-drag-layer .tp-piece {
   position: absolute;
-  pointer-events: auto;
+  pointer-events: none; /* ドラッグ中は下のセル判定を邪魔しない */
   filter: drop-shadow(0 6px 14px rgba(0,0,0,0.25));
 }
+#tp-drag-layer .tp-piece .tp-piece-meta { display: none; }
+#tritech-puzzle .tp-piece.is-tray { cursor: grab; }
+#tp-drag-layer .tp-piece.is-dragging { cursor: grabbing; }
 
 /* --- Tray --- */
 #tritech-puzzle .tp-tray {
@@ -857,12 +862,12 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
 #tritech-puzzle.tp-clearing .tp-board-area { z-index: 40; }
 
 #tritech-puzzle .tp-clear-tritech {
-  position: fixed;
+  position: absolute; /* ウィジェット内に完結 (旧fixedはスマホで他要素に被った) */
   left: 50%;
-  top: calc(50% - 220px);
+  top: 4%;
   transform: translateX(-50%);
-  font-size: 42px;
-  letter-spacing: 14px;
+  font-size: clamp(26px, 7vw, 42px);
+  letter-spacing: clamp(6px, 1.8vw, 14px);
   color: var(--tp-accent);
   font-weight: 700;
   text-shadow: 0 4px 14px rgba(0,0,0,0.18);
@@ -875,11 +880,11 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
 #tritech-puzzle .tp-clear-tritech.is-visible { opacity: 1; }
 
 #tritech-puzzle .tp-clear-logo {
-  position: fixed;
+  position: absolute;
   left: 50%;
-  top: 50%;
+  top: 40%;
   transform: translate(-50%, -50%);
-  width: 200px;
+  width: min(180px, 48%);
   height: auto;
   margin: 16px auto;
   display: block;
@@ -891,10 +896,11 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
 #tritech-puzzle .tp-clear-logo.is-visible { opacity: 1; }
 
 #tritech-puzzle .tp-clear-msg {
-  position: fixed;
+  position: absolute;
   left: 50%;
-  top: calc(50% + 200px);
+  top: 60%;
   transform: translateX(-50%);
+  width: min(92%, 340px);
   text-align: center;
   opacity: 0;
   transition: opacity 0.5s ease-in;
@@ -926,6 +932,97 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   transition: background 0.15s;
 }
 #tritech-puzzle .tp-clear-replay:hover { background: #c66825; }
+#tritech-puzzle .tp-clear-hint {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--tp-text);
+}
+#tritech-puzzle .tp-clear-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#tritech-puzzle .tp-clear-find {
+  font: inherit;
+  font-size: 13px;
+  padding: 10px 18px;
+  background: transparent;
+  color: var(--tp-accent);
+  border: 1.5px solid var(--tp-accent);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+#tritech-puzzle .tp-clear-find:hover { background: var(--tp-accent); color: #fff; }
+
+/* ==========================================================
+   スタートゲート (PLAY ME!)
+   ========================================================== */
+#tritech-puzzle .tp-start-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(251, 249, 244, 0.82);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: opacity 0.4s ease;
+}
+#tritech-puzzle .tp-start-overlay.is-hidden { opacity: 0; pointer-events: none; }
+#tritech-puzzle .tp-start-overlay:focus-visible { outline: 2px solid var(--tp-accent); outline-offset: 2px; }
+#tritech-puzzle .tp-start-diamonds { display: flex; gap: 10px; margin-bottom: 4px; }
+#tritech-puzzle .tp-start-diamonds span {
+  width: 14px; height: 14px; border-radius: 3px;
+  transform: rotate(45deg);
+  animation: tpStartFloat 1.6s ease-in-out infinite;
+}
+#tritech-puzzle .tp-start-diamonds span:nth-child(1) { background: #E07830; }
+#tritech-puzzle .tp-start-diamonds span:nth-child(2) { background: #44AADB; animation-delay: .2s; }
+#tritech-puzzle .tp-start-diamonds span:nth-child(3) { background: #2A5A9A; animation-delay: .4s; }
+@keyframes tpStartFloat {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50%      { transform: rotate(45deg) translateY(-7px); }
+}
+#tritech-puzzle .tp-start-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(26px, 5vw, 34px);
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--tp-accent);
+  animation: tpStartPulse 1.4s ease-in-out infinite;
+}
+@keyframes tpStartPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+#tritech-puzzle .tp-start-sub {
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--tp-text);
+}
+#tritech-puzzle .tp-start-cta {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--tp-accent);
+  padding: 9px 22px;
+  border-radius: 100px;
+  box-shadow: 0 4px 14px rgba(224, 120, 48, 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  #tritech-puzzle .tp-start-title,
+  #tritech-puzzle .tp-start-diamonds span { animation: none; }
+}
 
 /* ════════════════════════════════════════════
    ★★★ RECRUIT MODE 切替 — index → recruit-detail への遷移演出
