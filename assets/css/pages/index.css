@@ -718,8 +718,26 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
 }
 #tp-drag-layer .tp-piece {
   position: absolute;
+  display: inline-flex;
+  flex-direction: column;
   pointer-events: none; /* ドラッグ中は下のセル判定を邪魔しない */
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.25));
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.30));
+}
+/* レイヤーは #tritech-puzzle の外 (body直下) にあるため、
+   ピース内部のスタイルをここでも定義する (スコープ切れ対策) */
+#tp-drag-layer .tp-piece-shape { display: grid; gap: 1px; }
+#tp-drag-layer .tp-piece-cell {
+  width: var(--tp-cell-px, 18px);
+  height: var(--tp-cell-px, 18px);
+  background: transparent;
+}
+#tp-drag-layer .tp-piece-cell.tp-on {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+}
+#tp-drag-layer .tp-piece.is-dragging .tp-piece-shape {
+  transform: scale(1.05);
+  transform-origin: center;
 }
 #tp-drag-layer .tp-piece .tp-piece-meta { display: none; }
 #tritech-puzzle .tp-piece.is-tray { cursor: grab; }

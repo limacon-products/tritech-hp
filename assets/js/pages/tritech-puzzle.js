@@ -304,6 +304,12 @@ function onPiecePointerDown(piece, e) {
 function beginDragVisual(e) {
   const d = state.drag;
   const piece = d.piece;
+
+  /* 掴んだ位置 (要素内の相対比率) を先に記録 → 拡大後も同じ場所を保持 */
+  const preRect = piece.el.getBoundingClientRect();
+  const gx = preRect.width  > 0 ? (d.startX - preRect.left) / preRect.width  : 0.5;
+  const gy = preRect.height > 0 ? (d.startY - preRect.top)  / preRect.height : 0.5;
+
   /* 盤面から持ち上げる場合は配置を解除してから */
   if (d.fromPlacement) {
     delete state.placements[piece.id];
@@ -318,11 +324,27 @@ function beginDragVisual(e) {
   piece.el.classList.add('is-dragging');
   layer.appendChild(piece.el);
 
-  /* anchorマスの中心がポインタ直下 (タッチは少し上) に来るように */
+  /* 掴んだ比率位置がポインタ直下 (タッチは少し上) に来るように
+     = ピースが「掴んだ場所のまま」手に付いてくる */
+  const b = pieceBounds(piece);
+  const w2 = b.cols * (cellPx + 1) - 1;
+  const h2 = b.rows * (cellPx + 1) - 1;
+  d.offX = Math.min(Math.max(gx, 0), 1) * w2;
+  d.offY = Math.min(Math.max(gy, 0), 1) * h2 + d.lift;
+  /* ドロップ判定用: 要素左上から anchor マス中心へのオフセット */
   const [ar, ac] = piece.anchor;
-  d.offX = (ac + 0.5) * (cellPx + 1);
-  d.offY = (ar + 0.5) * (cellPx + 1) + d.lift;
+  d.anchorOffX = ac * (cellPx + 1) + cellPx / 2;
+  d.anchorOffY = ar * (cellPx + 1) + cellPx / 2;
   positionDragEl(e);
+}
+
+/* ドロップ判定はポインタではなく「ピースの anchor マスが見えている位置」で行う
+   (見た目どおりの場所に置ける) */
+function dragAnchorPoint(d, e) {
+  return {
+    x: e.clientX - d.offX + d.anchorOffX,
+    y: e.clientY - d.offY + d.anchorOffY,
+  };
 }
 
 function positionDragEl(e) {
@@ -355,7 +377,8 @@ function onDragMove(e) {
   e.preventDefault();
   positionDragEl(e);
   clearPreview();
-  const hit = cellFromPoint(e.clientX, e.clientY - d.lift);
+  const pt = dragAnchorPoint(d, e);
+  const hit = cellFromPoint(pt.x, pt.y);
   if (hit) showPreview(d.piece, hit.row, hit.col);
 }
 
@@ -370,7 +393,8 @@ function onDragEnd(e) {
     onPieceTap(d.piece);
     return;
   }
-  const hit = cellFromPoint(e.clientX, e.clientY - d.lift);
+  const pt = dragAnchorPoint(d, e); /* state.drag は既に null のため捕捉済みの d を使う */
+  const hit = cellFromPoint(pt.x, pt.y);
   if (hit) tryPlace(d.piece, hit.row, hit.col);
   /* 置けなければトレイへ戻る (fromPlacement には戻さない = 掴んだ時点で外れる仕様) */
   afterMove();
