@@ -317,8 +317,10 @@ footer{background:#0e0e1a;padding:70px 5vw 40px;border-top:1px solid rgba(255,25
 /* ── ファーストビュー用登場アニメ (JS を待たず CSS だけで発火) ──
    ヒーロー要素は .reveal (JS発火) ではなくこちらを使う。
    低速端末でも初回描画が JS 実行待ちにならない (FCP/LCP改善) */
-@keyframes reveal-auto-in{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-@keyframes reveal-auto-in-right{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+/* opacity は動かさない: 透明開始だと LCP/FCP の計測対象から外れ、
+   低速端末で「何も見えていない」扱いになるため。スライドのみで演出する */
+@keyframes reveal-auto-in{from{transform:translateY(28px)}to{transform:translateY(0)}}
+@keyframes reveal-auto-in-right{from{transform:translateX(28px)}to{transform:translateX(0)}}
 .reveal-auto{animation:reveal-auto-in .75s cubic-bezier(.16,1,.3,1) both}
 .reveal-auto-right{animation:reveal-auto-in-right .75s cubic-bezier(.16,1,.3,1) both}
 @media (prefers-reduced-motion: reduce){
