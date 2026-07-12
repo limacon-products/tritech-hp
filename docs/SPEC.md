@@ -2,8 +2,8 @@
 
 |  項目  |  内容  |
 | --- | --- |
-| バージョン | 1.1.0 |
-| 最終更新 | 2026-07-11 |
+| バージョン | 1.2.0 |
+| 最終更新 | 2026-07-12 |
 | 本番URL | https://tritechinc.jp |
 | リポジトリ | https://github.com/limacon-products/tritech-hp (Public) |
 | ライセンス | 株式会社トライテック 所有 (All Rights Reserved、`LICENSE` 参照) |
@@ -50,11 +50,11 @@
 
 | 項目 | 要件 |
 |---|---|
-| パフォーマンス | Lighthouse Performance 80以上目標 |
+| パフォーマンス | Lighthouse: Perf **95** (実速度・2026-07-12計測) / CLS 0 / TBT 0ms。低速4G模擬では56 (Google Fonts チェーンがボトルネック・§13.5参照) |
 | 対応ブラウザ | Chrome / Safari / Edge / Firefox 最新2バージョン |
 | レスポンシブ | 960px以下でモバイル最適化、600px以下で完全モバイル |
-| アクセシビリティ | WCAG 2.1 AA 準拠を目指す |
-| SEO | クリーンURL / canonical / meta description / OGP / Twitter Card / sitemap.xml / robots.txt 対応済み |
+| アクセシビリティ | Lighthouse Accessibility **全ページ100** (2026-07-12計測)。キーボード操作・ARIA・コントラスト対応済み (§6.5) |
+| SEO | Lighthouse SEO **100**。クリーンURL / canonical / OGP専用画像 / JSON-LD / sitemap.xml / robots.txt 対応済み |
 
 ---
 
@@ -85,7 +85,9 @@
 
 ### 2.3 外部依存
 
-- **Google Fonts**: Syne / Noto Sans JP / JetBrains Mono
+- **Google Fonts** (使用ウェイトを実使用分に限定):
+  - Syne 700;800 / Noto Sans JP 400;500;700 (通常ページ)
+  - Space Grotesk 400;600;700 / JetBrains Mono 400;700 / Noto Sans JP 400;500;700 (recruit)
 - **Google Apps Script**: お問い合わせフォーム送信エンドポイント（内部で Microsoft Graph API を呼び出し）
 - **Google reCAPTCHA v3**: `contact/` ページで読み込み
 - **Google Analytics 4 (gtag.js)**: 全公開ページで読み込み
@@ -148,14 +150,22 @@ tritech-hp/
     │   ├── common.js           # 共通スクリプト (cursor, nav, hamburger)
     │   ├── include-partials.js # 共通部品注入エンジン
     │   ├── contact-embed.js    # contactセクション動的注入
-    │   ├── coverage-tabs.js    # service ページ Coverage タブ切替
-    │   ├── game.js             # 隠しシューティングゲーム (約2750行)
+    │   ├── coverage-tabs.js    # service ページ Coverage タブ切替 (キーボード/ARIA対応)
+    │   ├── game-loader.js      # ゲーム遅延ローダー (ロゴクリック時にCSS/DOM/JSを注入)
+    │   ├── game.js             # 隠しシューティングゲーム (約2750行・通常閲覧では未ロード)
     │   └── pages/
     │       ├── index.js        # トップページ専用
     │       └── tritech-puzzle.js # トップ About セクション内ブロックパズル
+    ├── data/                   # ★サイトデータの唯一の真実 (編集ガイド: data/README.md)
+    │   ├── voices.json         # 社員の声 (トップ+採用で共有)
+    │   ├── stats.json          # チャートデータ (トップ+採用で共有)
+    │   ├── projects.json       # 案件データ (採用の4箇所で共有)
+    │   └── README.md           # 非エンジニア向け編集ガイド
     └── images/
         ├── logo/               # ロゴ各種 (png/svg)
-        ├── photos/             # 写真素材
+        ├── photos/             # 写真素材 (最適化済み・最大616KB→全て400KB未満)
+        ├── ogp/                # OGP/SNSシェア用画像 (1200×630)
+        ├── voices/             # 社員の声の顔写真/イラスト置き場 (avatarImage用)
         └── sns/                # SNSアイコン (x/linkedin/note)
 ```
 
@@ -337,8 +347,12 @@ tritech-hp/
 ### 6.2 タイポグラフィ
 
 ```css
-/* 見出し: ロゴ系 */
-font-family: 'Syne', sans-serif;  /* h1, h2 ヒーロー文字 */
+/* 見出し: ロゴ系 (欧文のみの見出し) */
+font-family: 'Syne', sans-serif;
+
+/* 日本語文の見出しは Noto を先頭に置く (数字・英字の
+   ベースラインずれ防止。例: 「5つの理由」の 5) */
+font-family: 'Noto Sans JP', 'Syne', sans-serif;
 
 /* 本文: 日本語 */
 font-family: 'Noto Sans JP', sans-serif;
@@ -351,15 +365,24 @@ font-family: 'JetBrains Mono', monospace;
 
 トライテックロゴは「菱形3つ」の繰り返し。サイト全体でこのモチーフを統一：
 
-- カスタムカーソル: 3つの菱形が追従
+- カスタムカーソル: 3つの菱形が追従 (タッチ専用端末では非表示にし、タップ位置から菱形3つが弾ける「タップバースト」に切替)
 - ヒーロー背景: 浮遊する菱形 + 流れる小菱形
 - リスト記号: ▸ (オレンジ三角)
 
 ### 6.4 アニメーション
 
-- `.reveal` クラスでスクロール時にフェードイン
-- IntersectionObserver で 12% 表示で `in` クラス付与
-- 各カードは `transition-delay` で時間差発火
+アニメーションは2系統を使い分ける:
+
+| クラス | 発火 | 用途 |
+|---|---|---|
+| `.reveal` (`-left` `-right`) | JS (IntersectionObserver) がスクロール時に `.in` 付与 | ファーストビュー**以外**の全要素 |
+| `.reveal-auto` (`-right`) | **CSSのみ** (`@keyframes`・JS不要) | ヒーロー等ファーストビュー要素 |
+
+- ヒーローに `.reveal` を使うと JS 実行まで初回描画がブロックされるため禁止
+- `.reveal-auto` は **transform のみ** (opacity を動かすと LCP/FCP の計測対象から
+  除外され、低速端末で「未描画」扱いになるため)
+- 各要素は `transition-delay` (reveal) / `animation-delay` (reveal-auto) で時間差発火
+- `prefers-reduced-motion` では reveal-auto は無効化
 
 ---
 
@@ -377,7 +400,8 @@ font-family: 'JetBrains Mono', monospace;
 <script src="/assets/js/coverage-tabs.js" defer></script>        <!-- service-{ses,quality,dx} のみ -->
 <script src="/assets/js/pages/index.js" defer></script>          <!-- index.html のみ -->
 <script src="/assets/js/pages/tritech-puzzle.js" defer></script> <!-- index.html のみ -->
-<script src="/assets/js/game.js" defer></script>                 <!-- 全ページ (隠しゲーム) -->
+<script src="/assets/js/game-loader.js" defer></script>          <!-- 全ページ (ゲーム遅延ローダー・約80行) -->
+<!-- game.js 本体はロゴクリック時に game-loader.js が動的ロード -->
 ```
 
 ### 7.2 各スクリプトの役割
@@ -387,10 +411,11 @@ font-family: 'JetBrains Mono', monospace;
 | `include-partials.js` | `data-include="..."` 要素を `_partials/*.html` で置換 |
 | `common.js` | カスタムカーソル / ハンバーガーメニュー / スクロールプログレス |
 | `contact-embed.js` | `data-embed="contact"` を `/` (index.html) の `#contact` で置換 |
-| `coverage-tabs.js` | service ページの Coverage タブをホバー/タップで切替 |
+| `coverage-tabs.js` | Coverage タブ切替 (ホバー/タップ + WAI-ARIA タブパターン: 矢印キー/Home/End/Enter対応) |
 | `pages/index.js` | ci-mirror 注入 / データチャート / カウントアップ / 社員の声カード生成 (voices.json) |
 | `pages/tritech-puzzle.js` | About セクション内ブロックパズル |
-| `game.js` | 隠しシューティングゲーム本体 (約2750行・5ステージ) |
+| `game-loader.js` | ロゴクリック時に game.css/ゲームDOM/game.js を動的ロード (通常閲覧のJS負担を排除) |
+| `game.js` | 隠しシューティングゲーム本体 (約2750行・5ステージ・遅延ロード) |
 
 ### 7.3 IIFE パターン
 
@@ -418,7 +443,7 @@ font-family: 'JetBrains Mono', monospace;
 | ヘッダ・フッタ | `_partials/*.html` | 全ページ | `data-include` |
 | 会社概要・アクセス | `about-detail/index.html` の `#sec-overview` `#sec-access` | `index.html` | ci-mirror (`data-source`) |
 | SNSカード | `media/index.html` の `#sec-sns` | `index.html` | ci-mirror (`data-source`)・スタイルはセクション内に自己完結 |
-| 社員の声 | **`assets/data/voices.json`** | `index.html` + `recruit/` (カード・モーダルとも自動生成) | fetch + JSON (編集ガイド: `assets/data/README.md`) |
+| 社員の声 | **`assets/data/voices.json`** | `index.html` + `recruit/` (カード・モーダルとも自動生成) | fetch + JSON。`avatarImage` で顔写真/イラスト表示に切替可 (SVGとの混在可) |
 | チャートデータ (棒/ドーナツ/凡例) | **`assets/data/stats.json`** | `index.html` + `recruit/` | fetch + JSON |
 | 案件データ | **`assets/data/projects.json`** | recruit内4箇所 (カード/モーダル/ターミナル/注目案件3件) | fetch + JSON (`window.PROJECTS_READY` で完了待ち) |
 | Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}/ | fetch('/') + DOM抽出 (`data-embed="contact"`) |
@@ -480,6 +505,7 @@ Microsoft 365 の Graph API 経由で `info@tritechinc.jp` を真の送信元と
 
 - HTML5 標準バリデーション + JS による必須チェック
 - **Google reCAPTCHA v3**: フロントでトークン取得 → GAS側でスコア検証
+  (スクリプトは描画ブロック回避のため**フォーム操作開始時に遅延読込**。送信時にも await)
   （`ENABLE_RECAPTCHA` / `RECAPTCHA_MIN_SCORE` で調整可）
 - メッセージにURL 3つ以上で送信拒否
 - プライバシーポリシー同意必須
@@ -649,7 +675,9 @@ git push -f origin main
 | 案件追加・更新 | `assets/data/projects.json` のみ (手順: `assets/data/README.md`) |
 | メインカラー変更 | `assets/css/common.css` の CSS変数 |
 | お問い合わせフォーム項目追加 | `contact/index.html` の form と `_partials/contact-form-gas.js` の両方 |
-| ページ追加 | `{page}/index.html` 作成 + `sitemap.xml` にURL追加 + 必要ならヘッダ/フッタにリンク |
+| 社員の声を写真/イラスト表示に切替 | 画像を `assets/images/voices/` に配置 + `voices.json` に `avatarImage` を1行追加 |
+| OGP (SNSシェア) 画像の変更 | `assets/images/ogp/ogp-main.jpg` を差し替え (1200×630) |
+| ページ追加 | `{page}/index.html` 作成 + `sitemap.xml` にURL追加 + JSON-LD/OGP/GA タグを既存ページから踏襲 + 必要ならヘッダ/フッタにリンク |
 
 ### 13.2 トラブル対応
 
@@ -673,7 +701,28 @@ git push -f origin main
 - **旧URL (`/xxx.html`) は 404**: クリーンURL化に伴いルート直下の各 `*.html` は撤去済み。
   旧URLへの被リンクがある場合はリダイレクト手段がない点に注意
 
-### 13.4 関連ドキュメント
+### 13.4 パフォーマンス/アクセシビリティ設計メモ
+
+2026-07 の改善スプリントで実施 (計測は Lighthouse・本番サイト):
+
+**パフォーマンス** (実速度 Perf 95 / FCP・LCP 2.3s / CLS 0 / TBT 0ms)
+- 画像: 写真を全て最適化 (フォルダ計 12MB→4.7MB)。`<img>` は width/height 必須 (CLS 0 の生命線)、ファーストビュー外は `loading="lazy"`
+- game.js (2,750行) は全ページ常時ロードをやめ、ロゴクリック時の遅延ロードに (TBT 0ms の主因)
+- 注入系 fetch の `cache:'no-store'` は全廃済み (ブラウザキャッシュ活用)。復活させないこと
+- ヒーローは `.reveal-auto` (CSSのみ・transformのみ) — §6.4 の禁止事項参照
+- 低速4G模擬スコアの残ボトルネックは Google Fonts チェーン (CSS 89KB + フォント計786KB)。
+  改善するにはセルフホスト+サブセット化が必要だが、文字追加時の運用負荷とのトレードオフのため未実施
+
+**アクセシビリティ** (全ページ Lighthouse 100)
+- タブUI (Coverage/1日の流れ) は WAI-ARIA タブパターン (role/aria-selected/ロービングtabindex/矢印キー)
+- モーダルを開くカード類は `role="button"` + `tabindex="0"` + Enter/Space 対応。
+  カルーセルの複製カードは `aria-hidden` + `tabindex="-1"` (二重読み上げ防止)
+- モーダルは開くと閉じるボタンへフォーカス移動、閉じると元要素へ復帰 (rAFで1フレーム遅延必須)
+- ハンバーガーは aria-label + aria-expanded 同期
+- 新しい文字色を足す時は背景とのコントラスト比 4.5:1 以上を確認 (チップ・フッタ・プレースホルダは調整済み。
+  定義が common.css と index.css に重複しているものがあるので両方直すこと)
+
+### 13.5 関連ドキュメント
 
 | ファイル | 公開/社内 | 内容 |
 |---|---|---|
@@ -694,6 +743,7 @@ git push -f origin main
 |---|---|---|
 | 2026-05-17 | 1.0.0 | 初版 |
 | 2026-05-18 | 1.0.1 | 軽微修正 |
+| 2026-07-12 | 1.2.0 | 大規模改善スプリントを反映: サイトデータのJSON化 (`assets/data/` voices/stats/projects + 編集ガイド、旧 fetch+eval 全廃) / 顔写真アバター対応 (`avatarImage`) / game.js 遅延ロード化 / 画像最適化 (12MB→4.7MB) / カスタム404 / JSON-LD / OGP専用画像 / reCAPTCHA遅延読込 / h1整理 / 日本語見出しの Noto 先頭化 / スマホのタップバースト / キーボード操作対応 (WAI-ARIA) / コントラスト改善 / ヒーローの reveal-auto 化 / フォントウェイト削減 — Lighthouse: A11y・BP・SEO 全ページ100、Perf 95 (実速度) 達成 |
 | 2026-07-11 | 1.1.0 | 現状反映: クリーンURL化 (`{page}/index.html` 構成) / `media`・`security-policy` ページ追加 / ヘッダ・フッタのメニュー更新 (メディア・SNSリンク・セキュリティ方針) / ci-mirror 機構 / お問い合わせを Microsoft Graph API 経由に移行 + reCAPTCHA v3 導入 / GA4・sitemap.xml・robots.txt 設置 / `.dev-server.js` 追加 / README.md も同時更新 / privacy-policy のゲームブロック重複を修正 |
 
 ---
