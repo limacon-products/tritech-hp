@@ -306,12 +306,12 @@ footer{background:#0e0e1a;padding:70px 5vw 40px;border-top:1px solid rgba(255,25
 .ft-logo{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
 .ft-logo-img{height:34px;width:auto;display:block}
 .ft-logo-name{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:.92rem;color:rgba(255,255,255,.9);white-space:nowrap}
-.ft-desc{font-size:.8rem;color:rgba(255,255,255,.3);line-height:1.7}
+.ft-desc{font-size:.8rem;color:rgba(255,255,255,.62);line-height:1.7}
 .ft-col h5{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em;margin-bottom:1.2rem}
 .ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.65rem}
 .ft-col a{font-size:.82rem;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
 .ft-col a:hover{color:var(--orange)}
-.ft-bottom{display:flex;justify-content:center;align-items:center;font-size:.68rem;color:rgba(255,255,255,.25);flex-wrap:wrap;gap:.75rem;text-align:center}
+.ft-bottom{display:flex;justify-content:center;align-items:center;font-size:.68rem;color:rgba(255,255,255,.6);flex-wrap:wrap;gap:.75rem;text-align:center}
 
 /* RESPONSIVE */
 @media(max-width:960px){

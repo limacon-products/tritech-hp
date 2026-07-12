@@ -120,6 +120,7 @@
       hamburger.addEventListener('click', () => {
         const open = mm.classList.toggle('open');
         hamburger.classList.toggle('open', open);
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
         if (open) lockScroll(); else unlockScroll();
       });
       document.querySelectorAll('.mobile-menu a').forEach(a => {

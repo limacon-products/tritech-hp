@@ -26,7 +26,7 @@
 <link rel="apple-touch-icon" href="/assets/images/logo/tritech-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/common.css">
 <link rel="stylesheet" href="/assets/css/pages/index.css">
 <link rel="stylesheet" href="/assets/css/pages/index-recruit.css">
@@ -58,10 +58,10 @@
   </div>
   <div class="hero-inner">
     <div>
-      <h1 class="reveal" style="transition-delay:.1s">テクノロジーで、<br><span class="hl-o">未来をつなぐ</span>。</h1>
-      <p class="hero-lead reveal" style="transition-delay:.2s;margin-top:3.5rem">私たちトライテックは、エンジニアの力を最大限に引き出し、企業とエンジニアの双方が輝ける場所を創ることをミッションとしています。</p>
+      <h1 class="reveal-auto" style="animation-delay:.1s">テクノロジーで、<br><span class="hl-o">未来をつなぐ</span>。</h1>
+      <p class="hero-lead reveal-auto" style="animation-delay:.2s;margin-top:3.5rem">私たちトライテックは、エンジニアの力を最大限に引き出し、企業とエンジニアの双方が輝ける場所を創ることをミッションとしています。</p>
     </div>
-    <div class="hero-visual reveal-right" style="transition-delay:.2s">
+    <div class="hero-visual reveal-auto-right" style="animation-delay:.2s">
       <div class="hero-logo-wrap">
         <img src="/assets/images/logo/tritech-logo.png" alt="トライテック" class="hero-logo-main" width="2855" height="1063">
       </div>
@@ -102,7 +102,7 @@
 
         <main class="tp-main">
           <div class="tp-board-area">
-            <div class="tp-board" id="tp-board" aria-label="盤面"></div>
+            <div class="tp-board" id="tp-board" role="group" aria-label="盤面"></div>
             <div class="tp-pieces-layer" id="tp-pieces-layer"></div>
             <div class="tp-clear-flash" id="tp-clear-flash"></div>
           </div>

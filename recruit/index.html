@@ -26,7 +26,8 @@
 <link rel="apple-touch-icon" href="/assets/images/logo/tritech-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="/assets/images/photos/building-glass.jpg" fetchpriority="high">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -622,7 +623,7 @@ section{padding:110px 6vw;position:relative;z-index:1}
   box-shadow:0 0 20px rgba(0,245,200,0.25);
   background:rgba(0,245,200,0.08);
 }
-.pf-step h4{
+.pf-step h3{
   font-family:'Space Grotesk',sans-serif;
   font-size:.88rem;font-weight:600;margin-bottom:.5rem;
 }
@@ -1148,7 +1149,7 @@ footer{
 .ft-bottom{
   display:flex;justify-content:center;align-items:center;
   font-family:'JetBrains Mono',monospace;
-  font-size:.68rem;color:var(--text3);
+  font-size:.68rem;color:var(--text2);
   flex-wrap:wrap;gap:.75rem;
   text-align:center;
 }
@@ -1581,11 +1582,11 @@ footer{
   <p class="s-sub reveal">最短2週間で案件参画が可能。面倒な手続きはすべてサポートします。</p>
 
   <div class="process-flow">
-    <div class="pf-step reveal"><div class="pf-node">01</div><h4>無料相談・登録</h4><p>オンライン or 電話で<br>気軽にご相談</p></div>
-    <div class="pf-step reveal" style="transition-delay:.1s"><div class="pf-node">02</div><h4>ヒアリング</h4><p>スキルと希望を<br>丁寧にヒアリング</p></div>
-    <div class="pf-step reveal" style="transition-delay:.2s"><div class="pf-node">03</div><h4>案件提案</h4><p>希望に合う案件を<br>複数ご提案</p></div>
-    <div class="pf-step reveal" style="transition-delay:.3s"><div class="pf-node">04</div><h4>入社・参画</h4><p>最短2週間で<br>プロジェクト参画</p></div>
-    <div class="pf-step reveal" style="transition-delay:.4s"><div class="pf-node">05</div><h4>継続サポート</h4><p>定期面談で<br>長期的に伴走</p></div>
+    <div class="pf-step reveal"><div class="pf-node">01</div><h3>無料相談・登録</h3><p>オンライン or 電話で<br>気軽にご相談</p></div>
+    <div class="pf-step reveal" style="transition-delay:.1s"><div class="pf-node">02</div><h3>ヒアリング</h3><p>スキルと希望を<br>丁寧にヒアリング</p></div>
+    <div class="pf-step reveal" style="transition-delay:.2s"><div class="pf-node">03</div><h3>案件提案</h3><p>希望に合う案件を<br>複数ご提案</p></div>
+    <div class="pf-step reveal" style="transition-delay:.3s"><div class="pf-node">04</div><h3>入社・参画</h3><p>最短2週間で<br>プロジェクト参画</p></div>
+    <div class="pf-step reveal" style="transition-delay:.4s"><div class="pf-node">05</div><h3>継続サポート</h3><p>定期面談で<br>長期的に伴走</p></div>
   </div>
 </section>
 
@@ -1858,6 +1859,7 @@ const mobileMenu=document.getElementById('mobile-menu');
 hamburger.addEventListener('click',()=>{
   const isOpen=mobileMenu.classList.toggle('open');
   hamburger.classList.toggle('open',isOpen);
+  hamburger.setAttribute('aria-expanded',isOpen?'true':'false');
   document.body.style.overflow=isOpen?'hidden':'';
 });
 document.querySelectorAll('.mobile-menu a').forEach(a=>{
