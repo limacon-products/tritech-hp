@@ -68,7 +68,7 @@ const state = {
 
 /* 隠し要素: プリプレースを全て外し、全8ピースを自力で置いた場合の
    「パーフェクトクリア」。特別メッセージと専用演出を出す */
-const PERFECT_MSG = '全8ピース自力コンプリート!\nその探究心、まさにトライテックのエンジニア気質です。';
+const PERFECT_MSG = 'パーフェクトクリア達成!"やり抜く人"が、未来をつなぐ。あなたのような方をお待ちしています。';
 function isPerfect() { return state.userPlaced.size === PIECES.length; }
 
 /* ===== ユーティリティ ===== */
@@ -440,12 +440,16 @@ function buildCompanyMessages() {
   const catchEl = document.querySelector('#about .about-catch');
   const catchTxt = catchEl ? catchEl.textContent.replace(/\s+/g, '') : '';
 
-  /* 「トライテックの使命」→ 使命3項目 の4本立て
-     (プリプレース4個 = ユーザーが置くのは4回、と対応)
-     5回目以降の保険としてキャッチコピーを末尾に */
+  /* 通常プレイ (4回): 「トライテックの使命」→ 使命3項目
+     隠しルート (プリプレースを外して置き直す): 5=キャッチ →
+     6・7=パーフェクトへの布石 → 8=特別メッセージ (showCompanyMessage側)
+     8回目以降の保険としてキャッチコピーを末尾に */
   const msgs = [];
   if (headEl) msgs.push(headEl.textContent.trim());
   msgs.push(...missions);
+  if (catchTxt) msgs.push(catchTxt);
+  msgs.push('おや…全部自分で並べていますね?その探究心、うちの社風です。');
+  msgs.push('残り1ピース。最後まで自分の手で仕上げた人にだけ、見えるものがあります。');
   if (catchTxt) msgs.push(catchTxt);
   COMPANY_MSGS = msgs;
 }
@@ -686,6 +690,7 @@ async function runClearSequence() {
 
   const titleEl = msg.querySelector('.tp-clear-title');
   if (titleEl) titleEl.textContent = isPerfect() ? 'Perfect Clear!!' : 'Puzzle Cleared!';
+  root.classList.toggle('tp-perfect', isPerfect()); /* 採用ボタンの表示切替 */
   msg.classList.add('is-visible');
   const replay = document.getElementById('tp-clear-replay');
   if (replay) replay.focus();
@@ -695,7 +700,7 @@ function exitClearMode() {
   if (!state.clearing) return;
   const root = getRoot();
   removeCelebration(root);
-  root.classList.remove('tp-celebrating');
+  root.classList.remove('tp-celebrating', 'tp-perfect');
   const boardArea = root.querySelector('.tp-board-area');
   document.getElementById('tp-clear-tritech').classList.remove('is-visible');
   document.getElementById('tp-clear-logo').classList.remove('is-visible');

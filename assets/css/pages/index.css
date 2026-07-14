@@ -1131,6 +1131,26 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   transition: background 0.15s, color 0.15s;
 }
 #tritech-puzzle .tp-clear-find:hover { background: var(--tp-accent); color: #fff; }
+/* パーフェクトクリア限定: 採用ページへの導線 */
+#tritech-puzzle .tp-clear-recruit { display: none; }
+#tritech-puzzle.tp-perfect .tp-clear-recruit {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  padding: 10px 20px;
+  background: linear-gradient(120deg, #E07830, #f0b429);
+  color: #fff;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 14px rgba(240, 180, 41, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+#tritech-puzzle.tp-perfect .tp-clear-recruit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(240, 180, 41, 0.55);
+}
 
 /* ==========================================================
    スタートゲート (PLAY ME!)
