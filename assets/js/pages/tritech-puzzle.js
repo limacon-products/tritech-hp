@@ -256,8 +256,9 @@ function afterMove() {
   clearPreview();
   syncAllPieces();
   renderHUD();
-  /* クリア時は最後のメッセージ演出を見せ切ってからクリア演出へ */
-  if (isCleared()) setTimeout(runClearSequence, POP_TOTAL_MS + 150);
+  /* クリア時: 最後のメッセージがあれば見せ切ってから、
+     出ていなければ間を置かずにお祝いへ */
+  if (isCleared()) setTimeout(runClearSequence, lastMsgShown ? POP_TOTAL_MS + 150 : 250);
 }
 
 function onPieceTap(piece) {
@@ -459,6 +460,8 @@ function buildCompanyMessages() {
   COMPANY_MSGS = msgs;
 }
 let popTimers = [];
+let shownMsgs = new Set();   /* 1プレイ中に表示済みのメッセージ (同文言は二度出さない) */
+let lastMsgShown = false;    /* 直近の設置でポップを出したか (クリア移行の待ち時間制御) */
 const POP_HOLD_MS = 1500;  /* 中央に大きく表示する時間 */
 const POP_LAND_MS = 450;   /* 上へ着地するアニメ時間 */
 const POP_TOTAL_MS = POP_HOLD_MS + POP_LAND_MS;
@@ -501,6 +504,12 @@ function showCompanyMessage() {
   } else {
     m = COMPANY_MSGS[COMPANY_MSGS.length - 1]; /* それ以外はキャッチコピー */
   }
+  /* 同じメッセージは1プレイ1回まで (特別メッセージは常に表示) */
+  if (!special) {
+    if (shownMsgs.has(m)) { lastMsgShown = false; return; }
+    shownMsgs.add(m);
+  }
+  lastMsgShown = true;
   pop.classList.toggle('is-special', special);
 
   /* 進行中の演出があれば打ち切って新しいメッセージへ */
@@ -573,6 +582,8 @@ function resetGame() {
   state.userPlaced = new Set();
   state.placedNow = new Set();
   setSelected(null);
+  shownMsgs = new Set();
+  lastMsgShown = false;
   popTimers.forEach(clearTimeout); popTimers = [];
   const pop = document.getElementById('tp-msg-pop');
   if (pop) pop.classList.remove('is-pop', 'is-land');
