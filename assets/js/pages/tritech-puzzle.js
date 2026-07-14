@@ -551,9 +551,9 @@ function exitClearMode() {
   state.clearing = false;
 }
 
-/* クリア後ヒント: ヘッダーのロゴへ誘導 */
+/* クリア後ヒント: ヘッダーのロゴを光らせて居場所を示す
+   (ヘッダーは固定表示なのでスクロール不要 — その場で視界に入る) */
 function goFindHiddenGames() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
   const btn = document.getElementById('nav-logo-game-btn');
   if (btn) {
     btn.classList.add('logo-attention');
