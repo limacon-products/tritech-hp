@@ -665,6 +665,62 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
 }
 #tritech-puzzle.tp-clearing .tp-msg { opacity: 0; transition: opacity 0.4s; }
 
+/* 設置時の全面メッセージポップ (中央にドーン → 上へ着地) */
+#tritech-puzzle .tp-msg-pop {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(251, 249, 244, 0.94);
+  backdrop-filter: blur(3px);
+}
+#tritech-puzzle .tp-msg-pop .tp-msg-pop-text {
+  max-width: 340px;
+  font-size: clamp(16px, 4.4vw, 21px);
+  font-weight: 700;
+  line-height: 1.8;
+  color: #333;
+}
+#tritech-puzzle .tp-msg-pop .tp-msg-pop-text::before {
+  content: '◆';
+  display: block;
+  color: var(--tp-accent);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+#tritech-puzzle .tp-msg-pop.is-pop {
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+#tritech-puzzle .tp-msg-pop.is-pop .tp-msg-pop-text {
+  animation: tpPopIn 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.15) both;
+}
+@keyframes tpPopIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+/* 上の帯へ着地するモーション */
+#tritech-puzzle .tp-msg-pop.is-land {
+  opacity: 0;
+  transition: opacity 0.45s ease-in;
+}
+#tritech-puzzle .tp-msg-pop.is-land .tp-msg-pop-text {
+  animation: none;
+  transform: translateY(-130px) scale(0.5);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.7, 1), opacity 0.45s ease-in;
+}
+@media (prefers-reduced-motion: reduce) {
+  #tritech-puzzle .tp-msg-pop.is-pop .tp-msg-pop-text { animation: none; }
+  #tritech-puzzle .tp-msg-pop.is-land .tp-msg-pop-text { transition: none; }
+}
+
 #tritech-puzzle .tp-hud b {
   color: var(--tp-text);
   font-weight: 600;

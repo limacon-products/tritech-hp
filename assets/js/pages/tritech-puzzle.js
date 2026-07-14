@@ -244,7 +244,8 @@ function afterMove() {
   clearPreview();
   syncAllPieces();
   renderHUD();
-  if (isCleared()) runClearSequence();
+  /* クリア時は最後のメッセージ演出を見せ切ってからクリア演出へ */
+  if (isCleared()) setTimeout(runClearSequence, POP_TOTAL_MS + 150);
 }
 
 function onPieceTap(piece) {
@@ -426,39 +427,70 @@ function teardownDragListeners() {
    - 締めはキャッチコピー (#about .about-catch) */
 let COMPANY_MSGS = [];
 function buildCompanyMessages() {
+  const headEl = document.querySelector('#about .mission-heading');
   const missions = [...document.querySelectorAll('#about .mission-list li')]
     .map(li => li.textContent.trim()).filter(Boolean);
-  const facts = [...document.querySelectorAll('#data .dc')].map(dc => {
-    const num  = dc.querySelector('.cnum');
-    const unit = dc.querySelector('.u');
-    const label= dc.querySelector('.dc-label');
-    if (!num || !label) return '';
-    return `${label.textContent.trim()} ${num.dataset.target || ''}${unit ? unit.textContent.trim() : ''}`;
-  }).filter(Boolean);
   const catchEl = document.querySelector('#about .about-catch');
   const catchTxt = catchEl ? catchEl.textContent.replace(/\s+/g, '') : '';
 
-  /* 使命と数字を交互に並べ、最後にキャッチで締める */
+  /* 「トライテックの使命」→ 使命3項目 の4本立て
+     (プリプレース4個 = ユーザーが置くのは4回、と対応)
+     5回目以降の保険としてキャッチコピーを末尾に */
   const msgs = [];
-  const n = Math.max(missions.length, facts.length);
-  for (let i = 0; i < n; i++) {
-    if (missions[i]) msgs.push(missions[i]);
-    if (facts[i])    msgs.push(facts[i]);
-  }
+  if (headEl) msgs.push(headEl.textContent.trim());
+  msgs.push(...missions);
   if (catchTxt) msgs.push(catchTxt);
   COMPANY_MSGS = msgs;
 }
 let msgIndex = 0;
+let popTimers = [];
+const POP_HOLD_MS = 1500;  /* 中央に大きく表示する時間 */
+const POP_LAND_MS = 450;   /* 上へ着地するアニメ時間 */
+const POP_TOTAL_MS = POP_HOLD_MS + POP_LAND_MS;
+
+function getMsgPop() {
+  let pop = document.getElementById('tp-msg-pop');
+  if (!pop) {
+    pop = document.createElement('div');
+    pop.id = 'tp-msg-pop';
+    pop.className = 'tp-msg-pop';
+    pop.setAttribute('aria-hidden', 'true'); /* 読み上げは帯 (aria-live) 側で行う */
+    pop.innerHTML = '<div class="tp-msg-pop-text"></div>';
+    getRoot().appendChild(pop);
+  }
+  return pop;
+}
+
 function showCompanyMessage() {
   if (!COMPANY_MSGS.length) return;
-  const el = document.getElementById('tp-msg');
-  if (!el) return;
-  const m = COMPANY_MSGS[msgIndex % COMPANY_MSGS.length];
+  const band = document.getElementById('tp-msg');
+  const pop = getMsgPop();
+  const m = COMPANY_MSGS[Math.min(msgIndex, COMPANY_MSGS.length - 1)];
   msgIndex++;
-  el.classList.remove('is-show');
-  void el.offsetWidth; /* アニメ再発火 */
-  el.textContent = m;
-  el.classList.add('is-show');
+
+  /* 進行中の演出があれば打ち切って新しいメッセージへ */
+  popTimers.forEach(clearTimeout);
+  popTimers = [];
+  pop.classList.remove('is-pop', 'is-land');
+  void pop.offsetWidth;
+
+  /* 1. 画面いっぱいにドーンと表示 */
+  pop.querySelector('.tp-msg-pop-text').textContent = m;
+  pop.classList.add('is-pop');
+
+  /* 2. 少し見せてから上へ着地 → 帯に同じ文言が残る */
+  popTimers.push(setTimeout(() => {
+    pop.classList.add('is-land');
+    if (band) {
+      band.classList.remove('is-show');
+      void band.offsetWidth;
+      band.textContent = m;
+      band.classList.add('is-show');
+    }
+  }, POP_HOLD_MS));
+  popTimers.push(setTimeout(() => {
+    pop.classList.remove('is-pop', 'is-land');
+  }, POP_TOTAL_MS + 100));
 }
 
 /* ===== タイマー ===== */
@@ -490,7 +522,9 @@ function preplacePieces() {
     const j = Math.floor(Math.random() * (i + 1));
     [ids[i], ids[j]] = [ids[j], ids[i]];
   }
-  const num = 3 + Math.floor(Math.random() * 2);
+  /* 常に4個プリプレース = ユーザーが置くのは4個
+     (「使命の見出し→使命3つ」の4メッセージと連動) */
+  const num = 4;
   for (let i = 0; i < num; i++) {
     const sol = SOLUTION_1[ids[i]];
     const [ar, ac] = pieceById(ids[i]).anchor;
@@ -502,6 +536,12 @@ function resetGame() {
   if (state.clearing) exitClearMode();
   state.placements = {};
   setSelected(null);
+  msgIndex = 0;
+  popTimers.forEach(clearTimeout); popTimers = [];
+  const pop = document.getElementById('tp-msg-pop');
+  if (pop) pop.classList.remove('is-pop', 'is-land');
+  const band = document.getElementById('tp-msg');
+  if (band) { band.textContent = ''; band.classList.remove('is-show'); }
   preplacePieces();
   resetTimer();
   syncAllPieces();
