@@ -70,6 +70,9 @@ const state = {
 /* 隠し要素: プリプレースを全て外し、全8ピースを自力で置いた場合の
    「パーフェクトクリア」。特別メッセージと専用演出を出す */
 const PERFECT_MSG = 'パーフェクトクリア達成!"やり抜く人"が、未来をつなぐ。あなたのような方をお待ちしています。';
+/* パーフェクトルートの布石 (盤面が全て自力配置の時だけ・残数で出し分け) */
+const TEASER_REMAIN2 = 'おや…全部自分で並べていますね?その探究心、うちの社風です。';
+const TEASER_REMAIN1 = '残り1ピース。最後まで自分の手で仕上げた人にだけ、見えるものがあります。';
 function isPerfect() { return state.userPlaced.size === PIECES.length; }
 
 /* ===== ユーティリティ ===== */
@@ -446,16 +449,12 @@ function buildCompanyMessages() {
   const catchEl = document.querySelector('#about .about-catch');
   const catchTxt = catchEl ? catchEl.textContent.replace(/\s+/g, '') : '';
 
-  /* 通常プレイ (4回): 「トライテックの使命」→ 使命3項目
-     隠しルート (プリプレースを外して置き直す): 5=キャッチ →
-     6・7=パーフェクトへの布石 → 8=特別メッセージ (showCompanyMessage側)
-     8回目以降の保険としてキャッチコピーを末尾に */
+  /* 基本の5本: 「トライテックの使命」→ 使命3項目 → キャッチコピー
+     (5個目以降の既定はキャッチ。パーフェクトルートの布石と特別メッセージは
+      showCompanyMessage 側で盤面状況を見て出し分ける) */
   const msgs = [];
   if (headEl) msgs.push(headEl.textContent.trim());
   msgs.push(...missions);
-  if (catchTxt) msgs.push(catchTxt);
-  msgs.push('おや…全部自分で並べていますね?その探究心、うちの社風です。');
-  msgs.push('残り1ピース。最後まで自分の手で仕上げた人にだけ、見えるものがあります。');
   if (catchTxt) msgs.push(catchTxt);
   COMPANY_MSGS = msgs;
 }
@@ -484,11 +483,24 @@ function showCompanyMessage() {
   /* メッセージ番号 = いま盤面にある自力配置ピースの数 (1始まり)。
      外すと数が戻るので、置き直してもメッセージがずれない */
   const idx = Math.max(1, state.placedNow.size);
+  const totalPlaced = Object.keys(state.placements).length;
+  const remaining = PIECES.length - totalPlaced;
+  /* 盤面のピースが全て自力配置 = パーフェクトに向かっているルート */
+  const perfectTrack = state.placedNow.size === totalPlaced;
   /* 隠し要素: この設置で全8ピース自力コンプリートが成立した場合は特別メッセージ */
   const special = isCleared() && isPerfect();
-  const m = special
-    ? PERFECT_MSG.replace('\n', '')
-    : COMPANY_MSGS[Math.min(idx - 1, COMPANY_MSGS.length - 1)];
+  let m;
+  if (special) {
+    m = PERFECT_MSG.replace('\n', '');
+  } else if (idx <= 4) {
+    m = COMPANY_MSGS[Math.min(idx - 1, COMPANY_MSGS.length - 1)];
+  } else if (perfectTrack && remaining === 2) {
+    m = TEASER_REMAIN2;   /* 本当に全部自力 & 残り2つの時だけ */
+  } else if (perfectTrack && remaining === 1) {
+    m = TEASER_REMAIN1;   /* 同・残り1つ */
+  } else {
+    m = COMPANY_MSGS[COMPANY_MSGS.length - 1]; /* それ以外はキャッチコピー */
+  }
   pop.classList.toggle('is-special', special);
 
   /* 進行中の演出があれば打ち切って新しいメッセージへ */
