@@ -635,6 +635,36 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   color: var(--tp-text-dim);
   letter-spacing: 0.5px;
 }
+#tritech-puzzle .tp-msg {
+  width: 100%;
+  max-width: 300px;
+  min-height: 3.1em; /* 2行分を常に確保 (レイアウトシフト防止) */
+  margin: 0 auto 8px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--tp-text);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+#tritech-puzzle .tp-msg.is-show {
+  animation: tpMsgIn 0.5s ease-out both;
+}
+#tritech-puzzle .tp-msg.is-show::before {
+  content: '◆';
+  color: var(--tp-accent);
+  font-size: 9px;
+  margin-right: 7px;
+  flex-shrink: 0;
+}
+@keyframes tpMsgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#tritech-puzzle.tp-clearing .tp-msg { opacity: 0; transition: opacity 0.4s; }
+
 #tritech-puzzle .tp-hud b {
   color: var(--tp-text);
   font-weight: 600;
@@ -1036,6 +1066,13 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   padding: 9px 22px;
   border-radius: 100px;
   box-shadow: 0 4px 14px rgba(224, 120, 48, 0.35);
+}
+#tritech-puzzle .tp-start-catch {
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--tp-text-dim);
 }
 @media (prefers-reduced-motion: reduce) {
   #tritech-puzzle .tp-start-title,

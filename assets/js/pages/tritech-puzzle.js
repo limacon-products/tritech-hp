@@ -235,6 +235,7 @@ function tryPlace(piece, row, col) {
   if (!canPlace(piece, row, col, null)) return false;
   state.placements[piece.id] = { row, col };
   maybeStartTimer();
+  showCompanyMessage();
   return true;
 }
 
@@ -418,6 +419,48 @@ function teardownDragListeners() {
   document.removeEventListener('pointercancel', onDragCancel);
 }
 
+/* ===== 会社メッセージ (ピース設置ごとに1つ表示) =====
+   文言はページ本文から自動取得 (ダブルメンテ防止):
+   - 使命3項目 (#about .mission-list li)
+   - 実績数字 (#data .dc)
+   - 締めはキャッチコピー (#about .about-catch) */
+let COMPANY_MSGS = [];
+function buildCompanyMessages() {
+  const missions = [...document.querySelectorAll('#about .mission-list li')]
+    .map(li => li.textContent.trim()).filter(Boolean);
+  const facts = [...document.querySelectorAll('#data .dc')].map(dc => {
+    const num  = dc.querySelector('.cnum');
+    const unit = dc.querySelector('.u');
+    const label= dc.querySelector('.dc-label');
+    if (!num || !label) return '';
+    return `${label.textContent.trim()} ${num.dataset.target || ''}${unit ? unit.textContent.trim() : ''}`;
+  }).filter(Boolean);
+  const catchEl = document.querySelector('#about .about-catch');
+  const catchTxt = catchEl ? catchEl.textContent.replace(/\s+/g, '') : '';
+
+  /* 使命と数字を交互に並べ、最後にキャッチで締める */
+  const msgs = [];
+  const n = Math.max(missions.length, facts.length);
+  for (let i = 0; i < n; i++) {
+    if (missions[i]) msgs.push(missions[i]);
+    if (facts[i])    msgs.push(facts[i]);
+  }
+  if (catchTxt) msgs.push(catchTxt);
+  COMPANY_MSGS = msgs;
+}
+let msgIndex = 0;
+function showCompanyMessage() {
+  if (!COMPANY_MSGS.length) return;
+  const el = document.getElementById('tp-msg');
+  if (!el) return;
+  const m = COMPANY_MSGS[msgIndex % COMPANY_MSGS.length];
+  msgIndex++;
+  el.classList.remove('is-show');
+  void el.offsetWidth; /* アニメ再発火 */
+  el.textContent = m;
+  el.classList.add('is-show');
+}
+
 /* ===== タイマー ===== */
 function maybeStartTimer() {
   if (state.timer.startMs !== null) return;
@@ -474,11 +517,14 @@ function buildStartOverlay() {
   ov.setAttribute('role', 'button');
   ov.setAttribute('tabindex', '0');
   ov.setAttribute('aria-label', 'パズルを開始');
+  const catchEl = document.querySelector('#about .about-catch');
+  const catchTxt = catchEl ? catchEl.textContent.replace(/\s+/g, '') : 'エンジニアの力で、常識を超え、未来を創る。';
   ov.innerHTML = `
     <div class="tp-start-diamonds" aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="tp-start-title">PLAY ME!</div>
     <div class="tp-start-sub">ピースをドラッグして<br>トライテックのロゴを完成させよう</div>
-    <div class="tp-start-cta">▶ タップしてスタート</div>`;
+    <div class="tp-start-cta">▶ タップしてスタート</div>
+    <div class="tp-start-catch">― ${catchTxt} ―</div>`;
   function start() {
     if (state.started) return;
     state.started = true;
@@ -573,6 +619,7 @@ function init() {
     document.body.appendChild(dragLayer);
   }
   renderBoard();
+  buildCompanyMessages();
   for (const p of PIECES) p.el = createPieceElement(p);
   const total = PIECES.reduce((s, p) => s + p.shape.length, 0);
   document.getElementById('tp-tray-summary').textContent = `${PIECES.length}個 / 計${total}マス`;
