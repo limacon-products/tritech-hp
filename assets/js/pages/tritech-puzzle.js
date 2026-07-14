@@ -63,7 +63,13 @@ const state = {
   timer: { startMs: null, elapsedSec: 0, intervalId: null },
   clearing: false,
   drag: null,               // ドラッグ中情報 {piece, offX, offY, lift, moved, fromPlacement, pointerId}
+  userPlaced: new Set(),    // 自力で置いたことのあるピースID (パーフェクト判定用)
 };
+
+/* 隠し要素: プリプレースを全て外し、全8ピースを自力で置いた場合の
+   「パーフェクトクリア」。特別メッセージと専用演出を出す */
+const PERFECT_MSG = '全8ピース自力コンプリート!\nその探究心、まさにトライテックのエンジニア気質です。';
+function isPerfect() { return state.userPlaced.size === PIECES.length; }
 
 /* ===== ユーティリティ ===== */
 function pieceById(id) { return PIECES.find(p => p.id === id); }
@@ -234,6 +240,7 @@ function showPreview(piece, row, col) {
 function tryPlace(piece, row, col) {
   if (!canPlace(piece, row, col, null)) return false;
   state.placements[piece.id] = { row, col };
+  state.userPlaced.add(piece.id);
   maybeStartTimer();
   showCompanyMessage();
   return true;
@@ -465,8 +472,13 @@ function showCompanyMessage() {
   if (!COMPANY_MSGS.length) return;
   const band = document.getElementById('tp-msg');
   const pop = getMsgPop();
-  const m = COMPANY_MSGS[Math.min(msgIndex, COMPANY_MSGS.length - 1)];
+  /* 隠し要素: この設置で全8ピース自力コンプリートが成立した場合は特別メッセージ */
+  const special = isCleared() && isPerfect();
+  const m = special
+    ? PERFECT_MSG.replace('\n', '')
+    : COMPANY_MSGS[Math.min(msgIndex, COMPANY_MSGS.length - 1)];
   msgIndex++;
+  pop.classList.toggle('is-special', special);
 
   /* 進行中の演出があれば打ち切って新しいメッセージへ */
   popTimers.forEach(clearTimeout);
@@ -535,6 +547,7 @@ function preplacePieces() {
 function resetGame() {
   if (state.clearing) exitClearMode();
   state.placements = {};
+  state.userPlaced = new Set();
   setSelected(null);
   msgIndex = 0;
   popTimers.forEach(clearTimeout); popTimers = [];
@@ -604,8 +617,8 @@ function buildCelebration(root) {
     conf.appendChild(s);
   }
   const badge = document.createElement('div');
-  badge.className = 'tp-complete-badge';
-  badge.textContent = 'COMPLETE!';
+  badge.className = 'tp-complete-badge' + (isPerfect() ? ' is-perfect' : '');
+  badge.textContent = isPerfect() ? 'PERFECT!!' : 'COMPLETE!';
 
   root.appendChild(conf);
   root.appendChild(badge);
@@ -671,6 +684,8 @@ async function runClearSequence() {
   logo.classList.add('is-visible');
   await sleep(1000);
 
+  const titleEl = msg.querySelector('.tp-clear-title');
+  if (titleEl) titleEl.textContent = isPerfect() ? 'Perfect Clear!!' : 'Puzzle Cleared!';
   msg.classList.add('is-visible');
   const replay = document.getElementById('tp-clear-replay');
   if (replay) replay.focus();

@@ -714,6 +714,27 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   50%      { transform: translate(-50%, -47%); }
 }
 
+/* パーフェクトクリア (全8ピース自力) の特別スタイル */
+#tritech-puzzle .tp-msg-pop.is-special {
+  background: linear-gradient(160deg, rgba(255, 249, 230, 0.96), rgba(251, 240, 214, 0.96));
+}
+#tritech-puzzle .tp-msg-pop.is-special .tp-msg-pop-text {
+  color: #8a5a00;
+}
+#tritech-puzzle .tp-msg-pop.is-special .tp-msg-pop-text::before {
+  content: '🏆';
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+#tritech-puzzle .tp-complete-badge.is-perfect {
+  background: linear-gradient(120deg, #E07830, #f0b429 45%, #E07830);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 0 #fff) drop-shadow(0 6px 18px rgba(240, 180, 41, 0.55));
+}
+
 /* 設置時の全面メッセージポップ (中央にドーン → 上へ着地) */
 #tritech-puzzle .tp-msg-pop {
   position: absolute;
