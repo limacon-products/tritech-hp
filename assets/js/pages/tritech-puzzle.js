@@ -63,7 +63,8 @@ const state = {
   timer: { startMs: null, elapsedSec: 0, intervalId: null },
   clearing: false,
   drag: null,               // ドラッグ中情報 {piece, offX, offY, lift, moved, fromPlacement, pointerId}
-  userPlaced: new Set(),    // 自力で置いたことのあるピースID (パーフェクト判定用)
+  userPlaced: new Set(),    // 自力で置いたことのあるピースID (累積・パーフェクト判定用)
+  placedNow: new Set(),     // いま盤面にある自力配置ピースID (メッセージ番号=このサイズ)
 };
 
 /* 隠し要素: プリプレースを全て外し、全8ピースを自力で置いた場合の
@@ -241,6 +242,7 @@ function tryPlace(piece, row, col) {
   if (!canPlace(piece, row, col, null)) return false;
   state.placements[piece.id] = { row, col };
   state.userPlaced.add(piece.id);
+  state.placedNow.add(piece.id);
   maybeStartTimer();
   showCompanyMessage();
   return true;
@@ -258,8 +260,9 @@ function afterMove() {
 function onPieceTap(piece) {
   if (state.clearing || !state.started) return;
   if (state.placements[piece.id]) {
-    /* 配置済みをタップ → トレイへ戻す */
+    /* 配置済みをタップ → トレイへ戻す (メッセージカウントも戻す) */
     delete state.placements[piece.id];
+    state.placedNow.delete(piece.id);
     afterMove();
     return;
   }
@@ -319,9 +322,11 @@ function beginDragVisual(e) {
   const gx = preRect.width  > 0 ? (d.startX - preRect.left) / preRect.width  : 0.5;
   const gy = preRect.height > 0 ? (d.startY - preRect.top)  / preRect.height : 0.5;
 
-  /* 盤面から持ち上げる場合は配置を解除してから */
+  /* 盤面から持ち上げる場合は配置を解除してから (メッセージカウントも戻す) */
   if (d.fromPlacement) {
+    d.wasUserPlaced = state.placedNow.has(piece.id);
     delete state.placements[piece.id];
+    state.placedNow.delete(piece.id);
     renderHUD();
   }
   setSelected(null);
@@ -417,6 +422,7 @@ function onDragCancel(e) {
   if (d.moved && d.fromPlacement) {
     /* 中断時は元の位置に戻す */
     state.placements[d.piece.id] = d.fromPlacement;
+    if (d.wasUserPlaced) state.placedNow.add(d.piece.id);
   }
   afterMove();
 }
@@ -453,7 +459,6 @@ function buildCompanyMessages() {
   if (catchTxt) msgs.push(catchTxt);
   COMPANY_MSGS = msgs;
 }
-let msgIndex = 0;
 let popTimers = [];
 const POP_HOLD_MS = 1500;  /* 中央に大きく表示する時間 */
 const POP_LAND_MS = 450;   /* 上へ着地するアニメ時間 */
@@ -476,12 +481,14 @@ function showCompanyMessage() {
   if (!COMPANY_MSGS.length) return;
   const band = document.getElementById('tp-msg');
   const pop = getMsgPop();
+  /* メッセージ番号 = いま盤面にある自力配置ピースの数 (1始まり)。
+     外すと数が戻るので、置き直してもメッセージがずれない */
+  const idx = Math.max(1, state.placedNow.size);
   /* 隠し要素: この設置で全8ピース自力コンプリートが成立した場合は特別メッセージ */
   const special = isCleared() && isPerfect();
   const m = special
     ? PERFECT_MSG.replace('\n', '')
-    : COMPANY_MSGS[Math.min(msgIndex, COMPANY_MSGS.length - 1)];
-  msgIndex++;
+    : COMPANY_MSGS[Math.min(idx - 1, COMPANY_MSGS.length - 1)];
   pop.classList.toggle('is-special', special);
 
   /* 進行中の演出があれば打ち切って新しいメッセージへ */
@@ -552,8 +559,8 @@ function resetGame() {
   if (state.clearing) exitClearMode();
   state.placements = {};
   state.userPlaced = new Set();
+  state.placedNow = new Set();
   setSelected(null);
-  msgIndex = 0;
   popTimers.forEach(clearTimeout); popTimers = [];
   const pop = document.getElementById('tp-msg-pop');
   if (pop) pop.classList.remove('is-pop', 'is-land');
