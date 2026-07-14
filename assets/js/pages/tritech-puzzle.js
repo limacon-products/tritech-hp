@@ -582,6 +582,39 @@ function buildStartOverlay() {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function isCleared() { return Object.keys(state.placements).length === PIECES.length; }
 
+/* ── お祝い演出: 完成した盤面の上に菱形の紙吹雪 + COMPLETE! ──
+   最後の使命メッセージ (帯) を読む時間の確保も兼ねる */
+function buildCelebration(root) {
+  const colors = ['#E07830', '#44AADB', '#2A5A9A', '#F0A66B', '#7CC4E8'];
+  const H = root.getBoundingClientRect().height;
+
+  const conf = document.createElement('div');
+  conf.className = 'tp-confetti';
+  conf.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < 44; i++) {
+    const s = document.createElement('span');
+    s.style.left = (Math.random() * 100) + '%';
+    const size = 6 + Math.random() * 8;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.background = colors[i % colors.length];
+    s.style.setProperty('--dur',   (1.8 + Math.random() * 1.8) + 's');
+    s.style.setProperty('--delay', (Math.random() * 1.8) + 's');
+    s.style.setProperty('--fall',  (H + 60) + 'px');
+    conf.appendChild(s);
+  }
+  const badge = document.createElement('div');
+  badge.className = 'tp-complete-badge';
+  badge.textContent = 'COMPLETE!';
+
+  root.appendChild(conf);
+  root.appendChild(badge);
+  return () => { conf.remove(); badge.remove(); };
+}
+function removeCelebration(root) {
+  root.querySelectorAll('.tp-confetti, .tp-complete-badge').forEach(el => el.remove());
+}
+
 async function runClearSequence() {
   if (state.clearing) return;
   state.clearing = true;
@@ -593,9 +626,21 @@ async function runClearSequence() {
   const msg = document.getElementById('tp-clear-msg');
 
   stopTimer();
+
+  /* ── フェーズ1: お祝いタイム ──
+     完成した盤面と最後の使命メッセージ (帯) を見せたまま、
+     紙吹雪 + COMPLETE! で数秒間じっくり祝う */
+  root.classList.add('tp-celebrating');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cleanupCelebration = reduced ? () => {} : buildCelebration(root);
+  await sleep(reduced ? 1500 : 4000);
+  cleanupCelebration();
+  root.classList.remove('tp-celebrating');
+  if (state.clearing !== true) return; /* お祝い中にリセットされた場合は中断 */
+
   root.classList.add('tp-clearing');
 
-  /* メッセージ帯・ポップはクリア画面では非表示 (is-show のアニメが
+  /* ここでメッセージ帯・ポップを非表示に (is-show のアニメが
      opacity 指定より優先されるため、クラスごと外して確実に消す) */
   popTimers.forEach(clearTimeout); popTimers = [];
   const bandEl = document.getElementById('tp-msg');
@@ -634,6 +679,8 @@ async function runClearSequence() {
 function exitClearMode() {
   if (!state.clearing) return;
   const root = getRoot();
+  removeCelebration(root);
+  root.classList.remove('tp-celebrating');
   const boardArea = root.querySelector('.tp-board-area');
   document.getElementById('tp-clear-tritech').classList.remove('is-visible');
   document.getElementById('tp-clear-logo').classList.remove('is-visible');

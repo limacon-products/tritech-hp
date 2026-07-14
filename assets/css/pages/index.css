@@ -666,6 +666,54 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
 #tritech-puzzle.tp-clearing .tp-msg,
 #tritech-puzzle.tp-clearing .tp-msg.is-show { animation: none; opacity: 0; transition: opacity 0.4s; }
 
+/* お祝い演出 (紙吹雪 + COMPLETE!) — クリア演出の前フェーズ */
+#tritech-puzzle.tp-celebrating .tp-piece { pointer-events: none !important; }
+#tritech-puzzle .tp-confetti {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  overflow: hidden;
+}
+#tritech-puzzle .tp-confetti span {
+  position: absolute;
+  top: -6%;
+  border-radius: 2px;
+  opacity: 0;
+  transform: rotate(45deg);
+  animation: tpConfettiFall var(--dur, 2.4s) linear var(--delay, 0s) infinite;
+}
+@keyframes tpConfettiFall {
+  0%   { opacity: 0; transform: translateY(0) rotate(45deg); }
+  8%   { opacity: 1; }
+  90%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(var(--fall, 480px)) rotate(405deg); }
+}
+#tritech-puzzle .tp-complete-badge {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  z-index: 56;
+  pointer-events: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(26px, 7.5vw, 38px);
+  letter-spacing: 3px;
+  color: var(--tp-accent);
+  text-shadow: 0 2px 0 #fff, 0 6px 18px rgba(224, 120, 48, 0.4);
+  animation: tpBadgeIn 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) both,
+             tpBadgeFloat 1.4s ease-in-out 0.55s infinite;
+}
+@keyframes tpBadgeIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.25) rotate(-6deg); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+@keyframes tpBadgeFloat {
+  0%, 100% { transform: translate(-50%, -53%); }
+  50%      { transform: translate(-50%, -47%); }
+}
+
 /* 設置時の全面メッセージポップ (中央にドーン → 上へ着地) */
 #tritech-puzzle .tp-msg-pop {
   position: absolute;
