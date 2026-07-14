@@ -663,7 +663,8 @@ body:has(a:hover) #hp-cursor-ring{width:44px;height:44px;border-color:rgba(30,14
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-#tritech-puzzle.tp-clearing .tp-msg { opacity: 0; transition: opacity 0.4s; }
+#tritech-puzzle.tp-clearing .tp-msg,
+#tritech-puzzle.tp-clearing .tp-msg.is-show { animation: none; opacity: 0; transition: opacity 0.4s; }
 
 /* 設置時の全面メッセージポップ (中央にドーン → 上へ着地) */
 #tritech-puzzle .tp-msg-pop {

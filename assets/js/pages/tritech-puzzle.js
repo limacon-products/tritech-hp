@@ -595,6 +595,14 @@ async function runClearSequence() {
   stopTimer();
   root.classList.add('tp-clearing');
 
+  /* メッセージ帯・ポップはクリア画面では非表示 (is-show のアニメが
+     opacity 指定より優先されるため、クラスごと外して確実に消す) */
+  popTimers.forEach(clearTimeout); popTimers = [];
+  const bandEl = document.getElementById('tp-msg');
+  if (bandEl) bandEl.classList.remove('is-show');
+  const popEl = document.getElementById('tp-msg-pop');
+  if (popEl) popEl.classList.remove('is-pop', 'is-land');
+
   flashEl.classList.add('tp-flash-active');
   await sleep(500);
   flashEl.classList.remove('tp-flash-active');
