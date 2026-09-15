@@ -2,15 +2,27 @@
 'use strict';
 
 /* ── AUDIO ── */
-let ac=null;
-function initAC(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
-function beep(f,d,t,v){if(!ac)return;try{const o=ac.createOscillator(),g=ac.createGain();o.type=t||'square';o.frequency.value=f;g.gain.setValueAtTime(v||.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
-const sShoot=()=>beep(800,.06,'square',.07);
-const sBoom=()=>{beep(180,.12,'sawtooth',.14);setTimeout(()=>beep(90,.18,'square',.08),30)};
-const sHit=()=>beep(400,.05,'square',.05);
-const sReveal=()=>beep(660,.1,'sine',.07);
+let ac=null,noiseBuf=null;
+function initAC(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac&&ac.state==='suspended')ac.resume()}catch(e){}}
+// f2 を渡すと周波数を f→f2 にスライド（ピュン/ドン系の表現用）
+function beep(f,d,t,v,f2){if(!ac)return;try{const o=ac.createOscillator(),g=ac.createGain();o.type=t||'square';o.frequency.setValueAtTime(f,ac.currentTime);if(f2)o.frequency.exponentialRampToValueAtTime(f2,ac.currentTime+d);g.gain.setValueAtTime(v||.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+// ホワイトノイズ（爆発・開放音の芯）: ローパスを開→閉に振って「ドシュッ」感を出す
+function noise(d,v,lp){if(!ac)return;try{
+  if(!noiseBuf){const n=ac.sampleRate;noiseBuf=ac.createBuffer(1,n,ac.sampleRate);const ch=noiseBuf.getChannelData(0);for(let i=0;i<n;i++)ch[i]=Math.random()*2-1}
+  const s=ac.createBufferSource();s.buffer=noiseBuf;
+  const fl=ac.createBiquadFilter();fl.type='lowpass';fl.frequency.setValueAtTime(lp||1800,ac.currentTime);fl.frequency.exponentialRampToValueAtTime(120,ac.currentTime+d);
+  const g=ac.createGain();g.gain.setValueAtTime(v||.2,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);
+  s.connect(fl);fl.connect(g);g.connect(ac.destination);s.start();s.stop(ac.currentTime+d)}catch(e){}}
+const sShoot=()=>beep(900,.07,'square',.05,300);
+const sBoom=()=>{noise(.35,.22,2400);beep(160,.18,'sawtooth',.12,40)};
+const sHit=()=>beep(520,.04,'square',.04,260);
+const sReveal=()=>{noise(.25,.14,3000);beep(660,.12,'sine',.08,990)};
 const sClear=()=>[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.1,'sine',.09),i*70));
 const sEnd=()=>[523,659,784,1046,1318].forEach((f,i)=>setTimeout(()=>beep(f,.15,'sine',.12),i*100));
+const sItem=()=>[880,1108,1318,1760].forEach((f,i)=>setTimeout(()=>beep(f,.09,'square',.06),i*45));
+const sCombo=n=>beep(600+Math.min(n,8)*110,.09,'triangle',.08,900+Math.min(n,8)*110);
+const sWarn=()=>beep(220,.16,'square',.05,180);
+const sBossShot=()=>beep(200,.12,'sawtooth',.06,90);
 
 /* ── CANVAS ── */
 const OV=document.getElementById('game-overlay');
@@ -96,6 +108,18 @@ let dyingTimer=0,deathX=400,deathY=500;
 let powerUp=false;
 let retryHover=-1;
 let retryBtns=[];
+// ── v2: ジュース / ゲーム性 ──
+let hiScore=0;try{hiScore=parseInt(localStorage.getItem('tt_game_hi')||'0',10)||0}catch(e){}
+let powerT=0,powerPerm=false;   // 3WAY の残フレーム / コンティニュー特典は無期限
+let combo=0,comboT=0;           // 連続開放コンボ（200f 以内に次のゾーンを開放で継続）
+let items=[];                   // 落下アイテム {x,y,vy,t:'P'|'1UP',a}
+let invT=0;                     // 復帰直後の無敵フレーム
+let stageBannerT=0;             // ステージ開始バナー残フレーム
+let playerVX=0,prevPX=0;        // 機体のバンク（傾き）用
+let stars2=[];                  // 遠景の星（パララックス）
+let warpF=0;                    // ステージクリア時のワープ演出強度
+let bossHitF=0;                 // ボス被弾フラッシュ
+let muzzleF=0;                  // マズルフラッシュ
 
 /* ══ DOM → GAME CONTENT SYNC ══
    各STAGEのコンテンツは下記の正典ソースから自動取得されます：
@@ -492,13 +516,26 @@ function getGrid(){
 
 /* ── STARS (square, fast) ── */
 function initStars(){
-  stars=[];
+  stars=[];stars2=[];
   for(let i=0;i<60;i++)stars.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()<.4?2:1,v:.4+Math.random()*1.1});
+  for(let i=0;i<40;i++)stars2.push({x:Math.random()*W,y:Math.random()*H,s:1,v:.12+Math.random()*.2});
 }
 function drawStars(){
+  const wv=1+warpF*7; // ワープ中は流れを加速し、星を線状に伸ばす
+  c.fillStyle='rgba(255,255,255,.22)';
+  stars2.forEach(s=>{s.y+=s.v*wv;if(s.y>H){s.y=0;s.x=Math.random()*W}c.fillRect(s.x,s.y,s.s,s.s)});
   c.fillStyle='rgba(255,255,255,.55)';
-  stars.forEach(s=>{s.y+=s.v;if(s.y>H){s.y=0;s.x=Math.random()*W}c.fillRect(s.x,s.y,s.s,s.s)});
+  stars.forEach(s=>{
+    s.y+=s.v*wv;if(s.y>H){s.y=0;s.x=Math.random()*W}
+    if(warpF>.05)c.fillRect(s.x,s.y-s.v*wv*1.5,s.s,s.s+s.v*wv*1.5);
+    else c.fillRect(s.x,s.y,s.s,s.s);
+  });
+  if(warpF>0)warpF=Math.max(0,warpF-.012);
 }
+
+/* ── 画面シェイク（描画全体に適用） ── */
+function beginShake(){c.save();if(shakeF>0){const k=Math.min(shakeF,12)*.5;c.translate((Math.random()*2-1)*k,(Math.random()*2-1)*k);shakeF--}}
+function endShake(){c.restore()}
 
 /* ── ボーナスワード「トライテック」 ── */
 function updateDrawBonusWords(){
@@ -545,15 +582,23 @@ function updateDrawBonusWords(){
 }
 
 /* ── PARTICLES (minimal) ── */
-function explode(x,y,col){
-  for(let i=0;i<10;i++){
-    const a=Math.random()*Math.PI*2,s=1.5+Math.random()*3.5;
+function explode(x,y,col,big){
+  const n=big?22:10;
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,s=(big?2.5:1.5)+Math.random()*(big?5:3.5);
     parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,l:1,ml:22+Math.random()*16,r:2+Math.random()*3,col});
   }
   parts.push({x,y,vx:0,vy:-2,l:1,ml:30,r:8,col:'#ffee44',sq:true});
+  parts.push({x,y,vx:0,vy:0,l:1,ml:big?26:16,r:big?90:40,col,ring:true}); // 衝撃波リング
 }
 function drawParts(){
   parts=parts.filter(p=>{
+    if(p.ring){
+      p.l-=1/p.ml;if(p.l<=0)return false;
+      c.globalAlpha=p.l*.8;c.strokeStyle=p.col;c.lineWidth=2+p.l*3;
+      c.beginPath();c.arc(p.x,p.y,p.r*(1-p.l)+4,0,Math.PI*2);c.stroke();
+      return true;
+    }
     p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.l-=1/p.ml;
     if(p.l<=0)return false;
     c.globalAlpha=p.l;c.fillStyle=p.col;
@@ -1337,8 +1382,9 @@ function initBlock(){
   const bx=(W-bw)/2;
   blk={bx,by:-bh-10,bw,bh,spd:st.spd,
     zones:st.mkZ(bw,bh).map(z=>({...z,ax:0,ay:0,aw:z.rw*bw,ah:z.rh*bh})),
-    osc:0,bossShotT:0,done:false};
-  bProj=[];
+    osc:0,bossShotT:0,pat:0,done:false};
+  bProj=[];items=[];combo=0;comboT=0;
+  stageBannerT=st.isBoss?0:110;
   document.getElementById('gstg').textContent=st.sub?st.name+' · '+st.sub:st.name;
 }
 function revOf(z){return 1-z.hp/z.mhp}
@@ -1445,6 +1491,8 @@ window.addEventListener('resize',()=>{checkOrientation()});
 
 function openGame(){
   initAC();
+  // ピクセルフォントを先読み（canvas は読込完了を待たないため、タイトルが代替フォントで出るのを防ぐ）
+  try{if(document.fonts&&document.fonts.load)document.fonts.load('12px "Press Start 2P"')}catch(e){}
   // モバイルはまずフルスクリーン+横向きロック（ユーザージェスチャー内で実行）
   enterMobileFullscreen();
   loadLogo(()=>{
@@ -1632,8 +1680,8 @@ function triggerBossExplosion(){
 /* ══ START/SHOOT/NEXT ══ */
 function startGame(){
   state='playing';HUD.classList.add('vis');
-  playerX=W/2;playerY=H-100;
-  powerUp=false;stageIdx=0;initBlock();
+  playerX=W/2;playerY=H-100;prevPX=playerX;playerVX=0;invT=0;
+  powerUp=false;powerPerm=false;powerT=0;stageIdx=0;initBlock();
   [523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.1,'sine',.09),i*65));
 }
 function shoot(){
@@ -1645,7 +1693,52 @@ function shoot(){
   } else {
     bullets.push({x:playerX,y:playerY-PH/2,vx:0});
   }
+  muzzleF=4;
   sShoot();
+}
+
+/* ゾーン開放時の共通処理: 爆発・コンボ・スコア・アイテムドロップ */
+function onZoneReveal(z,x,y,st){
+  const big=z.mhp>=8;
+  explode(x,y,st.col,big);sReveal();
+  shakeF=Math.max(shakeF,big?8:4);
+  combo=comboT>0?combo+1:1;comboT=200;
+  const gain=z.mhp*50*combo;score+=gain;updateHUD();
+  parts.push({x:z.ax+z.aw/2,y:z.ay+z.ah/2,vx:0,vy:-1.2,l:1,ml:55,r:0,col:combo>1?'#ffcc44':'#fff',sq:false,txt:'+'+gain+(combo>1?'  x'+combo:'')});
+  if(combo>1)sCombo(combo);
+  z.flashT=14;
+  const p=st.isBoss?.12:(powerUp?.08:.20);
+  if(items.length<2&&Math.random()<p){
+    const t=(lives<3&&!st.isBoss&&Math.random()<.3)?'1UP':'P';
+    items.push({x:z.ax+z.aw/2,y:z.ay+z.ah/2,vy:1.6,t,a:0});
+  }
+}
+
+/* アイテムの更新・描画（常に落下、取得判定は playing 中のみ） */
+function updateDrawItems(){
+  items=items.filter(it=>{
+    it.y+=it.vy;
+    it.a+=.06;
+    if(it.y>H+20)return false;
+    if(state==='playing'&&Math.abs(it.x-playerX)<PW*.65&&Math.abs(it.y-playerY)<PH*.65){
+      if(it.t==='P'){powerUp=true;if(!powerPerm)powerT=Math.min(powerT+720,1440)}
+      else{lives=Math.min(3,lives+1);updateHUD()}
+      sItem();
+      parts.push({x:it.x,y:it.y-8,vx:0,vy:-1.5,l:1,ml:50,r:0,col:it.t==='P'?'#ffcc44':'#ff66aa',sq:false,txt:it.t==='P'?'3WAY!':'1UP!'});
+      for(let i=0;i<8;i++){const a=Math.random()*Math.PI*2;parts.push({x:it.x,y:it.y,vx:Math.cos(a)*2,vy:Math.sin(a)*2,l:1,ml:20,r:2,col:'#fff',sq:true})}
+      return false;
+    }
+    const col=it.t==='P'?'#ffcc44':'#ff66aa';
+    c.save();c.translate(it.x+Math.sin(it.a)*3,it.y);
+    c.shadowColor=col;c.shadowBlur=12;
+    c.fillStyle='rgba(0,0,0,.72)';c.strokeStyle=col;c.lineWidth=2;
+    rr(-17,-11,34,22,6);c.fill();c.stroke();
+    c.shadowBlur=0;
+    c.font=`bold ${it.t==='P'?12:7}px "Press Start 2P",monospace`;c.fillStyle=col;c.textAlign='center';c.textBaseline='middle';
+    c.fillText(it.t,0,1);
+    c.restore();
+    return true;
+  });
 }
 function triggerCheatClear(){
   if(!blk)return;
@@ -1654,7 +1747,7 @@ function triggerCheatClear(){
   const bannerBottom=54+4+52+14;
   blk.targetY=STAGES[stageIdx].isBoss?bannerBottom:Math.max(bannerBottom,(H-blk.bh)/2+20);
   clearLocked=true;
-  state='clearing';clearPhase=0;
+  state='clearing';clearPhase=0;warpF=1;
   sClear();score+=1000;updateHUD();
   shakeF=6;
   parts.push({x:W/2,y:H/2,vx:0,vy:-2,l:1,ml:80,r:0,col:'#00ff88',sq:false,txt:'KAN!'});
@@ -1693,7 +1786,8 @@ function drawBossDefeat(){
   const PHASE2=130; // 暗転完了タイミング
 
   // 背景
-  c.fillStyle='#000510';c.fillRect(0,0,W,H);
+  beginShake();
+  c.fillStyle='#000510';c.fillRect(-12,-12,W+24,H+24);
   const bgY=(frame*1.3)%55;c.save();c.translate(0,bgY);c.drawImage(getGrid(),0,-55);c.restore();
   drawStars();
 
@@ -1749,6 +1843,7 @@ function drawBossDefeat(){
     c.restore();
   }
 
+  endShake();
   // 完了 → エンドロールへ自動遷移
   if(t>=PHASE2){
     state='ceoEnding';
@@ -1961,10 +2056,10 @@ function drawDeathAnim(){
 function buildRetryBtns(){
   const bw=Math.min(W*.62,400),bh=50,gap=12,sx=W/2-bw/2;
   retryBtns=[
-    {x:sx,y:H*.48,w:bw,h:bh,label:'▷  そのままコンティニュー',col:'#00ff88',action:()=>{powerUp=false;resumePlay()}},
-    {x:sx,y:H*.48+bh+gap,w:bw,h:bh,label:'◆  強い武器でコンティニュー',col:'#ffcc00',action:()=>{powerUp=true;resumePlay()}},
+    {x:sx,y:H*.48,w:bw,h:bh,label:'▷  そのままコンティニュー',col:'#00ff88',action:()=>{powerUp=false;powerPerm=false;powerT=0;resumePlay()}},
+    {x:sx,y:H*.48+bh+gap,w:bw,h:bh,label:'◆  強い武器でコンティニュー',col:'#ffcc00',action:()=>{powerUp=true;powerPerm=true;resumePlay()}},
     {x:sx,y:H*.48+(bh+gap)*2,w:bw,h:bh,label:'≫  このステージを強制クリア',col:'#ff8844',action:()=>{
-      powerUp=false;
+      powerUp=false;powerPerm=false;powerT=0;
       // 全ゾーンを開放してクリア演出へ（コンテンツを表示してから次へ）
       if(blk){
         blk.zones.forEach(z=>z.hp=0);
@@ -1973,7 +2068,7 @@ function buildRetryBtns(){
         const bannerBottom=54+4+52+14;
         blk.targetY=STAGES[stageIdx].isBoss?bannerBottom:Math.max(bannerBottom,(H-blk.bh)/2+20);
         clearLocked=true;
-        state='clearing';clearPhase=0;
+        state='clearing';clearPhase=0;warpF=1;
         sClear();score+=1000;updateHUD();
       }
     }},
@@ -1983,14 +2078,15 @@ function buildRetryBtns(){
 function buildGameOverBtns(){
   const bw=Math.min(W*.62,400),bh=50,gap=12,sx=W/2-bw/2;
   retryBtns=[
-    {x:sx,y:H*.52,w:bw,h:bh,label:'↺  ステージ1からやり直す',col:'#00ff88',action:()=>{powerUp=false;score=0;stageIdx=0;lives=3;updateHUD();resumePlay()}},
-    {x:sx,y:H*.52+bh+gap,w:bw,h:bh,label:'▷  続きのステージからやり直す',col:'#4d9fff',action:()=>{powerUp=false;lives=3;updateHUD();resumePlay()}},
+    {x:sx,y:H*.52,w:bw,h:bh,label:'↺  ステージ1からやり直す',col:'#00ff88',action:()=>{powerUp=false;powerPerm=false;powerT=0;score=0;stageIdx=0;lives=3;updateHUD();resumePlay()}},
+    {x:sx,y:H*.52+bh+gap,w:bw,h:bh,label:'▷  続きのステージからやり直す',col:'#4d9fff',action:()=>{powerUp=false;powerPerm=false;powerT=0;lives=3;updateHUD();resumePlay()}},
     {x:sx,y:H*.52+(bh+gap)*2,w:bw,h:bh,label:'⌂  ホームページに戻る',col:'rgba(200,220,255,.6)',action:()=>{startPortal('home')}},
   ];
 }
 function resumePlay(){
   state='playing';initBlock();parts=[];bProj=[];
-  playerX=W/2;playerY=H-100;bullets=[];
+  playerX=W/2;playerY=H-100;bullets=[];prevPX=playerX;playerVX=0;
+  invT=120; // 復帰直後は 2 秒無敵
 }
 
 /* ══ PORTAL EXIT ANIMATION ══ */
@@ -2237,8 +2333,9 @@ CV.addEventListener('mousemove',e=>{
 });
 
 function updateHUD(){
+  if(score>hiScore){hiScore=score;try{localStorage.setItem('tt_game_hi',String(hiScore))}catch(e){}}
   document.getElementById('gs').textContent=String(score).padStart(6,'0');
-  document.getElementById('gh').textContent=String(Math.max(score,0)).padStart(6,'0');
+  document.getElementById('gh').textContent=String(hiScore).padStart(6,'0');
   document.getElementById('gl').innerHTML=[...Array(3)].map((_,i)=>i<lives?'<span style="color:#00ff88">♦</span>':'<span style="color:#222">◇</span>').join(' ');
 }
 
@@ -2252,6 +2349,7 @@ function drawTitle(){
   c.textAlign='center';c.textBaseline='middle';
   c.font=`800 ${Math.min(W*.032,20)}px "Syne","Noto Sans JP",sans-serif`;c.fillStyle='rgba(255,255,255,.9)';c.fillText('株式会社トライテック',W/2,H*.67);
   c.font=`${Math.min(W*.02,13)}px "Noto Sans JP",sans-serif`;c.fillStyle='rgba(255,200,100,.6)';c.fillText('テクノロジーで、未来をつなぐ。',W/2,H*.72);
+  if(hiScore>0){c.font=`${Math.min(W*.014,9)}px "Press Start 2P",monospace`;c.fillStyle='rgba(255,204,0,.6)';c.fillText('HI SCORE  '+String(hiScore).padStart(6,'0'),W/2,H*.80)}
   if(Math.floor(frame/26)%2===0){c.font=`bold ${Math.min(W*.016,11)}px "Press Start 2P",monospace`;c.fillStyle='#00ff88';c.fillText('▶  PRESS SPACE / CLICK TO START',W/2,H-50)}
   c.font=`${Math.min(W*.012,8)}px "Press Start 2P",monospace`;c.fillStyle='rgba(0,255,136,.25)';
   c.fillText(/Mobi|Android|iPhone/i.test(navigator.userAgent)?'SLIDE TO MOVE   TAP/DRAG TO SHOOT':'← → MOVE   SPACE/CLICK SHOOT',W/2,H-28);
@@ -2507,11 +2605,25 @@ function drawEnding(){
 
 /* ══ DRAW PLAYER ══ */
 function drawPlayer(){
+  if(invT>0&&Math.floor(frame/4)%2===0)return; // 無敵中は点滅
+  const tilt=Math.max(-.28,Math.min(.28,playerVX*.045));
   c.save();
-  if(shakeF>0){c.translate(Math.random()*6-3,Math.random()*6-3);shakeF--}
-  if(logoImg&&logoOK)c.drawImage(logoImg,playerX-PW/2,playerY-PH/2,PW,PH);
-  else{c.fillStyle='#00ffcc';c.beginPath();c.moveTo(playerX,playerY-PH/2);c.lineTo(playerX-PW/2,playerY+PH/2);c.lineTo(playerX,playerY+PH/4);c.lineTo(playerX+PW/2,playerY+PH/2);c.closePath();c.fill()}
+  c.translate(playerX,playerY);c.rotate(tilt);
+  // エンジン炎（毎フレーム長さが揺らぐ）
+  const fl=PH*(.35+Math.random()*.25);
+  const g=c.createLinearGradient(0,PH/2-4,0,PH/2+fl);
+  g.addColorStop(0,'rgba(255,220,120,.9)');g.addColorStop(.5,'rgba(255,120,40,.6)');g.addColorStop(1,'rgba(255,60,0,0)');
+  c.fillStyle=g;c.beginPath();c.moveTo(-PW*.18,PH/2-6);c.lineTo(0,PH/2+fl);c.lineTo(PW*.18,PH/2-6);c.closePath();c.fill();
+  // 機体（グロー付き）
+  c.shadowColor=powerUp?'#ffcc44':'#00ffcc';c.shadowBlur=powerUp?18:10;
+  if(logoImg&&logoOK)c.drawImage(logoImg,-PW/2,-PH/2,PW,PH);
+  else{c.fillStyle='#00ffcc';c.beginPath();c.moveTo(0,-PH/2);c.lineTo(-PW/2,PH/2);c.lineTo(0,PH/4);c.lineTo(PW/2,PH/2);c.closePath();c.fill()}
+  c.shadowBlur=0;
+  // 無敵中のシールドリング
+  if(invT>0){c.strokeStyle=`rgba(0,255,204,${.3+Math.sin(frame*.4)*.2})`;c.lineWidth=2;c.beginPath();c.arc(0,0,PW*.72,0,Math.PI*2);c.stroke()}
   c.restore();
+  // 3WAY 残り時間バー（時限のときだけ）
+  if(powerUp&&!powerPerm){c.fillStyle='rgba(255,204,68,.7)';c.fillRect(playerX-20,playerY+PH/2+14,40*Math.min(1,powerT/1440),3)}
 }
 
 /* ══ MAIN LOOP ══ */
@@ -2551,11 +2663,13 @@ function loop(){
 
   /* DYING */
   if(state==='dying'){
-    c.fillStyle='#000510';c.fillRect(0,0,W,H);
+    beginShake();
+    c.fillStyle='#000510';c.fillRect(-12,-12,W+24,H+24);
     const bgY=(frame*1.3)%55;c.save();c.translate(0,bgY);c.drawImage(getGrid(),0,-55);c.restore();
     drawStars();
     if(blk){const zr={};blk.zones.forEach(z=>zr[z.id]=revOf(z));c.save();rr(blk.bx,blk.by,blk.bw,blk.bh,14);c.clip();STAGES[stageIdx].draw(blk.bx,blk.by,blk.bw,blk.bh,zr,true);c.restore()}
     drawParts();drawDeathAnim();
+    endShake();
     return;
   }
 
@@ -2580,7 +2694,8 @@ function loop(){
   }
 
   /* PLAYING / CLEAR */
-  c.fillStyle='#000510';c.fillRect(0,0,W,H);
+  beginShake();
+  c.fillStyle='#000510';c.fillRect(-12,-12,W+24,H+24);
   // pre-rendered grid
   const bgY=(frame*1.3)%55;
   c.save();c.translate(0,bgY);c.drawImage(getGrid(),0,-55);c.restore();
@@ -2588,6 +2703,14 @@ function loop(){
   updateDrawBonusWords(); // トライテック ボーナスワード
 
   const st=STAGES[stageIdx];
+
+  /* タイマー類 */
+  if(state==='playing'){
+    if(invT>0)invT--;
+    if(comboT>0){comboT--;if(comboT===0)combo=0}
+    if(powerUp&&!powerPerm){powerT--;if(powerT<=0){powerUp=false;powerT=0}}
+    if(bossHitF>0)bossHitF--;
+  }
 
   /* UPDATE BLOCK */
   if(blk&&state==='playing'){
@@ -2597,23 +2720,41 @@ function loop(){
     // update absolute zone positions
     blk.zones.forEach(z=>{z.ax=blk.bx+z.rx*blk.bw;z.ay=blk.by+z.ry*blk.bh});
 
-    // boss shoots
+    // boss shoots: 3パターンをローテーション、開放率 50% 超で発射間隔短縮
     if(st.isBoss){
       blk.bossShotT++;
-      if(blk.bossShotT>100){blk.bossShotT=0;[-W*.12,0,W*.12].forEach(ox=>{bProj.push({x:blk.bx+blk.bw/2+ox,y:blk.by+blk.bh*.5,vx:(playerX-(blk.bx+blk.bw/2+ox))*.01,vy:2.8})})}
+      const rev=1-blk.zones.reduce((s,z)=>s+z.hp,0)/blk.zones.reduce((s,z)=>s+z.mhp,0);
+      const enraged=rev>.5;
+      if(blk.bossShotT>(enraged?70:100)){
+        blk.bossShotT=0;blk.pat=(blk.pat+1)%3;
+        const cx=blk.bx+blk.bw/2,cy=blk.by+blk.bh*.5;
+        if(blk.pat===0){ // 3方向・自機狙い
+          [-W*.12,0,W*.12].forEach(ox=>bProj.push({x:cx+ox,y:cy,vx:(playerX-(cx+ox))*.01,vy:2.8,col:'#ff3355'}));
+        } else if(blk.pat===1){ // 扇状 5WAY（自機方向を中心に）
+          const base=Math.atan2(playerY-cy,playerX-cx);
+          for(let i=-2;i<=2;i++){const a=base+i*.22;bProj.push({x:cx,y:cy,vx:Math.cos(a)*3.2,vy:Math.sin(a)*3.2,col:'#ffaa22'})}
+        } else { // 下方向の弾幕（怒り時は本数増）
+          const n=enraged?10:4;
+          for(let i=0;i<n;i++){const a=Math.PI/2+(i-(n-1)/2)*(enraged?.26:.4);bProj.push({x:cx,y:cy,vx:Math.cos(a)*2.4,vy:Math.sin(a)*2.4,col:'#cc66ff'})}
+        }
+        sBossShot();
+      }
     }
 
     // bullet → zone hit
     bullets=bullets.filter(b=>{
       let hit=false;
-      let passThrough=false; // 開放済みゾーンを通過したか
       for(const z of blk.zones){
         // 開放済み（hp=0）は完全スキップ
         if(z.hp<=0) continue;
         if(b.x>z.ax&&b.x<z.ax+z.aw&&b.y>z.ay&&b.y<z.ay+z.ah){
-          z.hp=Math.max(0,z.hp-1);hit=true;
-          if(z.hp===0){explode(b.x,b.y,st.col);sReveal();score+=z.mhp*50;updateHUD()}
-          else{parts.push({x:b.x,y:b.y,vx:0,vy:-2,l:1,ml:12,r:3,col:'#fff',sq:false});sHit()}
+          z.hp=Math.max(0,z.hp-1);hit=true;z.hitT=5;
+          if(st.isBoss)bossHitF=3;
+          if(z.hp===0)onZoneReveal(z,b.x,b.y,st);
+          else{
+            for(let i=0;i<3;i++)parts.push({x:b.x,y:b.y,vx:(Math.random()-.5)*3,vy:-1-Math.random()*2,l:1,ml:12,r:2,col:'#fff',sq:true});
+            sHit();
+          }
           break;
         }
       }
@@ -2633,7 +2774,7 @@ function loop(){
         triggerBossExplosion();
       } else {
         // 通常 STAGE クリア
-        state='clearing';clearPhase=0;
+        state='clearing';clearPhase=0;warpF=1;shakeF=Math.max(shakeF,6);
         const bannerBottom=54+4+52+14;
         blk.targetY=Math.max(bannerBottom,(H-blk.bh)/2+20);
         clearLocked=true;
@@ -2645,7 +2786,7 @@ function loop(){
     const zoneBtm=blk.zones.filter(z=>z.hp>0).reduce((mx,z)=>Math.max(mx,z.ay+z.ah),0);
     if(zoneBtm>H*.92&&state==='playing'){
       lives--;updateHUD();
-      if(lives<=0){triggerDeath();state='dying';return}
+      if(lives<=0){triggerDeath();state='dying';endShake();return}
       else{triggerDeath();blk.by=-blk.bh-10;blk.zones.forEach(z=>z.hp=z.mhp)}
     }
   }
@@ -2664,46 +2805,119 @@ function loop(){
   /* DRAW BLOCK */
   if(blk){
     const zr={};blk.zones.forEach(z=>zr[z.id]=revOf(z));
-    // danger line (outside clip)
-    c.strokeStyle='rgba(255,80,80,.18)';c.lineWidth=1;c.setLineDash([6,6]);
-    c.beginPath();c.moveTo(0,H*.92);c.lineTo(W,H*.92);c.stroke();c.setLineDash([]);
+    // danger line (outside clip): ブロックが迫ると赤く脈動＋警告音
+    const zoneBtm=blk.zones.reduce((mx,z)=>Math.max(mx,z.ay+z.ah),0);
+    const near=state==='playing'?Math.max(0,Math.min(1,(zoneBtm-(H*.92-170))/170)):0;
+    if(near>0){
+      const pulse=(Math.sin(frame*.25)+1)*.5;
+      c.save();c.shadowColor='#ff3344';c.shadowBlur=8+pulse*14*near;
+      c.strokeStyle=`rgba(255,60,80,${.18+near*(.35+pulse*.4)})`;c.lineWidth=1+near*2;
+      c.beginPath();c.moveTo(0,H*.92);c.lineTo(W,H*.92);c.stroke();c.restore();
+      if(frame%30===0)sWarn();
+      if(near>.6&&Math.floor(frame/16)%2===0){
+        c.font=`bold ${Math.min(W*.014,10)}px "Press Start 2P",monospace`;c.textAlign='center';c.textBaseline='bottom';
+        c.fillStyle=`rgba(255,80,80,${.5+pulse*.4})`;c.fillText('!! DANGER !!',W/2,H*.92-6);
+      }
+    } else {
+      c.strokeStyle='rgba(255,80,80,.18)';c.lineWidth=1;c.setLineDash([6,6]);
+      c.beginPath();c.moveTo(0,H*.92);c.lineTo(W,H*.92);c.stroke();c.setLineDash([]);
+    }
     // clip all drawing to block bounds
     c.save();rr(blk.bx,blk.by,blk.bw,blk.bh,14);c.clip();
     // プレイ中は外枠非表示、クリア時は外枠表示
     const hideBg=(state==='playing'||state==='dying');
     st.draw(blk.bx,blk.by,blk.bw,blk.bh,zr,hideBg);
     c.restore();
-    // zone outlines (unrevealed only)
+    // zone outlines (unrevealed only) + 被弾ハイライト + 開放フラッシュ
     c.strokeStyle='rgba(255,255,255,.06)';c.lineWidth=1;c.setLineDash([4,4]);
     blk.zones.forEach(z=>{if(z.hp>0){rr(z.ax,z.ay,z.aw,z.ah,6);c.stroke()}});
     c.setLineDash([]);
+    blk.zones.forEach(z=>{
+      if(z.flashT>0){c.save();c.globalAlpha=z.flashT/14*.7;c.fillStyle='#fff';rr(z.ax,z.ay,z.aw,z.ah,6);c.fill();c.restore();z.flashT--}
+      else if(z.hitT>0){c.save();c.strokeStyle=`rgba(255,255,255,${z.hitT/5*.8})`;c.lineWidth=2;rr(z.ax,z.ay,z.aw,z.ah,6);c.stroke();c.restore();z.hitT--}
+    });
+    // BOSS HP バー
+    if(st.isBoss&&state==='playing'){
+      const tot=blk.zones.reduce((s,z)=>s+z.mhp,0),cur=blk.zones.reduce((s,z)=>s+z.hp,0);
+      const bw=Math.min(W*.6,520),bx=W/2-bw/2,by=54+10;
+      c.save();
+      c.fillStyle='rgba(0,0,0,.6)';rr(bx-3,by-3,bw+6,16,8);c.fill();
+      c.fillStyle=bossHitF>0?'#fff':'#ff2244';c.shadowColor='#ff2244';c.shadowBlur=10;
+      rr(bx,by,Math.max(6,bw*cur/tot),10,5);c.fill();c.shadowBlur=0;
+      c.font=`7px "Press Start 2P",monospace`;c.fillStyle='rgba(255,255,255,.85)';c.textAlign='center';c.textBaseline='middle';
+      c.fillText('BOSS',W/2,by+5.5);
+      c.restore();
+    }
   }
+
+  /* ITEMS */
+  updateDrawItems();
 
   /* BOSS PROJECTILES */
   bProj=bProj.filter(p=>{
     p.x+=p.vx;p.y+=p.vy;
     if(p.y>H+10||p.x<-10||p.x>W+10)return false;
-    c.fillStyle='#ff3355';c.beginPath();c.arc(p.x,p.y,4,0,Math.PI*2);c.fill();
-    if(Math.abs(p.x-playerX)<PW*.4&&Math.abs(p.y-playerY)<PH*.4){
+    const col=p.col||'#ff3355';
+    c.save();c.shadowColor=col;c.shadowBlur=10;
+    c.fillStyle=col;c.beginPath();c.arc(p.x,p.y,5,0,Math.PI*2);c.fill();
+    c.fillStyle='#fff';c.beginPath();c.arc(p.x,p.y,2,0,Math.PI*2);c.fill();
+    c.restore();
+    if(invT<=0&&Math.abs(p.x-playerX)<PW*.4&&Math.abs(p.y-playerY)<PH*.4){
       lives--;updateHUD();triggerDeath();return false;
     }
     return true;
   });
 
-  /* BULLETS */
-  c.fillStyle='#00ffcc';
+  /* BULLETS（トレイル＋グロー） */
+  c.save();
+  const bcol=powerUp?'#ffcc44':'#00ffcc';
   bullets=bullets.filter(b=>{
     b.y-=20;b.x+=(b.vx||0);if(b.y<-10)return false;
-    c.fillStyle=powerUp?'#ffcc44':'#00ffcc';
-    c.fillRect(b.x-2,b.y,4,13);return true;
+    const tg=c.createLinearGradient(0,b.y,0,b.y+34);
+    tg.addColorStop(0,bcol);tg.addColorStop(1,'rgba(0,0,0,0)');
+    c.shadowBlur=0;c.fillStyle=tg;c.fillRect(b.x-1.5,b.y+6,3,30);
+    c.shadowColor=bcol;c.shadowBlur=8;c.fillStyle='#fff';
+    rr(b.x-2.5,b.y-4,5,14,2.5);c.fill();
+    return true;
   });
+  c.restore();
+  if(muzzleF>0){muzzleF--;c.save();c.globalAlpha=muzzleF/4;c.fillStyle='#fff';c.beginPath();c.arc(playerX,playerY-PH/2-4,5+muzzleF*2,0,Math.PI*2);c.fill();c.restore()}
 
   /* PLAYER MOVE */
   if(keys['ArrowLeft']||keys['KeyA'])playerX=Math.max(PW/2,playerX-PS);
   if(keys['ArrowRight']||keys['KeyD'])playerX=Math.min(W-PW/2,playerX+PS);
   if(mouseX!==null)playerX+=(mouseX-playerX)*.1;
-  if(keys['Space']&&state==='playing')shoot();
+  if((keys['Space']||touchActive)&&state==='playing')shoot(); // タッチは押しっぱなしで連射
+  playerVX=playerVX*.8+(playerX-prevPX)*.2;prevPX=playerX;
+  // エンジン排気パーティクル
+  if(state==='playing'&&frame%2===0)parts.push({x:playerX+(Math.random()-.5)*8,y:playerY+PH/2,vx:(Math.random()-.5)*.6,vy:2+Math.random()*2,l:1,ml:14,r:2,col:Math.random()<.5?'#ff9933':'#ffdd66',sq:true});
   drawPlayer();drawParts();
+
+  /* COMBO 表示 */
+  if(combo>1&&comboT>0&&state==='playing'){
+    c.save();c.textAlign='left';c.textBaseline='bottom';
+    c.font=`bold ${Math.min(W*.02,14)}px "Press Start 2P",monospace`;
+    c.fillStyle='#ffcc44';c.shadowColor='#ffcc44';c.shadowBlur=8;c.fillText('COMBO x'+combo,24,H-28);
+    c.shadowBlur=0;c.fillStyle='rgba(255,204,68,.5)';c.fillRect(24,H-22,140*comboT/200,3);
+    c.restore();
+  }
+
+  /* STAGE 開始バナー（プレイを止めずに 110f 表示） */
+  if(stageBannerT>0&&state==='playing'){
+    stageBannerT--;
+    const t=110-stageBannerT;
+    const a=t<15?t/15:(stageBannerT<25?stageBannerT/25:1);
+    const slide=t<15?(1-t/15)*W*.25:0;
+    c.save();c.globalAlpha=a;
+    c.fillStyle='rgba(0,0,0,.62)';c.fillRect(0,H*.36,W,H*.16);
+    c.strokeStyle=st.col;c.lineWidth=2;c.beginPath();c.moveTo(0,H*.36);c.lineTo(W,H*.36);c.moveTo(0,H*.52);c.lineTo(W,H*.52);c.stroke();
+    c.textAlign='center';c.textBaseline='middle';
+    c.font=`bold ${Math.min(W*.035,26)}px "Press Start 2P",monospace`;c.fillStyle=st.col;c.shadowColor=st.col;c.shadowBlur=14;
+    c.fillText(st.name,W/2+slide,H*.42);c.shadowBlur=0;
+    c.font=`${Math.min(W*.016,11)}px "Press Start 2P",monospace`;c.fillStyle='rgba(255,255,255,.85)';
+    c.fillText(st.sub||'',W/2-slide,H*.485);
+    c.restore();
+  }
 
   /* CLEARING: フラッシュ描画（外枠のみグロー） */
   if(state==='clearing'&&blk){
@@ -2729,6 +2943,7 @@ function loop(){
     const rem=blk.zones.filter(z=>z.hp>0).length,tot=blk.zones.length;
     c.font=`.38rem "Press Start 2P",monospace`;c.textAlign='center';c.fillStyle='rgba(0,255,136,.2)';c.fillText(`ZONES ${tot-rem}/${tot}`,W/2,H-12);
   }
+  endShake();
 }
 
 window.addEventListener('resize',()=>{resize();gridDirty=true});
