@@ -2,8 +2,8 @@
 
 |  項目  |  内容  |
 | --- | --- |
-| バージョン | 1.2.0 |
-| 最終更新 | 2026-07-12 |
+| バージョン | 1.3.0 |
+| 最終更新 | 2026-09-16 |
 | 本番URL | https://tritechinc.jp |
 | リポジトリ | https://github.com/limacon-products/tritech-hp (Public) |
 | ライセンス | 株式会社トライテック 所有 (All Rights Reserved、`LICENSE` 参照) |
@@ -199,7 +199,7 @@ tritech-hp/
 
 #### `index.html`
 - Hero (Geometric Motion 背景アニメ)
-- About (会社紹介の入口・ブロックパズル `tritech-puzzle.js` 内蔵)
+- About (会社紹介の入口・**ブロックパズル**内蔵 — 詳細は下記「ブロックパズル仕様」)
 - Service (3事業の入口)
 - Data (数字で見るトライテック + 棒グラフ + ドーナツチャート)
 - **ci-mirror セクション×3**: `data-source` 属性で他ページから fetch+inject
@@ -208,6 +208,38 @@ tritech-hp/
   - `#sns-mirror` ← `/media/#sec-sns` (SNSカード)
 - Transition Zone (`#transition-zone`・エンジニア向け導入)
 - Recruit Section (`#sec-slogan` `#sec-reason` `#sec-reward` `#sec-choice` `#sec-team` `#sec-benefits` `#sec-voices`)
+
+##### ブロックパズル仕様 (`#tritech-puzzle`・2026-07 大改修)
+
+遊びながら会社の使命を読ませる仕掛け (スマホでは About 本文が画面外になるため、
+メッセージをゲーム内に運ぶ設計)。実装: `assets/js/pages/tritech-puzzle.js`
+
+- **構成**: 8ピース (A〜H) で 8×8 盤面のロゴシルエットを埋める。
+  初期状態で**4ピースをランダムにプリプレース** = ユーザーが置くのは通常4個
+- **スタートゲート**: 「PLAY ME!」オーバーレイをタップ/クリック/Enter するまで開始しない
+- **操作** (両対応):
+  - ドラッグ&ドロップ — Pointer Events でマウス/タッチ共通。掴んだ位置を保持、
+    タッチは指で隠れないよう34px上にリフト、設置先をリアルタイムプレビュー
+  - タップ選択 → タップ配置 (移動6px未満はタップ判定・キーボード補助兼用)
+  - ドラッグレイヤー (`#tp-drag-layer`) は祖先 transform の影響を避けるため
+    JS が body 直下へ移動する (スタイルも `#tp-drag-layer` スコープに別途定義)
+- **設置メッセージ演出**: ピースを置くたびに全面ポップ (1.5秒) → 上部の帯へ着地して残留
+  - メッセージ番号 = 「いま盤面にある自力配置ピース数」(外すと巻き戻る)
+  - 1〜4個目: 使命の見出し → 使命3項目 / 5個目以降: キャッチコピー
+  - 文言は本文 (`#about` の使命リスト・キャッチ) から**自動取得** (ダブルメンテなし)
+  - **同じ文言は1プレイ1回まで** (重複ポップ抑止)。メッセージ無しの最終設置は
+    待ち時間なしで即お祝いへ
+- **クリア演出** (すべてウィジェット内 absolute で完結・ページ他要素に被らない):
+  お祝いフェーズ約4秒 (菱形紙吹雪44個 + COMPLETE!・最後のメッセージは表示継続)
+  → フラッシュ → 盤面が中央へ縮小 → TRITECH → ロゴ → Puzzle Cleared!
+  クリア画面の「ヒント」ボタンはヘッダーのロゴを4秒間強調 (隠しゲームへの誘導)
+- **隠し仕様「パーフェクトクリア」**: プリプレースを全て外し、全8ピースを
+  自力で置いてクリアすると発動
+  - 判定: 「自力で置いたことのあるピースID」の累積集合 = 8種
+  - 布石: 盤面が**全て自力配置** かつ 残り2個/1個の時だけ専用メッセージ2種
+  - 発動時: 金色の特別ポップ / PERFECT!! (金グラデ) / タイトル Perfect Clear!! /
+    **採用ページへの金色ボタン** (`#tp-clear-recruit`・通常クリアでは非表示)
+- 開発用: `window.tp.debugSolve()` で即クリア (パーフェクト判定は付かない)
 - Contact (`#contact`・service ページへの注入元)
 
 #### `recruit/index.html` (独自テーマの黒背景デザイン)
@@ -413,7 +445,7 @@ font-family: 'JetBrains Mono', monospace;
 | `contact-embed.js` | `data-embed="contact"` を `/` (index.html) の `#contact` で置換 |
 | `coverage-tabs.js` | Coverage タブ切替 (ホバー/タップ + WAI-ARIA タブパターン: 矢印キー/Home/End/Enter対応) |
 | `pages/index.js` | ci-mirror 注入 / データチャート / カウントアップ / 社員の声カード生成 (voices.json) |
-| `pages/tritech-puzzle.js` | About セクション内ブロックパズル |
+| `pages/tritech-puzzle.js` | About内ブロックパズル (スタートゲート / D&D+タップ操作 / 設置メッセージ演出 / お祝い / 隠し仕様パーフェクトクリア — §4.2「ブロックパズル仕様」参照) |
 | `game-loader.js` | ロゴクリック時に game.css/ゲームDOM/game.js を動的ロード (通常閲覧のJS負担を排除) |
 | `game.js` | 隠しシューティングゲーム本体 (約2750行・5ステージ・遅延ロード) |
 
@@ -743,6 +775,7 @@ git push -f origin main
 |---|---|---|
 | 2026-05-17 | 1.0.0 | 初版 |
 | 2026-05-18 | 1.0.1 | 軽微修正 |
+| 2026-09-16 | 1.3.0 | ブロックパズル大改修を反映: PLAY ME! スタートゲート / ドラッグ&ドロップ操作 (タップ方式併存) / 設置ごとの会社メッセージ演出 (本文自動取得・盤面状況で出し分け・重複抑止) / 約4秒のお祝いフェーズ (紙吹雪+COMPLETE!) / クリア演出のウィジェット内完結 (スマホの被り解消) / 隠し仕様「パーフェクトクリア」+採用ページ導線 / ヒントボタン (ロゴ強調・スクロールなし) |
 | 2026-07-12 | 1.2.0 | 大規模改善スプリントを反映: サイトデータのJSON化 (`assets/data/` voices/stats/projects + 編集ガイド、旧 fetch+eval 全廃) / 顔写真アバター対応 (`avatarImage`) / game.js 遅延ロード化 / 画像最適化 (12MB→4.7MB) / カスタム404 / JSON-LD / OGP専用画像 / reCAPTCHA遅延読込 / h1整理 / 日本語見出しの Noto 先頭化 / スマホのタップバースト / キーボード操作対応 (WAI-ARIA) / コントラスト改善 / ヒーローの reveal-auto 化 / フォントウェイト削減 — Lighthouse: A11y・BP・SEO 全ページ100、Perf 95 (実速度) 達成 |
 | 2026-07-11 | 1.1.0 | 現状反映: クリーンURL化 (`{page}/index.html` 構成) / `media`・`security-policy` ページ追加 / ヘッダ・フッタのメニュー更新 (メディア・SNSリンク・セキュリティ方針) / ci-mirror 機構 / お問い合わせを Microsoft Graph API 経由に移行 + reCAPTCHA v3 導入 / GA4・sitemap.xml・robots.txt 設置 / `.dev-server.js` 追加 / README.md も同時更新 / privacy-policy のゲームブロック重複を修正 |
 
