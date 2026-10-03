@@ -2806,7 +2806,7 @@ function loop(){
   if(blk){
     const zr={};blk.zones.forEach(z=>zr[z.id]=revOf(z));
     // danger line (outside clip): ブロックが迫ると赤く脈動＋警告音
-    const zoneBtm=blk.zones.reduce((mx,z)=>Math.max(mx,z.ay+z.ah),0);
+    const zoneBtm=blk.zones.filter(z=>z.hp>0).reduce((mx,z)=>Math.max(mx,z.ay+z.ah),0);
     const near=state==='playing'?Math.max(0,Math.min(1,(zoneBtm-(H*.92-170))/170)):0;
     if(near>0){
       const pulse=(Math.sin(frame*.25)+1)*.5;
@@ -2836,6 +2836,22 @@ function loop(){
       if(z.flashT>0){c.save();c.globalAlpha=z.flashT/14*.7;c.fillStyle='#fff';rr(z.ax,z.ay,z.aw,z.ah,6);c.fill();c.restore();z.flashT--}
       else if(z.hitT>0){c.save();c.strokeStyle=`rgba(255,255,255,${z.hitT/5*.8})`;c.lineWidth=2;rr(z.ax,z.ay,z.aw,z.ah,6);c.stroke();c.restore();z.hitT--}
     });
+    // ロックオン: 残り 2 ゾーン以下になったら、未開放ゾーンをステージ色で点滅させ左右に矢印
+    const remZ=blk.zones.filter(z=>z.hp>0);
+    if(state==='playing'&&!st.isBoss&&remZ.length<=2){
+      const pulse=(Math.sin(frame*.2)+1)*.5;
+      c.save();
+      remZ.forEach(z=>{
+        c.strokeStyle=st.col;c.lineWidth=2+pulse*2;c.shadowColor=st.col;c.shadowBlur=8+pulse*14;
+        c.globalAlpha=.55+pulse*.45;rr(z.ax,z.ay,z.aw,z.ah,6);c.stroke();
+        c.shadowBlur=0;c.globalAlpha=1;
+        const my=z.ay+z.ah/2,bob=pulse*6;
+        c.font=`bold ${Math.min(W*.016,12)}px "Press Start 2P",monospace`;c.fillStyle=st.col;c.textBaseline='middle';
+        c.textAlign='right';c.fillText('▶',z.ax-8-bob,my);
+        c.textAlign='left';c.fillText('◀',z.ax+z.aw+8+bob,my);
+      });
+      c.restore();
+    }
     // BOSS HP バー
     if(st.isBoss&&state==='playing'){
       const tot=blk.zones.reduce((s,z)=>s+z.mhp,0),cur=blk.zones.reduce((s,z)=>s+z.hp,0);
