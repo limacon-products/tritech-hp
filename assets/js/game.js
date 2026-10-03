@@ -423,29 +423,6 @@ function extractContent(){
       if(noteEl)gc.r.note=txt(noteEl);
     }
 
-    // ── (旧) STAGE 5: #sec-voices (社員の声) - 現在は未使用 ──
-    const voiceSec=doc.querySelector('#sec-voices');
-    if(voiceSec){
-      const cards=[...voiceSec.querySelectorAll('.voice-card')].slice(0,5);
-      if(cards.length){
-        gc.mem.list=cards.map(c=>{
-          const av=c.querySelector('.voice-avatar');
-          let col='#888888';
-          if(av){
-            const m=(av.getAttribute('style')||'').match(/background\s*:\s*([^;]+)/i);
-            if(m)col=m[1].trim();
-          }
-          return {
-            init:txt(av).charAt(0)||'?',
-            name:txt(c.querySelector('.voice-name')),
-            role:txt(c.querySelector('.voice-role')).replace(/\s+/g,' '),
-            text:txt(c.querySelector('.voice-catch')),
-            col
-          };
-        });
-      }
-    }
-
     // ── BOSS: #sec-ceo (代表メッセージ) ──
     const ceoSec=doc.querySelector('#sec-ceo');
     if(ceoSec){
@@ -2664,8 +2641,8 @@ function loop(){
       }
     }
 
-    // 最下ゾーンの底辺が危険ラインを超えたらダメージ（外枠ではなく内側ゾーン基準）
-    const zoneBtm=blk.zones.reduce((mx,z)=>Math.max(mx,z.ay+z.ah),0);
+    // 未開放ゾーンのうち最下の底辺が危険ラインを超えたらダメージ（開放済みの部分は通過してよい）
+    const zoneBtm=blk.zones.filter(z=>z.hp>0).reduce((mx,z)=>Math.max(mx,z.ay+z.ah),0);
     if(zoneBtm>H*.92&&state==='playing'){
       lives--;updateHUD();
       if(lives<=0){triggerDeath();state='dying';return}
