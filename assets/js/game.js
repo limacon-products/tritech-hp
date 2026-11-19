@@ -84,6 +84,8 @@ let playerX=400,playerY=500;
 const PW=60,PH=60,PS=5;
 let bullets=[],parts=[],stars=[],bProj=[];
 let keys={},mouseX=null,lastShot=0;
+let mouseY=null,mouseSeen=false,lastTouchAt=0; // エンディングの機体カーソル用 (マウス操作のときだけ表示)
+let morphT=0,morphSX=0,morphSY=0;                // 退出演出 (機体 → ロゴ) の経過フレームと開始位置
 let logoImg=null,logoOK=false;
 // CEO 写真（BOSS で表示）
 let ceoPhotoImg=null,ceoPhotoOK=false,ceoPhotoLoadingSrc=null;
@@ -1548,7 +1550,7 @@ bindNavLogoGameBtn();
 document.addEventListener('partials:loaded',bindNavLogoGameBtn);
 document.getElementById('gesc').addEventListener('click',()=>{
   // ESC ボタンも ESC キーと同じくポータルアニメーションで離脱
-  if(state!=='portal'&&state!=='intro')startPortal('home');
+  if(state!=='portal'&&state!=='portalMorph'&&state!=='intro')startPortal('home');
 });
 
 /* ══ INPUT ══ */
@@ -1558,7 +1560,7 @@ document.addEventListener('keydown',e=>{
   if(e.code==='Escape'&&OV.classList.contains('active')){
     // ポータルアニメーションでホームへ離脱（Join Us / ホームボタンと同じ挙動）
     // すでにポータル中・イントロ中は無視
-    if(state!=='portal'&&state!=='intro')startPortal('home');
+    if(state!=='portal'&&state!=='portalMorph'&&state!=='intro')startPortal('home');
     return;
   }
   if(e.code==='KeyH'&&(state==='clear'||state==='retry'||state==='gameover')){window.scrollTo(0,0);closeGame();return}
@@ -1601,7 +1603,7 @@ CV.addEventListener('click',e=>{
 let touchActive=false;
 CV.addEventListener('touchstart',e=>{
   initAC();
-  touchActive=true;
+  touchActive=true;mouseSeen=false;lastTouchAt=performance.now(); // タッチ操作中は機体カーソルを出さない
   const r=CV.getBoundingClientRect();
   const t=e.touches[0];
   // 表示座標 → 仮想座標
@@ -2091,9 +2093,77 @@ function resumePlay(){
 }
 
 /* ══ PORTAL EXIT ANIMATION ══ */
+/* エンディング中の機体カーソル: マウスを追って機体を描く。描いたら true */
+function drawShipCursor(hot){
+  if(!mouseSeen||mouseX===null||mouseY===null)return false;
+  const nx=playerX+(mouseX-playerX)*.45;
+  playerVX=nx-playerX;playerX=nx;
+  playerY+=(mouseY-playerY)*.45;
+  invT=0;
+  drawPlayer(hot);
+  return true;
+}
 function startPortal(dest){
-  portalDest=dest;portalTimer=0;state='portal';
+  portalDest=dest;
+  // 機体が画面にいる (またはエンディング) ときは、先に「機体 → ロゴ」へ戻す演出を挟む
+  const shipShown=state==='playing'||state==='clearing'||state==='clear'||((state==='ending'||state==='ceoEnding')&&mouseSeen);
+  const noShip=state==='ending'||state==='ceoEnding'||state==='retry'||state==='gameover';
+  if(shipShown||noShip){
+    // 機体が見えていなければ、画面の下から戻ってくる
+    morphSX=shipShown?playerX:W/2;morphSY=shipShown?playerY:H+PH;
+    morphT=0;state='portalMorph';
+    playerVX=0;invT=0;bullets=[];bProj=[];
+    beep(880,.08,'sine',.09);setTimeout(()=>beep(1100,.08,'sine',.08),80);
+    return;
+  }
+  portalTimer=0;state='portal';
   beep(880,.08,'sine',.09);setTimeout(()=>beep(1100,.08,'sine',.08),80);setTimeout(()=>beep(1400,.1,'sine',.07),160);
+}
+/* ══ PORTAL MORPH（発進演出の逆: 機体が中央へ戻り、ロゴに変形 → そのまま扉の演出へ） ══
+   0〜26f   帰還: 機体が今の位置から、扉演出のロゴ位置 (W/2, H*.3) へ飛ぶ
+   26〜48f  変形: 機体がロゴのサイズ・縦横比へ広がる。26f で閃光と衝撃波
+   48〜56f  ロゴのまま静止 → drawPortalExit に引き継ぐ */
+function drawPortalMorph(){
+  morphT++;
+  const t=morphT,TOTAL=56,tx=W/2,ty=H*.3;
+  // 前の画面を残像にしながら暗くしていく
+  c.fillStyle='rgba(0,0,0,.2)';c.fillRect(0,0,W,H);
+  drawStars();
+  const lw=Math.min(W*.2,130),lh=lw*((logoImg&&logoImg.naturalHeight/logoImg.naturalWidth)||.38);
+  if(t<=26){
+    const p=t/26,e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    const nx=morphSX+(tx-morphSX)*e;
+    playerVX=nx-playerX;playerX=nx;playerY=morphSY+(ty-morphSY)*e;
+    drawPlayer();
+    if(t===26){explode(tx,ty,'#ffcc44',true);noise(.25,.12);beep(1500,.32,'square',.06,520)}
+  }else{
+    const mp=Math.min(1,(t-26)/22),m=mp<.5?4*mp*mp*mp:1-Math.pow(-2*mp+2,3)/2;
+    const w=PW+(lw-PW)*m,h=PH+(lh-PH)*m;
+    c.save();c.translate(tx,ty);
+    c.shadowColor=m<.6?'#00ffcc':'#ffcc44';c.shadowBlur=30*(1-m)+10;
+    if(logoImg&&logoOK)c.drawImage(logoImg,-w/2,-h/2,w,h);
+    else{c.fillStyle='#00ffcc';c.fillRect(-w/2,-h/2,w,h)}
+    c.shadowBlur=0;
+    if(mp<1){c.globalAlpha=(1-m)*.8;c.strokeStyle='#ffcc44';c.lineWidth=2;c.strokeRect(-w/2-8,-h/2-8,w+16,h+16)}
+    c.restore();
+    // 変形中は光の粒がロゴから外へ散る (発進時の「集まる」の逆)
+    if(mp<.8&&t%2===0){
+      const a=Math.random()*Math.PI*2;
+      parts.push({x:tx,y:ty,vx:Math.cos(a)*5,vy:Math.sin(a)*5-1,l:1,ml:16,r:2+Math.random()*2,col:Math.random()<.5?'#00ffcc':'#ffcc44'});
+    }
+  }
+  // 変形開始の閃光 (22〜38f)
+  if(t>22&&t<38){
+    const fp=(t-22)/16,fa=fp<.3?fp/.3:1-(fp-.3)/.7;
+    const g=c.createRadialGradient(tx,ty,0,tx,ty,W*.4);
+    g.addColorStop(0,`rgba(255,255,255,${fa*.85})`);g.addColorStop(.4,`rgba(255,204,68,${fa*.3})`);g.addColorStop(1,'rgba(255,204,68,0)');
+    c.fillStyle=g;c.fillRect(0,0,W,H);
+  }
+  if(t>=TOTAL){
+    // 扉の演出へ。ロゴはすでに所定位置にいるので、冒頭の待ち時間を少し飛ばす
+    portalTimer=15;state='portal';
+    beep(1400,.1,'sine',.07);
+  }
 }
 function drawPortalExit(){
   portalTimer++;
@@ -2397,6 +2467,8 @@ CV.addEventListener('mousemove',e=>{
   // 表示座標 → 仮想座標
   mouseX=(e.clientX-r.left)*(VIRTUAL_W/r.width);
   const my=(e.clientY-r.top)*(VIRTUAL_H/r.height);
+  mouseY=my;
+  if(performance.now()-lastTouchAt>800)mouseSeen=true; // タップ直後の合成 mousemove は無視
   if(state==='retry'||state==='gameover'){
     retryHover=retryBtns.findIndex(b=>mouseX>b.x&&mouseX<b.x+b.w&&my>b.y&&my<b.y+b.h);
   } else if(state==='ending'){
@@ -2476,7 +2548,8 @@ function buildEndingBtns(){
 }
 
 function drawEnding(){
-  c.fillStyle='rgba(0,0,0,.04)';c.fillRect(0,0,W,H);drawStars();
+  // 最初の 70f は前の画面を残像にしてフェード、その後は毎フレーム消去 (機体カーソルの残像を残さない)
+  c.fillStyle=endTimer>70?'#000':'rgba(0,0,0,.04)';c.fillRect(0,0,W,H);drawStars();
   const a=Math.min(1,endTimer/40);
   c.save();c.globalAlpha=a;
   const ceo=gc.ceo||{};
@@ -2679,7 +2752,7 @@ function drawEnding(){
 }
 
 /* ══ DRAW PLAYER ══ */
-function drawPlayer(){
+function drawPlayer(hot){
   if(invT>0&&Math.floor(frame/4)%2===0)return; // 無敵中は点滅
   const tilt=Math.max(-.28,Math.min(.28,playerVX*.045));
   c.save();
@@ -2690,7 +2763,7 @@ function drawPlayer(){
   g.addColorStop(0,'rgba(255,220,120,.9)');g.addColorStop(.5,'rgba(255,120,40,.6)');g.addColorStop(1,'rgba(255,60,0,0)');
   c.fillStyle=g;c.beginPath();c.moveTo(-PW*.18,PH/2-6);c.lineTo(0,PH/2+fl);c.lineTo(PW*.18,PH/2-6);c.closePath();c.fill();
   // 機体（グロー付き）
-  c.shadowColor=powerUp?'#ffcc44':'#00ffcc';c.shadowBlur=powerUp?18:10;
+  c.shadowColor=(powerUp||hot)?'#ffcc44':'#00ffcc';c.shadowBlur=hot?24:(powerUp?18:10);
   if(logoImg&&logoOK)c.drawImage(logoImg,-PW/2,-PH/2,PW,PH);
   else{c.fillStyle='#00ffcc';c.beginPath();c.moveTo(0,-PH/2);c.lineTo(-PW/2,PH/2);c.lineTo(0,PH/4);c.lineTo(PW/2,PH/2);c.closePath();c.fill()}
   c.shadowBlur=0;
@@ -2698,7 +2771,7 @@ function drawPlayer(){
   if(invT>0){c.strokeStyle=`rgba(0,255,204,${.3+Math.sin(frame*.4)*.2})`;c.lineWidth=2;c.beginPath();c.arc(0,0,PW*.72,0,Math.PI*2);c.stroke()}
   c.restore();
   // 3WAY 残り時間バー（時限のときだけ）
-  if(powerUp&&!powerPerm){c.fillStyle='rgba(255,204,68,.7)';c.fillRect(playerX-20,playerY+PH/2+14,40*Math.min(1,powerT/1440),3)}
+  if(powerUp&&!powerPerm&&state==='playing'){c.fillStyle='rgba(255,204,68,.7)';c.fillRect(playerX-20,playerY+PH/2+14,40*Math.min(1,powerT/1440),3)}
 }
 
 /* ══ MAIN LOOP ══ */
@@ -2716,6 +2789,9 @@ function loop(){
   /* LAUNCH: タイトルのロゴが機体に変形して発進 */
   if(state==='launch'){drawLaunch();drawParts();return}
 
+  /* PORTAL MORPH: 退出時、機体が中央へ飛んでロゴに戻る (このあと PORTAL EXIT へ) */
+  if(state==='portalMorph'){drawPortalMorph();drawParts();return}
+
   /* PORTAL EXIT */
   if(state==='portal'){drawPortalExit();drawParts();return}
 
@@ -2728,13 +2804,15 @@ function loop(){
   /* CEO ENDING ─ BOSS クリア後の代表メッセージスクロール */
   if(state==='ceoEnding'){
     drawCeoEnding();drawParts();
-    CV.style.cursor='default';
+    CV.style.cursor=drawShipCursor(false)?'none':'default';
     return;
   }
 
   /* ENDING */
   if(state==='ending'){endTimer++;drawEnding();drawParts();
-    if(retryHover!==0)CV.style.cursor='default';
+    // マウス操作なら矢印の代わりに機体をカーソルにする (ボタンに重なると金色に光る)
+    if(drawShipCursor(retryHover>=0))CV.style.cursor='none';
+    else if(retryHover!==0)CV.style.cursor='default';
     return}
 
   CV.style.cursor='none';

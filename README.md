@@ -25,7 +25,7 @@
 | `/` | トップページ (Geometric Motion ヒーロー) |
 | `/about-detail/` | 会社情報・代表メッセージ・アクセス |
 | `/service-list/` | 事業一覧 |
-| `/service-ses/` | SES事業 (Coverage タブ × 5) |
+| `/service-ses/` | SES事業 (Coverage タブ × 6) |
 | `/service-quality/` | 品質保証事業 (Coverage タブ × 4) |
 | `/service-dx/` | DX支援事業 (Coverage タブ × 4) |
 | `/recruit/` | 採用情報 (社員の声・案件・1日の流れ等) |
