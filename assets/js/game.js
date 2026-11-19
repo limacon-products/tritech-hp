@@ -79,6 +79,7 @@ let bonusWords=[],bonusSpawnTimer=0;
 // ── ポータル退場アニメーション ──
 let portalTimer=0,portalDest=null;
 let introTimer=0; // ゲーム開始イントロ
+let launchT=0;    // 発進演出 (タイトルのロゴ → 機体へ変形) の経過フレーム
 let playerX=400,playerY=500;
 const PW=60,PH=60,PS=5;
 let bullets=[],parts=[],stars=[],bProj=[];
@@ -1628,8 +1629,8 @@ CV.addEventListener('touchend',()=>{
   touchActive=false;
 },{passive:true});
 function onAct(){
-  if(state==='idle')startGame();
-  else if(state==='intro'){} // アニメーション中は入力無視
+  if(state==='idle')beginLaunch();
+  else if(state==='intro'||state==='launch'){} // アニメーション中は入力無視
   else if(state==='playing')shoot();
   else if(state==='clear'&&clearTimer>150)nextStage();
   else if(state==='clearing'){}
@@ -2235,6 +2236,80 @@ function drawIntro(){
   if(t>=TOTAL){state='idle';introTimer=0;}
 }
 
+/* ══ LAUNCH（スタート操作 → 中央のロゴが機体に変形 → 定位置へ降りてゲーム開始） ══
+   0〜20f   チャージ: タイトル文字が消え、ロゴが震えながら光を集める
+   20〜45f  変形: ロゴが機体のサイズ・縦横比 (PW×PH) へ縮む。45f で閃光と衝撃波
+   45〜95f  発進: エンジン点火した機体が定位置 (H-100) へ。背景がプレイ画面に切り替わる */
+function beginLaunch(){
+  state='launch';launchT=0;
+  playerX=W/2;playerY=H*.46;prevPX=playerX;playerVX=0;invT=0;powerUp=false;
+  beep(180,.42,'sawtooth',.05,900); // チャージ音 (音程が上がる)
+}
+function drawLaunch(){
+  launchT++;
+  const t=launchT,TOTAL=95,cx=W/2,cy=H*.46;
+  const fly=t>45?Math.min(1,(t-45)/50):0;
+  const flyE=fly<.5?4*fly*fly*fly:1-Math.pow(-2*fly+2,3)/2; // easeInOutCubic
+  // 背景: タイトルの地色 → プレイ画面 (グリッド) へ
+  c.fillStyle='#08040e';c.fillRect(0,0,W,H);
+  if(fly>0){
+    c.save();c.globalAlpha=flyE;
+    c.fillStyle='#000510';c.fillRect(0,0,W,H);
+    const bgY=(frame*1.3)%55;c.translate(0,bgY);c.drawImage(getGrid(),0,-55);
+    c.restore();
+  }
+  drawStars();
+  // タイトル文字はチャージ中にフェードアウト
+  if(t<20){
+    c.save();c.globalAlpha=1-t/20;c.textAlign='center';c.textBaseline='middle';
+    c.font=`800 ${Math.min(W*.032,20)}px "Syne","Noto Sans JP",sans-serif`;c.fillStyle='rgba(255,255,255,.9)';c.fillText('株式会社トライテック',W/2,H*.67);
+    c.font=`${Math.min(W*.02,13)}px "Noto Sans JP",sans-serif`;c.fillStyle='rgba(255,200,100,.6)';c.fillText('テクノロジーで、未来をつなぐ。',W/2,H*.72);
+    c.restore();
+  }
+  if(t<=45){
+    const lw=Math.min(W*.28,190),lh=lw*((logoImg&&logoImg.naturalHeight/logoImg.naturalWidth)||.38);
+    const charge=Math.min(1,t/20);
+    const mp=Math.max(0,Math.min(1,(t-20)/25));
+    const m=mp<.5?4*mp*mp*mp:1-Math.pow(-2*mp+2,3)/2;
+    // チャージ: 光の粒が外側からロゴへ集まる
+    if(t<34&&t%2===0){
+      const a=Math.random()*Math.PI*2,rad=120+Math.random()*60;
+      parts.push({x:cx+Math.cos(a)*rad,y:cy+Math.sin(a)*rad,vx:-Math.cos(a)*rad/14,vy:-Math.sin(a)*rad/14-1,l:1,ml:14,r:2+Math.random()*2,col:Math.random()<.5?'#00ffcc':'#ffcc44'});
+    }
+    const w=lw+(PW-lw)*m,h=lh+(PH-lh)*m;
+    const sh=charge*(1-m)*3;
+    c.save();
+    c.translate(cx+(Math.random()-.5)*sh,cy+(Math.random()-.5)*sh);
+    c.shadowColor=m>.4?'#00ffcc':'#ffcc44';c.shadowBlur=10+charge*26;
+    if(logoImg&&logoOK)c.drawImage(logoImg,-w/2,-h/2,w,h);
+    else{c.fillStyle='#00ffcc';c.fillRect(-w/2,-h/2,w,h)}
+    c.shadowBlur=0;
+    // 変形中はロゴを囲む光の枠が機体サイズへ締まっていく
+    if(mp>0){c.globalAlpha=(1-m)*.8;c.strokeStyle='#00ffcc';c.lineWidth=2;c.strokeRect(-w/2-8,-h/2-8,w+16,h+16)}
+    c.restore();
+    if(t===20){noise(.3,.1);beep(600,.28,'square',.06,1500)}
+    if(t===45){explode(cx,cy,'#00ffcc',true);noise(.25,.14);beep(1046,.18,'sine',.09,2093)}
+  }else{
+    // 発進: 機体が定位置へ。エンジン炎は drawPlayer が描く
+    playerY=cy+(H-100-cy)*flyE;
+    // 航跡 (上に残る光の筋)
+    c.save();
+    const tg=c.createLinearGradient(0,cy,0,playerY);
+    tg.addColorStop(0,'rgba(0,255,204,0)');tg.addColorStop(1,`rgba(0,255,204,${.35*(1-fly)})`);
+    c.fillStyle=tg;c.fillRect(cx-3,cy,6,Math.max(0,playerY-cy-PH/2));
+    c.restore();
+    drawPlayer();
+  }
+  // 変形完了の閃光 (40〜56f)
+  if(t>40&&t<56){
+    const fp=(t-40)/16,fa=fp<.3?fp/.3:1-(fp-.3)/.7;
+    const g=c.createRadialGradient(cx,cy,0,cx,cy,W*.45);
+    g.addColorStop(0,`rgba(255,255,255,${fa*.9})`);g.addColorStop(.4,`rgba(0,255,204,${fa*.35})`);g.addColorStop(1,'rgba(0,255,204,0)');
+    c.fillStyle=g;c.fillRect(0,0,W,H);
+  }
+  if(t>=TOTAL)startGame();
+}
+
 function drawBossIntro(){
   bossIntroTimer++;
   const t=bossIntroTimer;
@@ -2637,6 +2712,9 @@ function loop(){
 
   /* GAME START INTRO */
   if(state==='intro'){drawIntro();drawParts();return}
+
+  /* LAUNCH: タイトルのロゴが機体に変形して発進 */
+  if(state==='launch'){drawLaunch();drawParts();return}
 
   /* PORTAL EXIT */
   if(state==='portal'){drawPortalExit();drawParts();return}
