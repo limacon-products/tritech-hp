@@ -46,3 +46,7 @@ npm-debug.log*
 !.dev.vars.example
 .env*
 !.env.example
+
+# TriPulse 紹介の引継ぎ資料 (社内向け・公開しない。2026-11-19 egg)
+TriPulse紹介_*.md
+_tripulse-handoff/
