@@ -33,6 +33,7 @@
 | `/contact/` | お問い合わせフォーム (reCAPTCHA v3) |
 | `/privacy-policy/` | プライバシーポリシー |
 | `/security-policy/` | 情報セキュリティ基本方針 |
+| `/tripulse/` | TriPulse 紹介 (自社開発の評価・報酬システム。ヘッダナビ非掲載) |
 
 共通ヘッダ・フッタは `_partials/*.html` を `data-include` で動的注入。
 
@@ -55,10 +56,12 @@
 │   │   ├── contact-embed.js   ... contact セクション動的注入
 │   │   ├── coverage-tabs.js   ... service ページの Coverage タブ切替
 │   │   ├── game.js            ... 隠し要素 (ロゴクリックで起動するゲーム)
+│   │   ├── tripulse-modal.js  ... TriPulse 紹介動画のポップアップ
 │   │   └── pages/
 │   │       ├── index.js       ... トップページ専用
 │   │       └── tritech-puzzle.js ... About セクション内パズル
-│   └── images/                ... ロゴ・写真・SNSアイコン
+│   ├── images/                ... ロゴ・写真・SNSアイコン
+│   └── video/                 ... TriPulse 紹介動画
 ├── sitemap.xml / robots.txt    ... SEO
 ├── .dev-server.js              ... ローカル開発用サーバ (Node)
 └── CNAME / .nojekyll           ... GitHub Pages 設定

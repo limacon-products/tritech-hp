@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="/assets/css/common.css">
 <link rel="stylesheet" href="/assets/css/pages/service-page.css">
 <link rel="stylesheet" href="/assets/css/pages/service-ses.css">
+<link rel="stylesheet" href="/assets/css/tripulse.css">
 <!-- 構造化データ (JSON-LD) -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "株式会社トライテック", "url": "https://tritechinc.jp/", "logo": "https://tritechinc.jp/assets/images/logo/tritech-logo.png", "foundingDate": "2023-04-27", "founder": {"@type": "Person", "name": "清水 幸秀"}, "telephone": "+81-3-6824-0539", "email": "info@tritechinc.jp", "address": {"@type": "PostalAddress", "postalCode": "110-0016", "addressCountry": "JP", "addressRegion": "東京都", "addressLocality": "台東区", "streetAddress": "台東2-30-10 THE GATE 御徒町4F"}, "sameAs": ["https://x.com/tritech_ses", "https://x.com/toku_tritech", "https://www.linkedin.com/in/tritech-jinji", "https://note.com/tokunaga_tritech"]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://tritechinc.jp/"}, {"@type": "ListItem", "position": 2, "name": "事業内容", "item": "https://tritechinc.jp/service-list/"}, {"@type": "ListItem", "position": 3, "name": "SES事業", "item": "https://tritechinc.jp/service-ses/"}]}</script>
@@ -79,12 +80,22 @@
     <div class="sd-card reveal" style="transition-delay:.1s">
       <span class="sd-card-num">02</span>
       <h3>単価公開・前給保証</h3>
-      <p>評価が見えるから納得できる。透明性の高い報酬体系で、エンジニアの正当な対価を担保します。</p>
+      <p>評価が見えるから納得できる。透明性の高い報酬体系で、エンジニアの正当な対価を担保します。評価は自社開発の評価システム「TriPulse」で定量化。案件単価ではなく市場価値で処遇を決めるから、納得感のある報酬体系を実現しています。</p>
     </div>
     <div class="sd-card reveal" style="transition-delay:.2s">
       <span class="sd-card-num">03</span>
       <h3>定着率90%以上の安心感</h3>
       <p>現役エンジニア社長による技術サポートと、丁寧なフォロー体制で長期的に活躍できる環境を提供。</p>
+    </div>
+  </div>
+  <!-- TriPulse 紹介ブロック (トップ #sec-reward と同じ .tp-block。動画は tripulse-modal.js がポップアップ再生) -->
+  <div class="tp-block reveal" style="transition-delay:.15s">
+    <img class="tp-block-logo" src="/assets/images/tripulse/tripulse-logo-white.svg" alt="TriPulse" width="522" height="100" loading="lazy">
+    <div>
+      <p class="tp-block-eyebrow">強み 02 を支える仕組み</p>
+      <h3 class="tp-block-title">評価と報酬は、自社開発システム「TriPulse」で決めています。</h3>
+      <p class="tp-block-body"><strong>スキル評価 × 経験年数 × 市場単価マスタ</strong>。評価者の主観ではなく、全員を同じ基準で測ります。案件単価ではなく市場価値で処遇が決まるから、エンジニアは納得して、長く力を発揮できます。</p>
+      <div class="tp-actions"><a href="/tripulse/" class="tp-play on-dark" data-tripulse-video>TriPulse を 80 秒で見る</a><a href="/tripulse/" class="tp-more on-dark">TriPulse について詳しく →</a></div>
     </div>
   </div>
 </section>
@@ -278,6 +289,7 @@
 <script src="/assets/js/common.js" defer></script>
 <script src="/assets/js/contact-embed.js" defer></script>
 <script src="/assets/js/coverage-tabs.js" defer></script>
+<script src="/assets/js/tripulse-modal.js" defer></script>
 <script src="/assets/js/game-loader.js" defer></script>
 </body>
 </html>

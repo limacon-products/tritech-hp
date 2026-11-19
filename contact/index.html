@@ -302,6 +302,7 @@
             <option value="">選択してください</option>
             <option value="サービス・取引について">サービス・取引について</option>
             <option value="採用について">採用について</option>
+            <option value="カジュアル面談の申し込み">カジュアル面談の申し込み</option>
             <option value="パートナー企業として">パートナー企業として</option>
             <option value="取材・メディア掲載依頼">取材・メディア掲載依頼</option>
             <option value="その他">その他</option>
@@ -503,6 +504,17 @@ const GAS_ENDPOINT='https://script.google.com/macros/s/AKfycbwWkIA7TSAaR-_476Sk3
       submit.innerHTML=origLabel;
     }
   });
+})();
+</script>
+
+<script>
+/* /contact/?type=casual (TriPulse 紹介ページの「カジュアル面談を申し込む」) から来た場合は、
+   種別と本文をあらかじめ入れておく。本文は自由に書き換えられる */
+(function(){
+  if(new URLSearchParams(location.search).get('type')!=='casual')return;
+  const t=document.getElementById('cf-type'),m=document.getElementById('cf-message');
+  if(t)t.value='カジュアル面談の申し込み';
+  if(m&&!m.value)m.value='カジュアル面談を希望します。想定年収シミュレータも体験したいです。\n\n（ご経験のあるスキル・工程や、ご希望の日時があればご記入ください）\n';
 })();
 </script>
 

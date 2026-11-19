@@ -2,8 +2,8 @@
 
 |  項目  |  内容  |
 | --- | --- |
-| バージョン | 1.3.2 |
-| 最終更新 | 2026-10-16 |
+| バージョン | 1.4.0 |
+| 最終更新 | 2026-11-19 |
 | 本番URL | https://tritechinc.jp |
 | リポジトリ | https://github.com/limacon-products/tritech-hp (Public) |
 | ライセンス | 株式会社トライテック 所有 (All Rights Reserved、`LICENSE` 参照) |
@@ -113,11 +113,12 @@ tritech-hp/
 ├── contact/index.html          # お問い合わせフォーム
 ├── privacy-policy/index.html   # プライバシーポリシー
 ├── security-policy/index.html  # 情報セキュリティ基本方針
+├── tripulse/index.html         # TriPulse 紹介 (自社開発の評価・報酬システム。ヘッダナビには載せない)
 │
 ├── CNAME                       # GitHub Pages カスタムドメイン (tritechinc.jp)
 ├── .nojekyll                   # Jekyll 無効化 (_partials/ 配信のため)
 ├── robots.txt                  # /_partials/ を Disallow、sitemap 参照
-├── sitemap.xml                 # 全11 URL を登録
+├── sitemap.xml                 # 全12 URL を登録
 ├── .dev-server.js              # ローカル開発用 静的サーバ (Node.js・依存なし)
 ├── wrangler.jsonc              # Cloudflare wrangler 設定 (ローカル検証用。本番ホスティングには未使用)
 ├── README.md                   # リポジトリ概要
@@ -139,13 +140,15 @@ tritech-hp/
     ├── css/
     │   ├── common.css          # 全ページ共通スタイル
     │   ├── game.css            # ゲーム機能専用
+    │   ├── tripulse.css        # TriPulse 紹介の共通部品 (再生ボタン・紹介ブロック・動画モーダル)
     │   └── pages/
     │       ├── index.css        # トップページ専用 (service系ページも読込)
     │       ├── index-recruit.css # トップ内 採用セクション専用
     │       ├── media.css        # メディアページ専用
     │       ├── service-page.css # service-* 共通
     │       ├── service-list.css # 事業一覧専用
-    │       └── service-ses.css  # SES専用
+    │       ├── service-ses.css  # SES専用
+    │       └── tripulse.css     # TriPulse 紹介ページ専用 (ロゴアニメ含む)
     ├── js/
     │   ├── common.js           # 共通スクリプト (cursor, nav, hamburger)
     │   ├── include-partials.js # 共通部品注入エンジン
@@ -192,6 +195,7 @@ tritech-hp/
 | `/contact/` | `contact/index.html` | お問い合わせ | 入力フォーム (reCAPTCHA v3) |
 | `/privacy-policy/` | `privacy-policy/index.html` | プライバシーポリシー | 個人情報保護方針 |
 | `/security-policy/` | `security-policy/index.html` | 情報セキュリティ基本方針 | セキュリティへの取り組み |
+| `/tripulse/` | `tripulse/index.html` | TriPulse（トライパルス） | 自社開発の評価・報酬システムの紹介 (ヘッダナビ非掲載。トップ・SES ページから誘導) |
 
 全ページ共通で canonical / OGP / Twitter Card / GA4 タグを `<head>` に設置。
 
@@ -264,6 +268,24 @@ tritech-hp/
 - Service Flow (SES のみ)
 - Support
 - Contact (`data-embed="contact"` で index.html から注入)
+
+#### `tripulse/index.html` (TriPulse 紹介・2026-11 追加)
+- Hero (ロゴアニメ: 1 回再生して静止。`prefers-reduced-motion` では最初から静止)
+- Movie (HP 用紹介動画 約80秒・BGMのみ。`<video controls>` で自動再生しない)
+- 名前の由来 (3 つの Tri + Pulse)
+- 案件単価 vs 市場単価 / Skill × Experience × Market / 3 つの約束
+- 「次のレベルに上がるには」(CSS で描いた表示イメージ。実画面の写真は載せない)
+- 想定年収シミュレータ (同じく CSS の表示イメージ。金額は伏せ字) + カジュアル面談への導線
+- Contact (`data-embed="contact"`)
+
+**TriPulse の誘導箇所**: 動画ボタン (`data-tripulse-video`) つきの紹介ブロック (`.tp-block`) は 3 か所 = トップ `#sec-reward` / `recruit/` の `#reward` (トップから自動で写す) / `service-ses/` 強みカードの下。`service-list/` の「自社開発プロダクト」枠 (`#sec-inhouse`。3 事業とは別枠で、外販していない社内プロダクトを置く場所。「3つの事業領域」の文言は変えない) は専用ページへのボタンのみ。トップ `#sec-reason` POINT 01 と `service-ses/` 強み 02 は一文で触れるだけで、POINT 01 の一文は `recruit/` の「選ばれる理由」にも自動で写る。
+
+**カジュアル面談への導線**: `tripulse/` の `#sec-simulator` と、トップ `#sec-reward` の小さな紹介ブロック (`.tp-sim`。`recruit/` の `#reward` にも自動で写る) の「カジュアル面談を申し込む」ボタン → `/contact/?type=casual`。`contact/index.html` 末尾のスクリプトが種別「カジュアル面談の申し込み」と本文を事前入力する (GAS 側は種別をそのまま転記するだけなので変更不要)。
+いずれも `<a href="/tripulse/" data-tripulse-video>` で、クリックすると同じ動画を `<dialog>` でポップアップ再生する (`tripulse-modal.js`)。
+
+**公開してはいけないもの**: TriPulse のソースコード・社内ドキュメント原文・本番 URL / ログインリンク・給与や市場単価の実額・社員の実名・実画面の写真・社員向け解説動画。
+掲載する数字は配点 (技術 250 点 + 非技術 150 点) と経験年数の 5 段階のみ。変わったら `tripulse/index.html` を直す。
+動画の BGM は OpenTracks (旧 DOVA-SYNDROME)「心の中の小さな宇宙」(商用可・クレジット表記不要)。
 
 #### `media/index.html`
 - Hero
@@ -428,10 +450,11 @@ font-family: 'JetBrains Mono', monospace;
 ```html
 <script src="/assets/js/include-partials.js"></script>          <!-- 全ページ -->
 <script src="/assets/js/common.js" defer></script>               <!-- 全ページ -->
-<script src="/assets/js/contact-embed.js" defer></script>        <!-- service-* のみ -->
+<script src="/assets/js/contact-embed.js" defer></script>        <!-- service-* / tripulse -->
 <script src="/assets/js/coverage-tabs.js" defer></script>        <!-- service-{ses,quality,dx} のみ -->
 <script src="/assets/js/pages/index.js" defer></script>          <!-- index.html のみ -->
 <script src="/assets/js/pages/tritech-puzzle.js" defer></script> <!-- index.html のみ -->
+<script src="/assets/js/tripulse-modal.js" defer></script>       <!-- index / recruit / service-ses (TriPulse 動画ポップアップ) -->
 <script src="/assets/js/game-loader.js" defer></script>          <!-- 全ページ (ゲーム遅延ローダー・約80行) -->
 <!-- game.js 本体はロゴクリック時に game-loader.js が動的ロード -->
 ```
@@ -446,6 +469,7 @@ font-family: 'JetBrains Mono', monospace;
 | `coverage-tabs.js` | Coverage タブ切替 (ホバー/タップ + WAI-ARIA タブパターン: 矢印キー/Home/End/Enter対応) |
 | `pages/index.js` | ci-mirror 注入 / データチャート / カウントアップ / 社員の声カード生成 (voices.json) |
 | `pages/tritech-puzzle.js` | About内ブロックパズル (スタートゲート / D&D+タップ操作 / 設置メッセージ演出 / お祝い / 隠し仕様パーフェクトクリア — §4.2「ブロックパズル仕様」参照) |
+| `tripulse-modal.js` | `data-tripulse-video` を持つリンクのクリックで TriPulse 紹介動画を `<dialog>` に表示。DOM と動画は初回クリック時に生成・読込 (通常閲覧の負担なし)。× / Esc / 背景クリックで閉じ、停止して先頭へ戻す。JS 無効時・`<dialog>` 非対応時はリンク先 `/tripulse/` へ遷移 |
 | `game-loader.js` | ロゴクリック時に game.css/ゲームDOM/game.js を動的ロード (通常閲覧のJS負担を排除) |
 | `game.js` | 隠しシューティングゲーム本体 (約2750行・5ステージ・遅延ロード) |
 
@@ -478,10 +502,12 @@ font-family: 'JetBrains Mono', monospace;
 | 社員の声 | **`assets/data/voices.json`** | `index.html` + `recruit/` (カード・モーダルとも自動生成) | fetch + JSON。`avatarImage` で顔写真/イラスト表示に切替可 (SVGとの混在可) |
 | チャートデータ (棒/ドーナツ/凡例) | **`assets/data/stats.json`** | `index.html` + `recruit/` | fetch + JSON |
 | 案件データ | **`assets/data/projects.json`** | recruit内4箇所 (カード/モーダル/ターミナル/注目案件3件) | fetch + JSON (`window.PROJECTS_READY` で完了待ち) |
-| Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}/ | fetch('/') + DOM抽出 (`data-embed="contact"`) |
+| TriPulse 紹介動画・モーダル | `assets/video/tripulse-intro.{webm,mp4}` + `tripulse-modal.js` | `index.html` + `recruit/` + `service-ses/` + `tripulse/` (埋め込み) | モーダルの HTML は JS が生成 (各ページには `data-tripulse-video` 属性のみ) |
+| Contact セクション | `index.html` の `#contact` | service-{list,ses,quality,dx}/ + tripulse/ | fetch('/') + DOM抽出 (`data-embed="contact"`) |
 | 待遇・休暇 (li) | `index.html` の `#sec-benefits` | `recruit/` | fetch('/') + li抽出 |
+| 報酬が決まる仕組み (4 ステップ・説明文・TriPulse ブロック・シミュレータの導線) | `index.html` の `#sec-reward` | `recruit/` の `#reward` | fetch('/') + 要素を複製 (見た目は recruit 側の `.reward-rc` で定義) |
 | 数字データ (.dc) | `index.html` の `#data` | `recruit/` | fetch('/') + チャート再描画 |
-| 選ばれる理由 (.reason-card) | `index.html` の `#sec-reason` | `recruit/` | fetch('/') + title/body抽出 |
+| 選ばれる理由 (.reason-card) | `index.html` の `#sec-reason` | `recruit/` | fetch('/') + title/body抽出。POINT 01 の TriPulse の一文 (`.tp-reason-note`) も写す |
 
 ### 8.2 設計判断の理由
 
@@ -601,7 +627,7 @@ _dmarc  TXT  v=DMARC1; p=none; rua=mailto:info@tritechinc.jp; ruf=mailto:info@tr
 | 項目 | 内容 |
 |---|---|
 | Google Analytics 4 | 測定ID `G-WQRCJC9H8X`・全公開ページの `<head>` に gtag.js 設置 |
-| sitemap.xml | 全11 URL（クリーンURL形式）を登録・`robots.txt` から参照 |
+| sitemap.xml | 全12 URL（クリーンURL形式）を登録・`robots.txt` から参照 |
 | robots.txt | 全許可 + `/_partials/` のみ Disallow |
 | canonical | 各ページに `https://tritechinc.jp/{page}/` 形式で設置 |
 | OGP / Twitter Card | 全ページ設置（og:image はロゴPNG） |
@@ -775,6 +801,7 @@ git push -f origin main
 |---|---|---|
 | 2026-05-17 | 1.0.0 | 初版 |
 | 2026-05-18 | 1.0.1 | 軽微修正 |
+| 2026-11-19 | 1.4.0 | TriPulse 紹介を追加: 専用ページ `/tripulse/` (ロゴアニメ・HP 用紹介動画・案件単価と市場単価・3 つの約束・名前の由来) / トップ `#sec-reward` に紹介ブロック + 動画ボタン / トップ `#sec-reason` POINT 01 に一文 (採用ページにも反映) / `service-ses/` 強み 02 に一文、強みの下に紹介ブロック + 動画ボタン / 専用ページに想定年収シミュレータの紹介とカジュアル面談への導線 (`/contact/?type=casual`、お問い合わせ種別に「カジュアル面談の申し込み」を追加) / 動画ポップアップ `tripulse-modal.js` + `tripulse.css` / `assets/video/`・`assets/images/tripulse/` 追加 / `service-list/` に「自社開発プロダクト」枠を新設 / POINT 01 の文言を「市場価値の向上が直接収入に繋がります」に修正 (TriPulse の考え方と統一) / `recruit/` に「報酬が決まる仕組み」セクションを追加 (トップから自動で写す) / sitemap に `/tripulse/` 追加 (全12 URL) |
 | 2026-10-16 | 1.3.2 | 会社概要の更新: 資本金 20,000,000 円 / 本社を THE GATE 御徒町 (〒110-0016 東京都台東区台東2-30-10 4F) に一本化 (旧本社 渋谷区恵比寿・「上野営業所」表記を削除) / 全ページの JSON-LD (Organization.address) も新住所へ更新 |
 | 2026-10-04 | 1.3.1 | シューティングゲームのバグ修正: 旧「社員の声」抽出コードが未初期化の `gc.mem` を参照して例外となり、ステージ文言が初期値に落ちていた問題を修正 (実サイトの文言が反映されるように) / 危険ライン判定を「未開放ゾーンの底辺」基準に変更 (開放済みの文字がラインを通過しても残機が減らない) |
 | 2026-09-16 | 1.3.0 | ブロックパズル大改修を反映: PLAY ME! スタートゲート / ドラッグ&ドロップ操作 (タップ方式併存) / 設置ごとの会社メッセージ演出 (本文自動取得・盤面状況で出し分け・重複抑止) / 約4秒のお祝いフェーズ (紙吹雪+COMPLETE!) / クリア演出のウィジェット内完結 (スマホの被り解消) / 隠し仕様「パーフェクトクリア」+採用ページ導線 / ヒントボタン (ロゴ強調・スクロールなし) |

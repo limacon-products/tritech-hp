@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="/assets/css/common.css">
 <link rel="stylesheet" href="/assets/css/pages/index.css">
 <link rel="stylesheet" href="/assets/css/pages/index-recruit.css">
+<link rel="stylesheet" href="/assets/css/tripulse.css">
 <!-- 構造化データ (JSON-LD) -->
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "株式会社トライテック", "url": "https://tritechinc.jp/", "logo": "https://tritechinc.jp/assets/images/logo/tritech-logo.png", "foundingDate": "2023-04-27", "founder": {"@type": "Person", "name": "清水 幸秀"}, "telephone": "+81-3-6824-0539", "email": "info@tritechinc.jp", "address": {"@type": "PostalAddress", "postalCode": "110-0016", "addressCountry": "JP", "addressRegion": "東京都", "addressLocality": "台東区", "streetAddress": "台東2-30-10 THE GATE 御徒町4F"}, "sameAs": ["https://x.com/tritech_ses", "https://x.com/toku_tritech", "https://www.linkedin.com/in/tritech-jinji", "https://note.com/tokunaga_tritech"]}</script>
 <!-- Google tag (gtag.js) -->
@@ -270,7 +271,8 @@
       <div class="reason-card reveal">
         <p class="reason-point">POINT 01</p>
         <h3 class="reason-title">エンジニア社長の考える、エンジニアファーストの報酬設計</h3>
-        <p class="reason-body">売上の高い割合をエンジニアへ還元する仕組みを採用。市場価値を正しく反映した給与水準を実現し、スキルアップや案件単価の向上が直接収入に繋がります。昇給制度も完備しており、頑張りが見える化される文化です。</p>
+        <p class="reason-body">売上の高い割合をエンジニアへ還元する仕組みを採用。市場価値を正しく反映した給与水準を実現し、スキルアップによる市場価値の向上が直接収入に繋がります。昇給制度も完備しており、頑張りが見える化される文化です。</p>
+        <p class="reason-body tp-reason-note">その市場価値は、自社開発の評価システム「TriPulse」で、全員を同じ基準で測ります。</p>
       </div>
       <div class="reason-card reveal">
         <p class="reason-point">POINT 02</p>
@@ -311,6 +313,34 @@
       <div class="rf-step"><div class="rf-box rf-final"><span class="rf-num">RESULT</span><span class="rf-label">あなたの<br>報酬</span></div></div>
     </div>
     <p class="reward-note reveal" style="transition-delay:.1s">あなたのスキル・経験に応じて市場単価を設定し、そこからあなたの報酬が決まるまでのロジックを明示します。給与の不透明感に悩むことは、もうありません。前職給与の保証＋年10%以上の昇給を毎年目標にしています。</p>
+    <!-- TriPulse 紹介ブロック (動画は tripulse-modal.js がポップアップ再生。詳細は /tripulse/) -->
+    <div class="tp-block reveal" style="transition-delay:.15s">
+      <img class="tp-block-logo" src="/assets/images/tripulse/tripulse-logo-white.svg" alt="TriPulse" width="522" height="100" loading="lazy">
+      <div>
+        <p class="tp-block-eyebrow">STEP 01 ― 市場単価の決め方</p>
+        <h3 class="tp-block-title">市場単価は、自社開発システム「TriPulse」が算出します。</h3>
+        <p class="tp-block-body"><strong>スキル評価 × 経験年数 × 市場単価マスタ</strong>。評価者の主観ではなく、同じ基準で測った結果が、あなたの市場単価になります。評価結果と「次のレベルに上がるには」は、本人がいつでも自分の画面で確認できます。</p>
+        <div class="tp-actions"><a href="/tripulse/" class="tp-play on-dark" data-tripulse-video>TriPulse を 80 秒で見る</a><a href="/tripulse/" class="tp-more on-dark">TriPulse について詳しく →</a></div>
+      </div>
+    </div>
+    <!-- 想定年収シミュレータの紹介 + カジュアル面談への導線 (詳しい説明は /tripulse/#sec-simulator。採用ページにも自動で写る) -->
+    <div class="tp-sim reveal" style="transition-delay:.2s">
+      <div class="tp-sim-text">
+        <p class="tp-sim-eyebrow">SALARY SIMULATOR</p>
+        <h3 class="tp-sim-title">想定年収シミュレータを、体験しませんか？</h3>
+        <p class="tp-sim-body">TriPulse には、スキルや経験年数を選ぶだけで市場単価と想定年収を試算できるシミュレータがあります。カジュアル面談では、あなたの条件で一緒に確かめられます。</p>
+        <ol class="tp-sim-steps">
+          <li>条件を選ぶ</li>
+          <li>業務イメージを確かめる</li>
+          <li>想定年収を試算する</li>
+          <li>次のステップと比べる</li>
+        </ol>
+      </div>
+      <div class="tp-sim-actions">
+        <a href="/contact/?type=casual" class="tp-cta">カジュアル面談を申し込む →</a>
+        <a href="/tripulse/#sec-simulator" class="tp-more on-dark">シミュレータについて詳しく →</a>
+      </div>
+    </div>
   </section>
 
   <div class="divider"></div>
@@ -441,6 +471,7 @@
 <script src="/assets/js/include-partials.js"></script>
 <script src="/assets/js/common.js" defer></script>
 <script src="/assets/js/pages/index.js" defer></script>
+<script src="/assets/js/tripulse-modal.js" defer></script>
 
 <script src="/assets/js/game-loader.js" defer></script>
 

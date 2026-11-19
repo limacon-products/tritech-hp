@@ -1,0 +1,86 @@
+/* ==========================================================
+   tripulse.css — TriPulse 紹介の共通部品
+   読み込むページ: index / service-ses / tripulse
+     - .tp-play     「TriPulse を 80 秒で見る」ボタン (動画ポップアップの起点)
+     - .tp-more     専用ページへのテキストリンク
+     - .tp-block    紹介ブロック (トップ #sec-reward / service-ses 強みの下。濃紺のカード)
+     - .tp-sim      想定年収シミュレータの紹介 + カジュアル面談への導線 (.tp-cta)
+     - .tp-modal    動画ポップアップ (<dialog>。DOM は tripulse-modal.js が生成)
+   ロゴの色 (#1A3A6A / #2888B8 / #E07830 / #44AADB) は TriPulse 側の
+   ブランド色。サイトの --orange / --navy とは別物なので置き換えない。
+   ========================================================== */
+
+/* ── 再生ボタン ── */
+.tp-play{display:inline-flex;align-items:center;gap:.65em;padding:9px 22px 9px 10px;border-radius:100px;border:1.5px solid #2888B8;background:#fff;color:#1A3A6A;font-family:'Noto Sans JP',sans-serif;font-size:.84rem;font-weight:700;letter-spacing:.03em;line-height:1.3;text-decoration:none;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .3s,transform .15s}
+.tp-play::before{content:'';flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:#E07830 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M11 8.5v11l9-5.5z' fill='%23fff'/%3E%3C/svg%3E") center/100% no-repeat}
+.tp-play:hover{box-shadow:0 8px 22px rgba(40,136,184,.28);transform:translateY(-1px)}
+.tp-play:focus-visible,.tp-more:focus-visible{outline:2px solid #44AADB;outline-offset:3px}
+/* 黒・紺の背景用 */
+.tp-play.on-dark{background:rgba(68,170,219,.08);border-color:rgba(68,170,219,.55);color:#fff}
+.tp-play.on-dark:hover{background:rgba(68,170,219,.18);border-color:#44AADB;box-shadow:0 0 22px rgba(68,170,219,.25)}
+
+.tp-more{font-size:.82rem;font-weight:700;color:#2888B8;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
+.tp-more:hover{border-bottom-color:currentColor}
+.tp-more.on-dark{color:#7fd1ff}
+
+.tp-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.4rem;margin-top:1.3rem}
+
+/* ── A: トップ #sec-reward の紹介ブロック ── */
+.tp-block{margin-top:2rem;display:grid;grid-template-columns:minmax(180px,250px) 1fr;gap:2.4rem;align-items:center;padding:36px 40px;border:1px solid rgba(68,170,219,.28);border-radius:8px;background:linear-gradient(135deg,#12233f 0%,#0f1114 62%)}
+.tp-block-logo{display:block;width:100%;height:auto}
+.tp-block-eyebrow{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:800;letter-spacing:.2em;color:#7fd1ff;margin-bottom:.6rem}
+.tp-block-title{font-family:'Noto Sans JP',sans-serif;font-size:1.12rem;font-weight:700;color:#fff;line-height:1.6;margin-bottom:.8rem}
+.tp-block-body{font-size:.87rem;color:#cccccc;line-height:1.95}
+.tp-block-body strong{color:#fff;font-weight:700}
+@media(max-width:760px){
+  .tp-block{grid-template-columns:1fr;gap:1.4rem;padding:28px 22px}
+  .tp-block-logo{max-width:220px}
+  .tp-block-title{font-size:1rem}
+}
+
+/* ── 想定年収シミュレータの紹介 + カジュアル面談への導線 (トップ #sec-reward。採用ページにも写る) ── */
+.tp-sim{margin-top:1.2rem;display:grid;grid-template-columns:1fr auto;gap:1.6rem 2.6rem;align-items:center;padding:30px 40px;border:1px solid rgba(224,120,48,.35);border-radius:8px;background:linear-gradient(135deg,#0f1114 0%,#2a1a10 100%)}
+.tp-sim-text{min-width:0}
+.tp-sim-eyebrow{font-size:.68rem;font-weight:800;letter-spacing:.2em;color:#f0a06a;margin-bottom:.5rem}
+.tp-sim-title{font-family:'Noto Sans JP',sans-serif;font-size:1.12rem;font-weight:700;color:#fff;line-height:1.6;margin-bottom:.6rem}
+.tp-sim-body{font-size:.87rem;color:#cccccc;line-height:1.95}
+.tp-sim-steps{list-style:none;counter-reset:tpsim;display:flex;flex-wrap:wrap;gap:.5rem .6rem;margin-top:1rem;padding:0}
+.tp-sim-steps li{counter-increment:tpsim;display:inline-flex;align-items:center;gap:.5em;padding:5px 12px 5px 6px;border:1px solid rgba(255,255,255,.14);border-radius:100px;font-size:.74rem;font-weight:700;color:#e6e6e6;background:rgba(255,255,255,.04)}
+.tp-sim-steps li::before{content:counter(tpsim);width:20px;height:20px;border-radius:50%;background:#E07830;color:#fff;font-size:.68rem;display:inline-flex;align-items:center;justify-content:center}
+.tp-sim-actions{display:flex;flex-direction:column;align-items:center;gap:.9rem}
+.tp-cta{display:inline-block;padding:14px 32px;border-radius:100px;background:#E07830;color:#fff;font-family:'Noto Sans JP',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.05em;text-decoration:none;white-space:nowrap;box-shadow:0 8px 24px rgba(224,120,48,.3);transition:background .25s,box-shadow .3s,transform .18s}
+.tp-cta:hover{background:#c96422;box-shadow:0 12px 30px rgba(224,120,48,.45);transform:translateY(-2px)}
+.tp-cta:focus-visible{outline:2px solid #44AADB;outline-offset:3px}
+@media(max-width:860px){
+  .tp-sim{grid-template-columns:1fr;padding:26px 22px}
+  .tp-sim-actions{align-items:flex-start}
+  .tp-cta{white-space:normal;text-align:center}
+}
+
+/* ── C: 選ばれる理由カード内の一文 ── */
+.tp-reason-note{margin-top:.9rem}
+
+/* ── B: SES 事業ページ 強みカードの下に置く .tp-block (明るい背景の上) ── */
+.sd-strengths .tp-block{margin-top:2.5rem;border-radius:20px;border-color:transparent;box-shadow:0 22px 56px rgba(15,42,77,.22)}
+
+/* ── 動画ポップアップ ── */
+.tp-modal{position:fixed;inset:0;margin:auto;width:min(960px,92vw);max-width:none;max-height:none;padding:0;border:0;background:transparent;color:#fff;overflow:visible}
+.tp-modal::backdrop{background:rgba(4,10,22,.88)}
+.tp-modal[open]{animation:tp-modal-in .28s ease both}
+@keyframes tp-modal-in{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.tp-modal-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.7rem}
+.tp-modal-title{font-family:'Noto Sans JP',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.85)}
+.tp-modal-close{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
+.tp-modal-close:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.7)}
+.tp-modal-close:focus-visible{outline:2px solid #44AADB;outline-offset:2px}
+.tp-modal-video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#0f2a4d;border-radius:10px;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.tp-modal-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem 1rem;margin-top:.8rem;font-size:.76rem;color:rgba(255,255,255,.55)}
+
+/* 横向きスマホなど高さが足りない画面では、動画を高さ基準で収める */
+@media(max-height:560px){
+  .tp-modal{width:min(92vw,calc((100vh - 120px) * 16 / 9))}
+}
+@media (prefers-reduced-motion: reduce){
+  .tp-modal[open]{animation:none}
+  .tp-play,.tp-play:hover,.tp-cta,.tp-cta:hover{transition:none;transform:none}
+}

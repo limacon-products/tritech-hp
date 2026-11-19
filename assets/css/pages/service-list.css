@@ -50,6 +50,24 @@
 .sl-btn .arrow{display:inline-block;transition:transform .25s}
 .sl-btn:hover .arrow{transform:translateX(4px)}
 
+/* ── IN-HOUSE PRODUCT (自社開発プロダクト。3 事業とは別枠) ── */
+.sl-inhouse{background:var(--white);padding:110px 5vw 120px}
+.sl-inhouse-inner{max-width:1200px;margin:0 auto}
+.sl-inhouse .s-title{font-family:'Noto Sans JP',sans-serif}
+.sl-inhouse-catch{font-family:'Noto Sans JP',sans-serif;font-size:clamp(1.2rem,2.1vw,1.55rem);font-weight:700;line-height:1.5;color:var(--ink);margin-top:1.8rem}
+.sl-inhouse .s-sub{margin-top:.8rem}
+.sl-product{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);margin-top:3rem;border:1px solid var(--border);border-radius:24px;overflow:hidden;background:var(--white);box-shadow:0 22px 56px rgba(26,58,106,.1)}
+.sl-product-visual{display:flex;align-items:center;justify-content:center;padding:48px 40px;background:radial-gradient(circle at 30% 25%,#1d4e8f 0,#0f2a4d 70%)}
+.sl-product-visual img{display:block;width:100%;max-width:340px;height:auto}
+.sl-product-text{padding:44px 44px 46px;display:flex;flex-direction:column;align-items:flex-start}
+.sl-product-name{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,2.6vw,2.1rem);font-weight:800;color:#1A3A6A;line-height:1.2;letter-spacing:-.01em}
+.sl-product-name span{font-family:'Noto Sans JP',sans-serif;font-size:.78rem;font-weight:700;color:var(--muted);margin-left:.9em;letter-spacing:.06em}
+.sl-product-catch{font-size:1.05rem;font-weight:700;color:var(--ink);line-height:1.6;margin:.9rem 0 .8rem}
+.sl-product-body{font-size:.92rem;color:var(--muted);line-height:1.95}
+.sl-product .sl-btn{margin-top:1.8rem}
+.sl-btn--navy{background:#1A3A6A;box-shadow:0 6px 20px rgba(26,58,106,.28)}
+.sl-btn--navy:hover{background:#12294d;box-shadow:0 10px 28px rgba(26,58,106,.4)}
+
 /* ── CTA ── */
 .sl-cta{background:var(--white);text-align:center;overflow:hidden}
 .sl-cta::after{content:'';position:absolute;bottom:-100px;right:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(217,95,26,.14) 0%,transparent 60%);pointer-events:none;animation:ctaFloat 6s ease-in-out infinite alternate}
@@ -70,9 +88,14 @@
   .sl-block{grid-template-columns:1fr;gap:2.25rem;margin-bottom:80px}
   .sl-block.reverse{direction:ltr}
   .sl-block-img{aspect-ratio:16/10}
+  .sl-inhouse{padding:80px 5vw}
+  .sl-product{grid-template-columns:1fr}
+  .sl-product-visual{padding:40px 32px}
 }
 @media(max-width:600px){
   .sl-hero{padding:120px 5vw 60px}
   .sl-blocks{padding:70px 5vw}
   .sl-block{margin-bottom:70px}
+  .sl-product-text{padding:30px 24px 34px}
+  .sl-product-visual img{max-width:240px}
 }
