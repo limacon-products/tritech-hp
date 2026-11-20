@@ -120,7 +120,6 @@ tritech-hp/
 ├── robots.txt                  # /_partials/ を Disallow、sitemap 参照
 ├── sitemap.xml                 # 全12 URL を登録
 ├── .dev-server.js              # ローカル開発用 静的サーバ (Node.js・依存なし)
-├── wrangler.jsonc              # Cloudflare wrangler 設定 (ローカル検証用。本番ホスティングには未使用)
 ├── README.md                   # リポジトリ概要
 ├── LICENSE                     # All Rights Reserved
 ├── .gitignore
@@ -589,9 +588,6 @@ Microsoft 365 の Graph API 経由で `info@tritechinc.jp` を真の送信元と
 バイパスし、`_partials/` 等のアンダースコア始まりのディレクトリも
 そのまま配信される。
 
-※ `wrangler.jsonc` はローカル検証 (Cloudflare wrangler) 用の設定で、
-本番ホスティングには使用していない。
-
 ### 10.2 DNS設定 (お名前.com)
 
 DNS管理はお名前.com で継続。Cloudflare 等への移管は実施していない。
@@ -801,7 +797,7 @@ git push -f origin main
 |---|---|---|
 | 2026-05-17 | 1.0.0 | 初版 |
 | 2026-05-18 | 1.0.1 | 軽微修正 |
-| 2026-11-20 | 1.5.1 | シューティングゲーム: エンディング中はマウスカーソルを機体で表示 (ボタンに重なると金色に光る) / 退出時に機体が中央へ戻ってロゴに変形する演出を追加 (発進演出の逆。その後は従来の扉の演出へ) / `service-ses/` 対応領域に「組み込み系開発」タブを追加 (画像 `ses-6-embedded.jpg` は Wikimedia Commons の CC0 写真「Raspberry Pi (24066383904).jpg」/ Craig Dennis 撮影。パブリックドメイン提供のため表記不要) |
+| 2026-11-20 | 1.5.1 | シューティングゲーム: エンディング中はマウスカーソルを機体で表示 (ボタンに重なると金色に光る) / 退出時に機体が中央へ戻ってロゴに変形する演出を追加 (発進演出の逆。その後は従来の扉の演出へ) / `service-ses/` 対応領域に「組み込み系開発」タブを追加 (画像 `ses-6-embedded.jpg` は Wikimedia Commons の CC0 写真「Raspberry Pi (24066383904).jpg」/ Craig Dennis 撮影。パブリックドメイン提供のため表記不要) / 未使用だった Cloudflare 用設定 `wrangler.jsonc` を削除 (本番は GitHub Pages のみ。Cloudflare は使用していない) |
 | 2026-11-20 | 1.5.0 | シューティングゲーム v2: 発進演出 (スタート操作でタイトルのロゴが機体に変形して定位置へ) / コンボと得点表示 / アイテム (P = 3WAY・1UP) / ハイスコア保存 / 復帰直後 2 秒の無敵 / ボスの攻撃 3 パターン・発狂・HP バー / 危険ライン接近の警告 / 残り 2 ゾーン以下のロックオン表示 / 効果音・爆発リング・画面揺れ・自機の噴射炎 / スマホは押しっぱなしで連射 |
 | 2026-11-19 | 1.4.0 | TriPulse 紹介を追加: 専用ページ `/tripulse/` (ロゴアニメ・HP 用紹介動画・案件単価と市場単価・3 つの約束・名前の由来) / トップ `#sec-reward` に紹介ブロック + 動画ボタン / トップ `#sec-reason` POINT 01 に一文 (採用ページにも反映) / `service-ses/` 強み 02 に一文、強みの下に紹介ブロック + 動画ボタン / 専用ページに想定年収シミュレータの紹介とカジュアル面談への導線 (`/contact/?type=casual`、お問い合わせ種別に「カジュアル面談の申し込み」を追加) / 動画ポップアップ `tripulse-modal.js` + `tripulse.css` / `assets/video/`・`assets/images/tripulse/` 追加 / `service-list/` に「自社開発プロダクト」枠を新設 / POINT 01 の文言を「市場価値の向上が直接収入に繋がります」に修正 (TriPulse の考え方と統一) / `recruit/` に「報酬が決まる仕組み」セクションを追加 (トップから自動で写す) / sitemap に `/tripulse/` 追加 (全12 URL) |
 | 2026-10-16 | 1.3.2 | 会社概要の更新: 資本金 20,000,000 円 / 本社を THE GATE 御徒町 (〒110-0016 東京都台東区台東2-30-10 4F) に一本化 (旧本社 渋谷区恵比寿・「上野営業所」表記を削除) / 全ページの JSON-LD (Organization.address) も新住所へ更新 |
